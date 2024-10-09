@@ -1,6 +1,5 @@
-# AirZen
-COEN/ELEC 390 project
-A device that will be beneficial to individuals working or studying at a desk for long periods of time, people with respiratory issues such as asthma, and people who are concerned about the air quality around them.
+# AirZen - COEN/ELEC 390 Project  
+A device designed to benefit individuals who work or study at a desk for extended periods, those with respiratory issues like asthma, and people concerned about their surrounding air quality.
 
 ## Getting started on the project
 ### Clone the project
@@ -10,14 +9,14 @@ A device that will be beneficial to individuals working or studying at a desk fo
 `git checkout -b your_name`
 
 ### When ready to push your code
-1. add the files to be commited
+1. Add the files to be commited
 `git add filename1, filename2,...`
 
-2. commit them with a resonable message
+2. Commit them with a resonable message
 `git commit -m "a message describing what changes you're making as well as any other important information"`
 
-3. push your changes to your branch
-`git push origin personal branch`
+3. Push your changes to your branch
+`git push origin your_name`
 
 
 
