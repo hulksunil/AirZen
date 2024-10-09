@@ -37,7 +37,7 @@ A device designed to benefit individuals who work or study at a desk for extende
 - files must be placed under the appropriate folder 
 
 # Basic commands 
-These commands can be used in [git bash](https://git-scm.com/downloads) or in the [VScode terminal](https://code.visualstudio.com/docs/terminal/basics) 
+These commands can be used in [git bash](https://git-scm.com/downloads) or in any normal terminal with the project in the current working directory
 ## Preparing to push to your personal branch
 - `git status` This will show you all the files edited on your own personal branch. All the red is new changes.
 - `git add .` This will prepare all the changes you did. 
