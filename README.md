@@ -19,8 +19,13 @@ A device designed to benefit individuals who work or study at a desk for extende
 `git push origin your_name`
 
 
-
-
+## Using the Database in the android app
+we need the google-services.json file so it can work.  
+Go to the [firebase console](https://console.firebase.google.com/u/0/project/airzen-c1ded/overview?fb_utm_source=studio) under the AirZen project.  
+Click on the gear icon at the top left corner and go to project settings.  
+Scroll down and download the google-services.json file.  
+Place that file in the Android\app folder.  
+Now run the project  
 
 # Repository rules
 - Everyone will work on their own branch and must do merge requests to staging and all commit must have useful messages. 
