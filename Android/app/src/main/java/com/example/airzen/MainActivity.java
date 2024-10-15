@@ -28,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     private static final String DATABASE_READ_TAG = "DATABASE_READ_TAG";
+    private ListView listOfItems; // (FOR TESTING PURPOSES) (remove later)
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,17 +41,18 @@ public class MainActivity extends AppCompatActivity {
             return insets;
         });
 
+        listOfItems = findViewById(R.id.listOfItems); // (FOR TESTING PURPOSES) (remove later)
+
         readFirebaseSensorData();
     }
 
 
     /**
      * Connects to the Firebase database and reads the sensor data
-     * from the "current" node in the database.
+     * from the "current" and "pastValues" node in the database and the
      * This method is called when the activity is created.
-     * The data is read anytime the "current" data changes.
+     * The data is read anytime the "current" data changes and whenever a new child value is given to the "pastValues" node.
      * The data is then logged to the console.
-     * <p>
      * NOTE: CHECK LOGCAT ON BOTTOM LEFT
      */
     private void readFirebaseSensorData() {
@@ -60,9 +62,13 @@ public class MainActivity extends AppCompatActivity {
         readCurrentData(myRef);
 
         readPastData(myRef);
-
     }
 
+    /**
+     * Reads the past data from the database
+     * The data is read anytime a new child value is given to the "pastValues" node.
+     * @param myRef
+     */
     private void readPastData(DatabaseReference myRef) {
         Log.d(DATABASE_READ_TAG, "Reading PAST VALUE data from the database");
         AtomicReference<ArrayList<SensorData>> pastValues = new AtomicReference<>(new ArrayList<>());
@@ -85,6 +91,8 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(DATABASE_READ_TAG, "AQI: " + value.getAqi());
                 Log.d(DATABASE_READ_TAG, "Temperature: " + value.getTemperature());
 
+                // FOR TESTING PURPOSES (remove later)
+                listOfItems.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, pastValues.get()));
             }
 
             @Override
@@ -109,6 +117,10 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Reads the current data from the database anytime the "current" node changes
+     * @param myRef
+     */
     private static void readCurrentData(DatabaseReference myRef) {
         // write data to the database (for testing purposes)
         DatabaseReference currentDataRef = myRef.child("current");
@@ -129,6 +141,23 @@ public class MainActivity extends AppCompatActivity {
                 Log.w(DATABASE_READ_TAG, "Failed to read value.", error.toException());
             }
         });
+    }
+
+    /**
+     * (FOR TESTING PURPOSES) (remove later)
+     * Called when the button is clicked
+     * Writes a new SensorData object to the database in the "pastValues" node
+     *
+     * @param view
+     */
+    public void onButtonClicked(View view) {
+        FirebaseDatabase database = FirebaseDatabase.getInstance(); // gets the default instance (us-central)
+        DatabaseReference myRef = database.getReference("sensorData"); // gets the reference to the database that we want to read/write to
+
+        // Do something in response to button click
+        DatabaseReference pastValuesDataRef = myRef.child("pastValues");
+        DatabaseReference newNode =  pastValuesDataRef.push();
+        newNode.setValue(new SensorData(100, 200, 300));
     }
 
 }
