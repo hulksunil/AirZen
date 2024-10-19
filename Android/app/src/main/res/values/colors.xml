@@ -2,4 +2,7 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+    <color name="timberWolf">#D5D4D0</color>
+    <color name="aliceBlue">#F4FBFD</color>
+    <color name="gunmetal">#19282E</color>
 </resources>

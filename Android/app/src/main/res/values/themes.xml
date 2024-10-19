@@ -6,4 +6,12 @@
     </style>
 
     <style name="Theme.AirZen" parent="Base.Theme.AirZen" />
+
+    <style name="labelTheme">
+        <item name="android:textSize">15sp</item>
+    </style>
+
+    <style name="MainActivityBoxes">
+        <item name="android:background">@color/timberWolf</item>
+    </style>
 </resources>
