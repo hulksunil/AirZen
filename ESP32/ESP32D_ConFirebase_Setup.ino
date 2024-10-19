@@ -1,0 +1,31 @@
+#include <WiFi.h>
+#include "WIFI_Connection.h"
+#include "BME280.h"
+#include "ESP32_Firebase.h"
+
+void setup() {
+  Serial.begin(9600);
+  delay(5000);
+
+  //Connect to the WIFI:
+  WIFIstart();
+
+  //Connect to Firebase
+  connectFB();
+
+  //Confirm the BME sensor is connected
+  BME_Start();
+
+}
+
+//In the loop, we'll send the sensor data to the database.
+void loop() {
+  
+ float temperature;
+ float humidity;
+ float pressure;
+ 
+  //The we'll call the firebase function and get the latest sensor readings.
+  sendFB(temperature, humidity, pressure);
+}
+
