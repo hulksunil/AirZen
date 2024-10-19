@@ -1,3 +1,14 @@
 <resources>
     <string name="app_name">AirZen</string>
+
+    <string name="aqi">AQI</string>
+    <string name="temp">Temperature</string>
+    <string name="humidity">Humidity</string>
+    <string name="eco2">eCO2</string>
+
+    <string name="error">Error</string>
+    <string name="degreesC">%d°C</string>
+    <string name="ppm">%dppm</string>
+    <string name="percent">%d%</string>
+
 </resources>
