@@ -27,8 +27,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mancj.slimchart.SlimChart;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
+import java.text.DecimalFormat;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -91,6 +93,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Reads the past data from the database
      * The data is read anytime a new child value is given to the "pastValues" node.
+     *
      * @param myRef
      */
     private void readPastData(DatabaseReference myRef) {
@@ -105,15 +108,10 @@ public class MainActivity extends AppCompatActivity {
 
             //!! We only care about new data being added
             @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot,  String previousChildName) {
+            public void onChildAdded(@NonNull DataSnapshot snapshot, String previousChildName) {
                 SensorData value = snapshot.getValue(SensorData.class);
                 pastValues.get().add(value);
-                Log.d(DATABASE_READ_TAG, "New PAST VALUE added: " + snapshot.getKey());
-
-                Log.d(DATABASE_READ_TAG, "Value is: " + value);
-                Log.d(DATABASE_READ_TAG, "CO2: " + value.getCo2());
-                Log.d(DATABASE_READ_TAG, "AQI: " + value.getAqi());
-                Log.d(DATABASE_READ_TAG, "Temperature: " + value.getTemperature());
+                Log.d(DATABASE_READ_TAG, "New PAST VALUE added: " + snapshot.getKey() + " : " + value);
 
                 // FOR TESTING PURPOSES (remove later)
                 listOfItems.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, pastValues.get()));
@@ -130,7 +128,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot,  String previousChildName) {
+            public void onChildMoved(@NonNull DataSnapshot snapshot, String previousChildName) {
                 // Handle child moved if needed
             }
 
@@ -143,6 +141,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Reads the current data from the database anytime the "current" node changes
+     *
      * @param myRef
      */
     private void readCurrentData(DatabaseReference myRef) {
@@ -154,18 +153,19 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 SensorData value = dataSnapshot.getValue(SensorData.class);
-
                 if(value != null){
                     slimChartInit(value.getAqi());
 
-                    currentTemp.setText(getString(R.string.degreesC,value.getTemperature()));
+                    currentTemp.setText(value.getTemperature()+""+getString(R.string.degreesC));
                     setTemperatureSVG(value.getTemperature());
 
                     currenteCo2.setText(getString(R.string.ppm,value.getCo2()));
                     setEcos2SVG(value.getCo2());
 
-//                    currentHumidity.setText(getString(R.string.percent,value.getHumidity()));
-//                    setHumiditySVG(value.getHumidity());
+                    DecimalFormat df = new DecimalFormat("#.##");
+
+                    currentHumidity.setText(df.format(value.getHumidity())+""+getString(R.string.percent));
+                    setHumiditySVG(value.getHumidity());
                 }
                 else{
                     currentTemp.setText(getString(R.string.error));
@@ -173,10 +173,7 @@ public class MainActivity extends AppCompatActivity {
                     currenteCo2.setText(getString(R.string.error));
                 }
 
-                Log.d(DATABASE_READ_TAG, "Value is: " + value);
-                Log.d(DATABASE_READ_TAG, "CO2: " + value.getCo2());
-                Log.d(DATABASE_READ_TAG, "AQI: " + value.getAqi());
-                Log.d(DATABASE_READ_TAG, "Temperature: " + value.getTemperature());
+                Log.d(DATABASE_READ_TAG, "Current value is: " + value);
             }
 
             @Override
@@ -199,12 +196,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Do something in response to button click
         DatabaseReference pastValuesDataRef = myRef.child("pastValues");
-        DatabaseReference newNode =  pastValuesDataRef.push();
-        newNode.setValue(new SensorData(100, 200, 300));
+        DatabaseReference newNode = pastValuesDataRef.push();
+        newNode.setValue(new SensorData(100, 200, 50.43, 1000.23, 19.29, LocalDateTime.now().toString()));
     }
 
-    public void setTemperatureSVG(int currentTemp){
-        if(currentTemp > 25){
+    public void setTemperatureSVG(double currentTemp){
+        if(currentTemp > 25.00){
             temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_red));
         }
         else{
@@ -248,7 +245,7 @@ public class MainActivity extends AppCompatActivity {
         slimChart.setStrokeWidth(9);
     }
 
-    public void setHumiditySVG(int currentHumidity){
+    public void setHumiditySVG(double currentHumidity){
         if(currentHumidity >= 70 || currentHumidity < 25){
             humiditySVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.humidity_red));
         }

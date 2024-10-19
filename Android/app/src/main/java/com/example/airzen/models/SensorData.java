@@ -3,12 +3,18 @@ package com.example.airzen.models;
 public class SensorData {
     private int co2;
     private int aqi;
-    private int temperature;
+    private double humidity;
+    private double pressure;
+    private double temperature;
+    private String timestamp;
 
-    public SensorData(int co2, int aqi, int temperature) {
+    public SensorData(int co2, int aqi, double humidity, double pressure, double temperature, String timestamp) {
         this.co2 = co2;
         this.aqi = aqi;
+        this.humidity = humidity;
+        this.pressure = pressure;
         this.temperature = temperature;
+        this.timestamp = timestamp;
     }
 
     public SensorData() {
@@ -30,12 +36,36 @@ public class SensorData {
         this.aqi = aqi;
     }
 
-    public int getTemperature() {
+    public double getTemperature() {
         return temperature;
     }
 
-    public void setTemperature(int temperature) {
+    public void setTemperature(double temperature) {
         this.temperature = temperature;
+    }
+
+    public double getHumidity() {
+        return humidity;
+    }
+
+    public void setHumidity(double humidity) {
+        this.humidity = humidity;
+    }
+
+    public double getPressure() {
+        return pressure;
+    }
+
+    public void setPressure(double pressure) {
+        this.pressure = pressure;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
     }
 
     @Override
@@ -43,7 +73,10 @@ public class SensorData {
         return "SensorData{" +
                 "co2=" + co2 +
                 ", aqi=" + aqi +
+                ", humidity=" + humidity +
+                ", pressure=" + pressure +
                 ", temperature=" + temperature +
+                ", timestamp='" + timestamp + '\'' +
                 '}';
     }
 }
