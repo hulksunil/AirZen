@@ -21,6 +21,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -67,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Reads the past data from the database
      * The data is read anytime a new child value is given to the "pastValues" node.
+     *
      * @param myRef
      */
     private void readPastData(DatabaseReference myRef) {
@@ -81,15 +83,10 @@ public class MainActivity extends AppCompatActivity {
 
             //!! We only care about new data being added
             @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot,  String previousChildName) {
+            public void onChildAdded(@NonNull DataSnapshot snapshot, String previousChildName) {
                 SensorData value = snapshot.getValue(SensorData.class);
                 pastValues.get().add(value);
-                Log.d(DATABASE_READ_TAG, "New PAST VALUE added: " + snapshot.getKey());
-
-                Log.d(DATABASE_READ_TAG, "Value is: " + value);
-                Log.d(DATABASE_READ_TAG, "CO2: " + value.getCo2());
-                Log.d(DATABASE_READ_TAG, "AQI: " + value.getAqi());
-                Log.d(DATABASE_READ_TAG, "Temperature: " + value.getTemperature());
+                Log.d(DATABASE_READ_TAG, "New PAST VALUE added: " + snapshot.getKey() + " : " + value);
 
                 // FOR TESTING PURPOSES (remove later)
                 listOfItems.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, pastValues.get()));
@@ -106,7 +103,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot,  String previousChildName) {
+            public void onChildMoved(@NonNull DataSnapshot snapshot, String previousChildName) {
                 // Handle child moved if needed
             }
 
@@ -119,6 +116,7 @@ public class MainActivity extends AppCompatActivity {
 
     /**
      * Reads the current data from the database anytime the "current" node changes
+     *
      * @param myRef
      */
     private static void readCurrentData(DatabaseReference myRef) {
@@ -130,10 +128,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 SensorData value = dataSnapshot.getValue(SensorData.class);
-                Log.d(DATABASE_READ_TAG, "Value is: " + value);
-                Log.d(DATABASE_READ_TAG, "CO2: " + value.getCo2());
-                Log.d(DATABASE_READ_TAG, "AQI: " + value.getAqi());
-                Log.d(DATABASE_READ_TAG, "Temperature: " + value.getTemperature());
+                Log.d(DATABASE_READ_TAG, "Current value is: " + value);
             }
 
             @Override
@@ -156,8 +151,8 @@ public class MainActivity extends AppCompatActivity {
 
         // Do something in response to button click
         DatabaseReference pastValuesDataRef = myRef.child("pastValues");
-        DatabaseReference newNode =  pastValuesDataRef.push();
-        newNode.setValue(new SensorData(100, 200, 300));
+        DatabaseReference newNode = pastValuesDataRef.push();
+        newNode.setValue(new SensorData(100, 200, 50.43, 1000.23, 19.29, LocalDateTime.now().toString()));
     }
 
 }
