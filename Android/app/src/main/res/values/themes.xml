@@ -12,6 +12,8 @@
     </style>
 
     <style name="MainActivityBoxes">
-        <item name="android:background">@color/timberWolf</item>
+        <!-- color related stuff for the tiles is in the layout because it needed to be rounded
+        corners so we just changed the colors its using instead of the entire theme -->
+<!--        <item name="android:background">@color/timberWolf</item>-->
     </style>
 </resources>
