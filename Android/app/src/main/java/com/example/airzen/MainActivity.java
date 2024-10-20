@@ -200,9 +200,24 @@ public class MainActivity extends AppCompatActivity {
         newNode.setValue(new SensorData(100, 200, 50.43, 1000.23, 19.29, LocalDateTime.now().toString()));
     }
 
-    public void setTemperatureSVG(double currentTemp){
+    /*public void setTemperatureSVG(double currentTemp){
         if(currentTemp > 25.00){
             temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_red));
+        }
+        else{
+            temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_blue));
+        }
+    }*/
+
+    public void setTemperatureSVG(double currentTemp){
+        if(currentTemp > 35.00){
+            temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_red));
+        }
+        else if(currentTemp < 35.00 && currentTemp >= 25.00){
+            temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_orange));
+        }
+        else if(currentTemp < 25.00 && currentTemp >= 15.00){
+            temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_green));
         }
         else{
             temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_blue));
