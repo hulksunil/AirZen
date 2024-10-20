@@ -19,7 +19,7 @@
         app:roundedEdges="true"
         app:strokeWidth="8dp"
         app:text="@string/aqi"
-        app:textColor="@color/black" />
+        app:textColor="@color/aqiColor" />
 
     <TextView
         android:id="@+id/aqiTextView"
@@ -38,8 +38,9 @@
         android:id="@+id/tempTile"
         android:theme="@style/MainActivityBoxes"
         android:layout_width="175dp"
-        android:layout_height="112dp"
-        android:layout_marginStart="4dp"
+        android:layout_height="116dp"
+        android:layout_marginStart="10dp"
+        android:background="@drawable/layout_tile_rounded_corners"
         android:layout_marginTop="324dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -52,7 +53,6 @@
             android:layout_marginStart="44dp"
             android:layout_marginTop="4dp"
             android:text="@string/temp"
-
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -60,6 +60,8 @@
             android:id="@+id/tempSVG"
             android:layout_width="71dp"
             android:layout_height="88dp"
+            android:layout_marginStart="5dp"
+            android:layout_marginBottom="5dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:srcCompat="@drawable/thermometer_blue" />
@@ -81,7 +83,8 @@
         android:id="@+id/humidityTile"
         android:theme="@style/MainActivityBoxes"
         android:layout_width="175dp"
-        android:layout_height="112dp"
+        android:background="@drawable/layout_tile_rounded_corners"
+        android:layout_height="116dp"
         android:layout_marginEnd="10dp"
         app:layout_constraintBottom_toBottomOf="@+id/tempTile"
         app:layout_constraintEnd_toEndOf="parent">
@@ -113,6 +116,7 @@
             android:layout_width="54dp"
             android:layout_height="79dp"
             android:layout_marginTop="24dp"
+            android:layout_marginStart="5dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:srcCompat="@drawable/humidity_green" />
@@ -122,7 +126,8 @@
         android:id="@+id/eCO2Tile"
         android:theme="@style/MainActivityBoxes"
         android:layout_width="175dp"
-        android:layout_height="112dp"
+        android:background="@drawable/layout_tile_rounded_corners"
+        android:layout_height="116dp"
         android:layout_marginStart="116dp"
         android:layout_marginTop="48dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -131,7 +136,6 @@
         <TextView
             android:id="@+id/eco2TextView"
             android:layout_width="wrap_content"
-
             android:layout_height="wrap_content"
             android:layout_marginStart="68dp"
             android:layout_marginTop="4dp"
@@ -155,6 +159,7 @@
             android:id="@+id/eco2SVG"
             android:layout_width="52dp"
             android:layout_height="61dp"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="36dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="aqiColor">#cbcbcb</color>
+
+    <color name="tileBackgroundColor">#a2a19e</color>
+    <color name="tileBorderColor">#6e6e6c</color>
+</resources>
