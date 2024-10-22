@@ -93,7 +93,7 @@ if(Firebase.ready() && (millis() - sendDataPrevMillis > timeDelay || sendDataPre
     Serial.println("Failed: " +FB.errorReason());
   }
 
-  //Pressure capture
+  //Altitude capture
   if(Firebase.RTDB.setFloat(&FB,dataPath + "/altitude", BMEAltitude())) {   //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
    // Serial.print(BMEAltitude()); //Printing the captured value
     Serial.print(" --Succcessfully saved to: " + FB.dataPath());
