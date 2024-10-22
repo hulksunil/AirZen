@@ -1,7 +1,7 @@
 #include "ESP32_Firebase.h"
 #include "addons/TokenHelper.h" //For token generation
 #include "addons/RTDBHelper.h" //For realtime database payload helping
-#include "BME280.h"
+#include "BME680.h"
 
 
 //The two pieces (not One Piece sorry Moussa) that we need to find/connect to our database.
@@ -46,7 +46,7 @@ void connectFB() {
 
 
 //Now we need a function that can send values to the database:
-void sendFB(float temperature, float humidity, float pressure) { //We want to send these three variables to the firebase.
+void sendFB(float temperature, float humidity, float pressure, float gas, float altitude) { //We want to send these five variables to the firebase.
   String dataPath = "/sensorData"; //We need a path defined for where the data will be sent.
 
 //Check to proceed:
@@ -76,6 +76,26 @@ if(Firebase.ready() && (millis() - sendDataPrevMillis > timeDelay || sendDataPre
 //Pressure capture
   if(Firebase.RTDB.setFloat(&FB,dataPath + "/pressure", BMEPressure())) {   //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
    // Serial.print(BMEPressure()); //Printing the captured value
+    Serial.print(" --Succcessfully saved to: " + FB.dataPath());
+    Serial.println();
+
+  } else { //If it failed to aquire the data:
+    Serial.println("Failed: " +FB.errorReason());
+  }
+
+//Gas Resistance capture
+  if(Firebase.RTDB.setFloat(&FB,dataPath + "/gas", BMEGas())) {   //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
+   // Serial.print(BMEGas()); //Printing the captured value
+    Serial.print(" --Succcessfully saved to: " + FB.dataPath());
+    Serial.println();
+
+  } else { //If it failed to aquire the data:
+    Serial.println("Failed: " +FB.errorReason());
+  }
+
+  //Pressure capture
+  if(Firebase.RTDB.setFloat(&FB,dataPath + "/altitude", BMEAltitude())) {   //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
+   // Serial.print(BMEAltitude()); //Printing the captured value
     Serial.print(" --Succcessfully saved to: " + FB.dataPath());
     Serial.println();
 
