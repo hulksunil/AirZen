@@ -6,6 +6,6 @@
 
 // Function declarations
 void connectFB();
-void sendFB(float temperature, float humidity, float pressure);
+void sendFB(float temperature, float humidity, float pressure, float gas, float altitude);
 
 #endif // ESP32_FIREBASE_H
