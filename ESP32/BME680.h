@@ -1,14 +1,16 @@
-#ifndef BME280_H
-#define BME280_H
+#ifndef BME680_H
+#define BME680_H
 
 #include <Wire.h>
 #include <Adafruit_Sensor.h>
-#include <Adafruit_BME280.h>
+#include <Adafruit_BME680.h>
 
 
 void BME_Start();
 float BMETemp();
 float BMEHumidity();
 float BMEPressure();
+float BMEGas();
+float BMEAltitude();
 
-#endif // BME280_H
+#endif // BME680_H
