@@ -1,6 +1,6 @@
 #include <WiFi.h>
 #include "WIFI_Connection.h"
-#include "BME280.h"
+#include "BME680.h"
 #include "ESP32_Firebase.h"
 
 void setup() {
@@ -24,8 +24,10 @@ void loop() {
  float temperature;
  float humidity;
  float pressure;
+ float gas;
+ float altitude;
  
   //The we'll call the firebase function and get the latest sensor readings.
-  sendFB(temperature, humidity, pressure);
+  sendFB(temperature, humidity, pressure, gas, altitude);
 }
 
