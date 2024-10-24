@@ -4,7 +4,7 @@
 #include "ESP32_Firebase.h"
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   delay(5000);
 
   //Connect to the WIFI:
