@@ -282,5 +282,11 @@ public class MainActivity extends AppCompatActivity {
             eCO2SVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.co2_green));
         }
     }
+
+    public void openSecondActivity(View view){
+        Intent intent = new Intent(MainActivity.this, SecondActivity.class);
+        startActivity(intent);
+    }
+
 }
 
