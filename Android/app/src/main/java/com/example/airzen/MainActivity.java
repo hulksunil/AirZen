@@ -1,5 +1,6 @@
 package com.example.airzen;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -285,6 +286,7 @@ public class MainActivity extends AppCompatActivity {
 
     public void openSecondActivity(View view){
         Intent intent = new Intent(MainActivity.this, SecondActivity.class);
+        intent.putExtra("EXTRA_MESSAGE", "Hello from First Activity!");
         startActivity(intent);
     }
 
