@@ -2,7 +2,9 @@ package com.example.airzen;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -19,10 +21,9 @@ public class SecondActivity extends AppCompatActivity {
         setContentView(R.layout.activity_second);
 
         Intent intent = getIntent();
-        String message = intent.getStringExtra("EXTRA_MESSAGE");
+        String message = intent.getStringExtra("TILE_ID");
 
-        TextView textView = findViewById(R.id.chart);
-        textView.setText(message);
+        displayGraph(message);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -30,4 +31,21 @@ public class SecondActivity extends AppCompatActivity {
             return insets;
         });
     }
+
+public void displayGraph(String message) {
+        switch (message) {
+        case "tempTile":
+            Toast.makeText(this, "TEMP GRAPH GOES HERE", Toast.LENGTH_LONG).show();
+            break;
+        case "humidityTile":
+            Toast.makeText(this, "HUMIDITY GRAPH GOES HERE", Toast.LENGTH_LONG).show();
+
+            break;
+        case "eCO2Tile":
+            Toast.makeText(this, "CO2 GRAPH GOES HERE", Toast.LENGTH_LONG).show();
+            break;
+    }
+}
+
+
 }

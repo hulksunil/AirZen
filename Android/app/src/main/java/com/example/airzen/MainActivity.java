@@ -9,6 +9,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -60,6 +61,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         tempTile = findViewById(R.id.tempTile);
+        humidityTile = findViewById(R.id.humidityTile);
+        eCO2Tile = findViewById(R.id.eCO2Tile);
+
 
         temperatureSVG = findViewById(R.id.tempSVG);
         humiditySVG = findViewById(R.id.humiditySVG);
@@ -73,6 +77,28 @@ public class MainActivity extends AppCompatActivity {
         slimChart= findViewById(R.id.slimChart);
 
         readFirebaseSensorData();
+
+        tempTile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSecondActivity(v);
+            }
+        });
+
+        humidityTile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSecondActivity(v);
+            }
+        });
+
+        eCO2Tile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSecondActivity(v);
+            }
+        });
+
     }
 
 
@@ -286,9 +312,26 @@ public class MainActivity extends AppCompatActivity {
 
     public void openSecondActivity(View view){
         Intent intent = new Intent(MainActivity.this, SecondActivity.class);
-        intent.putExtra("EXTRA_MESSAGE", "Hello from First Activity!");
+        String longID = view.getResources().getResourceName(view.getId());
+        String ID = longID.replace("com.example.airzen:id/", " ");
+        switch (ID) {
+            case "tempTile": {
+                String tileID = "tempTile";
+                intent.putExtra("TILE_ID", tileID);
+                break;
+            }
+            case "humidityTile": {
+                String tileID = "humidityTile";
+                intent.putExtra("TILE_ID", tileID);
+                break;
+            }
+            case "eCO2Tile": {
+                String tileID = "eCO2Tile";
+                intent.putExtra("TILE_ID", tileID);
+                break;
+            }
+        }
         startActivity(intent);
     }
-
 }
 
