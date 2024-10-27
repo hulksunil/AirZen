@@ -2,6 +2,7 @@ package com.example.airzen;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +24,12 @@ public class SecondActivity extends AppCompatActivity {
         Intent intent = getIntent();
         String message = intent.getStringExtra("TILE_ID");
 
+        /*Bundle bundle = getIntent().getExtras();
+        assert bundle != null;
+        String message = bundle.getString("TILE_ID");*/
+
+        Log.i("graphDisplay", message);
+
         displayGraph(message);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
@@ -39,7 +46,6 @@ public void displayGraph(String message) {
             break;
         case "humidityTile":
             Toast.makeText(this, "HUMIDITY GRAPH GOES HERE", Toast.LENGTH_LONG).show();
-
             break;
         case "eCO2Tile":
             Toast.makeText(this, "CO2 GRAPH GOES HERE", Toast.LENGTH_LONG).show();

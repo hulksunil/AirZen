@@ -313,7 +313,8 @@ public class MainActivity extends AppCompatActivity {
     public void openSecondActivity(View view){
         Intent intent = new Intent(MainActivity.this, SecondActivity.class);
         String longID = view.getResources().getResourceName(view.getId());
-        String ID = longID.replace("com.example.airzen:id/", " ");
+        String ID = longID.replace("com.example.airzen:id/", "");
+        Log.i("openSecondActivity",ID);
         switch (ID) {
             case "tempTile": {
                 String tileID = "tempTile";
