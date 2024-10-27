@@ -6,6 +6,8 @@
     <string name="humidity">Humidity</string>
     <string name="eco2">eCO2</string>
 
+    <string name="NA">N/A</string>
+
     <string name="error">Error</string>
     <string name="degreesC">°C</string>
     <string name="ppm">%dppm</string>
