@@ -182,13 +182,15 @@ public class MainActivity extends AppCompatActivity {
                 if(value != null){
                     slimChartInit(value.getAqi());
 
-                    currentTemp.setText(value.getTemperature()+""+getString(R.string.degreesC));
+                    DecimalFormat df = new DecimalFormat("#.##");
+
+                    currentTemp.setText(df.format(value.getTemperature())+""+getString(R.string.degreesC));
                     setTemperatureSVG(value.getTemperature());
 
                     currenteCo2.setText(getString(R.string.ppm,value.getCo2()));
                     setEcos2SVG(value.getCo2());
 
-                    DecimalFormat df = new DecimalFormat("#.##");
+
 
                     currentHumidity.setText(df.format(value.getHumidity())+""+getString(R.string.percent));
                     setHumiditySVG(value.getHumidity());
