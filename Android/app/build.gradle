@@ -27,6 +27,9 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
+    buildFeatures {
+        viewBinding true
+    }
 }
 
 dependencies {
@@ -35,7 +38,16 @@ dependencies {
     implementation libs.material
     implementation libs.activity
     implementation libs.constraintlayout
+    implementation libs.navigation.fragment
+    implementation libs.navigation.ui
     testImplementation libs.junit
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
+
+    implementation "com.github.mancj:SlimChart:0.1.2"
+    //https://github.com/mancj/SlimChart?tab=readme-ov-file#to-get-a-slimchart-project-into-your-build
+
+    implementation "com.github.AnyChart:AnyChart-Android:1.1.5"
+    //https://github.com/AnyChart/AnyChart-Android
+
 }
