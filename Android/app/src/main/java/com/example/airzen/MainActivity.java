@@ -1,5 +1,6 @@
 package com.example.airzen;
 
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
@@ -59,6 +60,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         tempTile = findViewById(R.id.tempTile);
+        humidityTile = findViewById(R.id.humidityTile);
+        eCO2Tile = findViewById(R.id.eCO2Tile);
+
 
         temperatureSVG = findViewById(R.id.tempSVG);
         humiditySVG = findViewById(R.id.humiditySVG);
@@ -72,6 +76,28 @@ public class MainActivity extends AppCompatActivity {
         slimChart= findViewById(R.id.slimChart);
 
         readFirebaseSensorData();
+
+        tempTile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSecondActivity(v);
+            }
+        });
+
+        humidityTile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSecondActivity(v);
+            }
+        });
+
+        eCO2Tile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openSecondActivity(v);
+            }
+        });
+
     }
 
 
@@ -210,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
     }*/
 
     public void setTemperatureSVG(double currentTemp){
-        if(currentTemp > 35.00){
+        if(currentTemp >= 35.00){
             temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_red));
         }
         else if(currentTemp < 35.00 && currentTemp >= 25.00){
@@ -281,6 +307,31 @@ public class MainActivity extends AppCompatActivity {
         else {
             eCO2SVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.co2_green));
         }
+    }
+
+    public void openSecondActivity(View view){
+        Intent intent = new Intent(MainActivity.this, GraphActivity.class);
+        String longID = view.getResources().getResourceName(view.getId());
+        String ID = longID.replace("com.example.airzen:id/", "");
+        Log.i("openSecondActivity",ID);
+        switch (ID) {
+            case "tempTile": {
+                String tileID = "tempTile";
+                intent.putExtra("TILE_ID", tileID);
+                break;
+            }
+            case "humidityTile": {
+                String tileID = "humidityTile";
+                intent.putExtra("TILE_ID", tileID);
+                break;
+            }
+            case "eCO2Tile": {
+                String tileID = "eCO2Tile";
+                intent.putExtra("TILE_ID", tileID);
+                break;
+            }
+        }
+        startActivity(intent);
     }
 }
 
