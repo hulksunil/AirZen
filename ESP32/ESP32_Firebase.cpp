@@ -47,7 +47,7 @@ void connectFB() {
 
 //Now we need a function that can send values to the database:
 void sendFB(float temperature, float humidity, float pressure, float gas, float altitude) { //We want to send these five variables to the firebase.
-  String dataPath = "/sensorData"; //We need a path defined for where the data will be sent.
+  String dataPath = "/sensorData/current"; //We need a path defined for where the data will be sent.
 
 //Check to proceed:
 if(Firebase.ready() && (millis() - sendDataPrevMillis > timeDelay || sendDataPrevMillis == 0)){
@@ -104,6 +104,3 @@ if(Firebase.ready() && (millis() - sendDataPrevMillis > timeDelay || sendDataPre
   }
 }
 }
-
-
-

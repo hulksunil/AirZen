@@ -5,7 +5,7 @@
 //https://randomnerdtutorials.com/esp32-esp8266-firebase-bme280-rtdb/
 
 //Our credentials (for now):
-const char* ssid = "Colin's iPhone";  
+const char* ssid = "Colin iPhone";  
 const char* password = "brandon1"; 
 
 void WIFIstart() {

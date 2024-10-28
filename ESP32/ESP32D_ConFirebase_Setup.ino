@@ -30,4 +30,3 @@ void loop() {
   //The we'll call the firebase function and get the latest sensor readings.
   sendFB(temperature, humidity, pressure, gas, altitude);
 }
-
