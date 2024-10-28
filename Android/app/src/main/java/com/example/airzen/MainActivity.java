@@ -9,7 +9,6 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -237,7 +236,7 @@ public class MainActivity extends AppCompatActivity {
     }*/
 
     public void setTemperatureSVG(double currentTemp){
-        if(currentTemp > 35.00){
+        if(currentTemp >= 35.00){
             temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_red));
         }
         else if(currentTemp < 35.00 && currentTemp >= 25.00){
@@ -311,7 +310,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public void openSecondActivity(View view){
-        Intent intent = new Intent(MainActivity.this, SecondActivity.class);
+        Intent intent = new Intent(MainActivity.this, GraphActivity.class);
         String longID = view.getResources().getResourceName(view.getId());
         String ID = longID.replace("com.example.airzen:id/", "");
         Log.i("openSecondActivity",ID);
