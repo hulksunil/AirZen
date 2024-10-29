@@ -35,8 +35,9 @@ import java.util.concurrent.atomic.AtomicReference;
 public class GraphActivity extends AppCompatActivity {
 
     protected AnyChartView anyChartView;
-    protected  AtomicReference<ArrayList<SensorData>> pastValues;
-    private ArrayList<DataEntry>seriesData = new ArrayList<>();
+    protected AtomicReference<ArrayList<SensorData>> pastValues;
+    private ArrayList<DataEntry> seriesData = new ArrayList<>();
+    private String graphToDisplay;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,16 +49,11 @@ public class GraphActivity extends AppCompatActivity {
         anyChartView.setBackgroundColor(0);
 
         Intent intent = getIntent();
-        String message = intent.getStringExtra("TILE_ID");
+        graphToDisplay = intent.getStringExtra("TILE_ID");
 
-        /*Bundle bundle = getIntent().getExtras();
-        assert bundle != null;
-        String message = bundle.getString("TILE_ID");*/
-
-        Log.i("graphDisplay", message);
+        Log.i("graphDisplay", graphToDisplay);
 
         readFirebaseSensorData();
-        displayGraph(message);
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
@@ -73,7 +69,6 @@ public class GraphActivity extends AppCompatActivity {
     }
 
     private void readPastData(DatabaseReference myRef) {
-
         pastValues = new AtomicReference<>(new ArrayList<>());
 
         // Reference to the "pastValues" node
@@ -87,15 +82,22 @@ public class GraphActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot snapshot, String previousChildName) {
                 SensorData value = snapshot.getValue(SensorData.class);
                 pastValues.get().add(value);
-                //List<DataEntry> seriesData = new ArrayList<>();
 
-                //tempGraph();
-                Log.i("ArrayLength", ""+ seriesData.size());
+                if (pastValues.get().size() == snapshot.getChildrenCount()) {
+                    Log.i("PastValues", "" + pastValues.get());
+                    displayGraph(graphToDisplay);
+                }
             }
 
             @Override
             public void onChildChanged(@NonNull DataSnapshot snapshot, String previousChildName) {
+
                 // Handle child changed if needed
+                //This will be used to monitor when there is a new past value in the db
+                // and can live update the specific graph
+                //snapshot will need to be reassigned to the pastValues class var
+
+                Log.i("PastValuesChanged", "" + snapshot.getValue(SensorData.class));
             }
 
             @Override
@@ -114,85 +116,70 @@ public class GraphActivity extends AppCompatActivity {
         });
     }
 
-public void displayGraph(String message) {
+    public void displayGraph(String message) {
         switch (message) {
-        case "tempTile":
-            tempGraph();
-            break;
-        case "humidityTile":
-            humidityGraph();
-            break;
-        case "eCO2Tile":
-            eCO2Graph();
-            break;
+            case "tempTile":
+                tempGraph();
+                break;
+            case "humidityTile":
+                humidityGraph();
+                break;
+            case "eCO2Tile":
+                eCO2Graph();
+                break;
+        }
     }
-}
 
     private class SensorPlotValue extends ValueDataEntry {
-        SensorPlotValue(String time, Number primarySensorData){
+        SensorPlotValue(String time, Number primarySensorData) {
             super(time, primarySensorData);
         }
-
     }
 
 
-//temperature graph function
-private void tempGraph(){
-
+    //temperature graph function
+    private void tempGraph() {
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
-    Cartesian cartesian = AnyChart.line();
+        Cartesian cartesian = AnyChart.line();
 
-    cartesian.animation(true);
+        cartesian.animation(true);
 
-    cartesian.padding(10d, 20d, 5d, 20d);
+        cartesian.padding(10d, 20d, 5d, 20d);
 
-    cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
+        cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
 
-    cartesian.title("Your AirZen Temperature Historical Data Which Is Super Important");
+        cartesian.title("Your AirZen Temperature Historical Data Which Is Super Important");
 
-    //ArrayList<SensorData> pastValuesArrayList = pastValues.get(); // this line isn't working
-    Log.i("AlexRules", ""+ pastValues.get());
+        Log.i("AlexRules", "" + pastValues.get());
 
-    for (int i=0; i<pastValues.get().size(); i++){
-        seriesData.add(new SensorPlotValue(pastValues.get().get(i).getTimestamp(), pastValues.get().get(i).getTemperature()));
+        for (int i = 0; i < pastValues.get().size(); i++) {
+            seriesData.add(new SensorPlotValue(pastValues.get().get(i).getTimestamp(), pastValues.get().get(i).getTemperature()));
+            Log.i("pastValues", "" + pastValues.get().get(i));
+        }
+
+        Set set = Set.instantiate();
+        set.data(seriesData);
+        Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
+
+        Line series1 = cartesian.line(series1Mapping);
+        series1.color("#FF0000");
+        series1.name("Temperature");
+
+        cartesian.legend().enabled(true);
+        cartesian.legend().fontSize(13d);
+        cartesian.legend().padding(0d, 0d, 10d, 0d);
+
+//        cartesian.dataArea().background().enabled(true);
+//        cartesian.dataArea().background().fill("#ffd54f 0.2");
+//
+//        cartesian.background().enabled(true);
+//        cartesian.background().fill("#3a56b0");
+
+        anyChartView.setChart(cartesian);
     }
 
-    Log.i("SensorLength","" + seriesData.size());
-
-    seriesData.add(new SensorPlotValue("2024-06-19T14:26:15.722085", 10));
-    seriesData.add(new SensorPlotValue("2024-06-19T15:26:15.722085", 300));
-    seriesData.add(new SensorPlotValue("2024-07-19T15:26:15.722085", 125));
-    seriesData.add(new SensorPlotValue("2024-08-19T15:26:15.722085", 300));
-    seriesData.add( new SensorPlotValue("2024-09-19T15:26:15.722085", 300));
-    seriesData.add(new SensorPlotValue("2024-10-19T15:26:15.722085", 300));
-
-
-    Set set = Set.instantiate();
-    set.data(seriesData);
-    Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
-
-    Line series1 = cartesian.line(series1Mapping);
-    series1.color("#000000");
-    series1.name("Temperature");
-
-
-    cartesian.legend().enabled(true);
-    cartesian.legend().fontSize(13d);
-    cartesian.legend().padding(0d, 0d, 10d, 0d);
-
-
-    cartesian.dataArea().background().enabled(true);
-    cartesian.dataArea().background().fill("#ffd54f 0.2");
-
-
-    cartesian.background().enabled(true);
-    cartesian.background().fill("#3a56b0");
-
-    anyChartView.setChart(cartesian);
-}
-
-    private void humidityGraph(){
+    private void humidityGraph() {
 
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
@@ -206,28 +193,20 @@ private void tempGraph(){
 
         cartesian.title("Your AirZen Humidity Historical Data Which Is Super Important");
 
-        //ArrayList<SensorData> pastValuesArrayList = pastValues.get(); // this line isn't working
-        Log.i("AlexRules", ""+ pastValues.get());
+        Log.i("AlexRules", "" + pastValues.get());
 
-        /*for (int i=0; i<pastValues.get().size(); i++){
-            seriesData.add(new SensorPlotValue(pastValues.get().get(i).getTimestamp(), pastValues.get().get(i).getTemperature()));
-        }*/
+        for (int i=0; i<pastValues.get().size(); i++){
+            seriesData.add(new SensorPlotValue(pastValues.get().get(i).getTimestamp(), pastValues.get().get(i).getHumidity()));
+        }
 
-        Log.i("SensorLength","" + seriesData.size());
-
-        seriesData.add(new SensorPlotValue("2024-06-19T14:26:15.722085", 55.47754));
-        seriesData.add(new SensorPlotValue("2024-06-19T15:26:15.722085", 52.47754));
-        seriesData.add(new SensorPlotValue("2024-07-19T15:26:15.722085", 52.47754));
-        seriesData.add(new SensorPlotValue("2024-08-19T15:26:15.722085", 47.47754));
-        seriesData.add( new SensorPlotValue("2024-09-19T15:26:15.722085", 44.47754));
-        seriesData.add(new SensorPlotValue("2024-10-19T15:26:15.722085", 54.47754));
+        Log.i("SensorLength", "" + seriesData.size());
 
         Set set = Set.instantiate();
         set.data(seriesData);
         Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
 
         Line series1 = cartesian.line(series1Mapping);
-        series1.color("#000000");
+        series1.color("#326da8");
         series1.name("Humidity");
 
 
@@ -236,17 +215,17 @@ private void tempGraph(){
         cartesian.legend().padding(0d, 0d, 10d, 0d);
 
 
-        cartesian.dataArea().background().enabled(true);
-        cartesian.dataArea().background().fill("#ffd54f 0.2");
-
-
-        cartesian.background().enabled(true);
-        cartesian.background().fill("#3a56b0");
+//        cartesian.dataArea().background().enabled(true);
+//        cartesian.dataArea().background().fill("#ffd54f 0.2");
+//
+//
+//        cartesian.background().enabled(true);
+//        cartesian.background().fill("#3a56b0");
 
         anyChartView.setChart(cartesian);
     }
 
-    private void eCO2Graph(){
+    private void eCO2Graph() {
 
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
@@ -260,28 +239,20 @@ private void tempGraph(){
 
         cartesian.title("Your AirZen eCO2 Historical Data Which Is Super Important");
 
-        //ArrayList<SensorData> pastValuesArrayList = pastValues.get(); // this line isn't working
-        Log.i("AlexRules", ""+ pastValues.get());
+        Log.i("AlexRules", "" + pastValues.get());
 
-        /*for (int i=0; i<pastValues.get().size(); i++){
-            seriesData.add(new SensorPlotValue(pastValues.get().get(i).getTimestamp(), pastValues.get().get(i).getTemperature()));
-        }*/
+        for (int i=0; i<pastValues.get().size(); i++){
+            seriesData.add(new SensorPlotValue(pastValues.get().get(i).getTimestamp(), pastValues.get().get(i).getCo2()));
+        }
 
-        Log.i("SensorLength","" + seriesData.size());
-
-        seriesData.add(new SensorPlotValue("2024-06-19T14:26:15.722085", 100));
-        seriesData.add(new SensorPlotValue("2024-06-19T15:26:15.722085", 70));
-        seriesData.add(new SensorPlotValue("2024-07-19T15:26:15.722085", 55));
-        seriesData.add(new SensorPlotValue("2024-08-19T15:26:15.722085", 100));
-        seriesData.add( new SensorPlotValue("2024-09-19T15:26:15.722085", 100));
-        seriesData.add(new SensorPlotValue("2024-10-19T15:26:15.722085", 100));
+        Log.i("SensorLength", "" + seriesData.size());
 
         Set set = Set.instantiate();
         set.data(seriesData);
         Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
 
         Line series1 = cartesian.line(series1Mapping);
-        series1.color("#000000");
+        series1.color("#32a83a");
         series1.name("CO2");
 
 
@@ -290,12 +261,12 @@ private void tempGraph(){
         cartesian.legend().padding(0d, 0d, 10d, 0d);
 
 
-        cartesian.dataArea().background().enabled(true);
-        cartesian.dataArea().background().fill("#ffd54f 0.2");
-
-
-        cartesian.background().enabled(true);
-        cartesian.background().fill("#3a56b0");
+//        cartesian.dataArea().background().enabled(true);
+//        cartesian.dataArea().background().fill("#ffd54f 0.2");
+//
+//
+//        cartesian.background().enabled(true);
+//        cartesian.background().fill("#3a56b0");
 
         anyChartView.setChart(cartesian);
     }
