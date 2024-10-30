@@ -1,170 +1,251 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:id="@+id/main"
     tools:context=".MainActivity">
 
-    <com.mancj.slimchart.SlimChart
-        android:id="@+id/slimChart"
-        android:layout_width="124dp"
-        android:layout_height="126dp"
-        android:layout_marginTop="120dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.498"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:roundedEdges="true"
-        app:strokeWidth="8dp"
-        app:text="@string/aqi"
-        app:textColor="@color/aqiColor" />
-
-    <TextView
-        android:id="@+id/aqiTextView"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/aqi"
-        android:textSize="30sp"
-        app:layout_constraintBottom_toTopOf="@+id/slimChart"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:orientation="vertical">
 
-    <!-- This constraint layout is to allow the element to be displayed in a
-    card like way-->
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/tempTile"
-        android:theme="@style/MainActivityBoxes"
-        android:layout_width="175dp"
-        android:layout_height="116dp"
-        android:layout_marginStart="10dp"
-        android:background="@drawable/layout_tile_rounded_corners"
-        android:layout_marginTop="324dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <TextView
-            android:id="@+id/tempTextView"
-            android:theme="@style/labelTheme"
+        <!-- Linear Layout for AQI-->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="44dp"
-            android:layout_marginTop="4dp"
-            android:text="@string/temp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:layout_marginTop="110dp"
+            android:layout_marginBottom="10dp">
 
-        <ImageView
-            android:id="@+id/tempSVG"
-            android:layout_width="71dp"
-            android:layout_height="88dp"
-            android:layout_marginStart="5dp"
-            android:layout_marginBottom="5dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:srcCompat="@drawable/thermometer_blue" />
+            <TextView
+                android:id="@+id/aqiTextView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/aqi"
+                android:textSize="30sp"
+                android:layout_gravity="center"/>
 
-        <TextView
-            android:id="@+id/currentTemp"
+            <com.mancj.slimchart.SlimChart
+                android:id="@+id/slimChart"
+                android:layout_width="124dp"
+                android:layout_height="126dp"
+                app:roundedEdges="true"
+                app:strokeWidth="8dp"
+                app:text="@string/aqi"
+                app:textColor="@color/aqiColor" />
+        </LinearLayout>
+
+        <!--Card For Temprature -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="30dp"
-            android:text="@string/NA"
-            android:textSize="30sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp">
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/tempTile"
+                android:theme="@style/MainActivityBoxes"
+                android:layout_width="400dp"
+                android:layout_height="116dp"
+                android:background="@drawable/layout_tile_rounded_corners"
+                android:onClick="openGraphActivity">
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+                <TextView
+                    android:id="@+id/tempTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="40dp"
+                    android:text="@string/temp"
+                    android:theme="@style/labelThemeScroll"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/humidityTile"
-        android:theme="@style/MainActivityBoxes"
-        android:layout_width="175dp"
-        android:background="@drawable/layout_tile_rounded_corners"
-        android:layout_height="116dp"
-        android:layout_marginEnd="10dp"
-        app:layout_constraintBottom_toBottomOf="@+id/tempTile"
-        app:layout_constraintEnd_toEndOf="parent">
+                <ImageView
+                    android:id="@+id/tempSVG"
+                    android:layout_width="71dp"
+                    android:layout_height="88dp"
+                    android:layout_marginStart="190dp"
+                    android:layout_marginBottom="12dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:srcCompat="@drawable/thermometer_blue" />
 
-        <TextView
-            android:id="@+id/humidityTextView"
+                <TextView
+                    android:id="@+id/currentTemp"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="35dp"
+                    android:layout_marginBottom="36dp"
+                    android:text="@string/NA"
+                    android:textSize="30sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
+        <!-- Card for Humidty -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="56dp"
-            android:layout_marginTop="4dp"
-            android:text="@string/humidity"
-            android:textSize="15sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp">
 
-        <TextView
-            android:id="@+id/currentHumidity"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/humidityTile"
+                android:theme="@style/MainActivityBoxes"
+                android:layout_width="400dp"
+                android:layout_height="116dp"
+                android:background="@drawable/layout_tile_rounded_corners"
+                android:onClick="openGraphActivity">
+
+                <TextView
+                    android:id="@+id/humidityTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="40dp"
+                    android:text="@string/humidity"
+                    android:theme="@style/labelThemeScroll"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/humiditySVG"
+                    android:layout_width="54dp"
+                    android:layout_height="79dp"
+                    android:layout_marginStart="190dp"
+                    android:layout_marginBottom="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:srcCompat="@drawable/humidity_green" />
+
+                <TextView
+                    android:id="@+id/currentHumidity"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="35dp"
+                    android:layout_marginBottom="36dp"
+                    android:text="@string/NA"
+                    android:textSize="30sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+    </LinearLayout>
+
+        <!-- Card for eCO2 -->
+        <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:layout_marginBottom="30dp"
-            android:text="@string/NA"
-            android:textSize="30sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp">
 
-        <ImageView
-            android:id="@+id/humiditySVG"
-            android:layout_width="54dp"
-            android:layout_height="79dp"
-            android:layout_marginTop="24dp"
-            android:layout_marginStart="5dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/humidity_green" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/eCO2Tile"
+                android:theme="@style/MainActivityBoxes"
+                android:layout_width="400dp"
+                android:layout_height="116dp"
+                android:background="@drawable/layout_tile_rounded_corners"
+                android:onClick="openGraphActivity">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/eCO2Tile"
-        android:theme="@style/MainActivityBoxes"
-        android:layout_width="175dp"
-        android:background="@drawable/layout_tile_rounded_corners"
-        android:layout_height="116dp"
-        android:layout_marginStart="116dp"
-        android:layout_marginTop="48dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tempTile">
+                <TextView
+                    android:id="@+id/eco2TextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="40dp"
+                    android:text="@string/eco2"
+                    android:theme="@style/labelThemeScroll"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
-            android:id="@+id/eco2TextView"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="68dp"
-            android:layout_marginTop="4dp"
-            android:text="@string/eco2"
-            android:textSize="15sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+                <ImageView
+                    android:id="@+id/eco2SVG"
+                    android:layout_width="54dp"
+                    android:layout_height="79dp"
+                    android:layout_marginStart="190dp"
+                    android:layout_marginBottom="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:srcCompat="@drawable/co2_green" />
 
-        <TextView
-            android:id="@+id/currenteCo2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="30dp"
-            android:text="@string/NA"
-            android:textSize="30sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+                <TextView
+                    android:id="@+id/currenteCo2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="35dp"
+                    android:layout_marginBottom="36dp"
+                    android:text="@string/NA"
+                    android:textSize="30sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <ImageView
-            android:id="@+id/eco2SVG"
-            android:layout_width="52dp"
-            android:layout_height="61dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="36dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/co2_green" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+<!-- TO UNCOMMENT THIS BELOW, SELECT IT ALL AND PRESS CONTROL AND THE BACKSLASH '/' AT THE SAME TIME -->
+<!-- COPY IT OUT BUT LEAVE IT FOR THE NEXT PERSON -->
+
+<!--<LinearLayout-->
+<!--android:layout_width="wrap_content"-->
+<!--android:layout_height="wrap_content"-->
+<!--android:orientation="vertical"-->
+<!--android:layout_gravity="center"-->
+<!--android:layout_marginTop="15dp">-->
+
+<!--<androidx.constraintlayout.widget.ConstraintLayout-->
+<!--    android:id="@+id/"-->
+<!--    android:theme="@style/MainActivityBoxes"-->
+<!--    android:layout_width="400dp"-->
+<!--    android:layout_height="116dp"-->
+<!--    android:background="@drawable/layout_tile_rounded_corners"-->
+<!--    android:onClick="openGraphActivity">-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginStart="16dp"-->
+<!--        android:layout_marginTop="40dp"-->
+<!--        android:text="@string/"-->
+<!--        android:theme="@style/labelThemeScroll"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="parent" />-->
+
+<!--    <ImageView-->
+<!--        android:id="@+id/"-->
+<!--        android:layout_width="54dp"-->
+<!--        android:layout_height="79dp"-->
+<!--        android:layout_marginStart="228dp"-->
+<!--        android:layout_marginBottom="16dp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:srcCompat="@drawable/" />-->
+
+<!--    <TextView-->
+<!--        android:id="@+id/"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_marginEnd="48dp"-->
+<!--        android:layout_marginBottom="36dp"-->
+<!--        android:text="@string/NA"-->
+<!--        android:textSize="30sp"-->
+<!--        app:layout_constraintBottom_toBottomOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent" />-->
+<!--</androidx.constraintlayout.widget.ConstraintLayout>-->
+
+<!--</LinearLayout>-->
