@@ -11,6 +11,10 @@
         <item name="android:textSize">15sp</item>
     </style>
 
+    <style name="labelThemeScroll">
+        <item name="android:textSize">25sp</item>
+    </style>
+
     <style name="MainActivityBoxes">
         <!-- color related stuff for the tiles is in the layout because it needed to be rounded
         corners so we just changed the colors its using instead of the entire theme -->

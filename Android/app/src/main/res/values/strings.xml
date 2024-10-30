@@ -4,7 +4,7 @@
     <string name="aqi">AQI</string>
     <string name="temp">Temperature</string>
     <string name="humidity">Humidity</string>
-    <string name="eco2">eCO2</string>
+    <string name="eco2">CO2</string>
 
     <string name="NA">N/A</string>
 

@@ -3,7 +3,6 @@ package com.example.airzen;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
@@ -29,7 +28,6 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 
 import java.util.ArrayList;
-import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class GraphActivity extends AppCompatActivity {
@@ -51,6 +49,7 @@ public class GraphActivity extends AppCompatActivity {
         Intent intent = getIntent();
         graphToDisplay = intent.getStringExtra("TILE_ID");
 
+        assert graphToDisplay != null;
         Log.i("graphDisplay", graphToDisplay);
 
         readFirebaseSensorData();
@@ -130,7 +129,7 @@ public class GraphActivity extends AppCompatActivity {
         }
     }
 
-    private class SensorPlotValue extends ValueDataEntry {
+    private static class SensorPlotValue extends ValueDataEntry {
         SensorPlotValue(String time, Number primarySensorData) {
             super(time, primarySensorData);
         }
@@ -154,6 +153,7 @@ public class GraphActivity extends AppCompatActivity {
         Log.i("AlexRules", "" + pastValues.get());
 
         for (int i = 0; i < pastValues.get().size(); i++) {
+            //TODO Parse the timestamp to obtain just the time so it can look better on the graph
             seriesData.add(new SensorPlotValue(pastValues.get().get(i).getTimestamp(), pastValues.get().get(i).getTemperature()));
             Log.i("pastValues", "" + pastValues.get().get(i));
         }
@@ -169,6 +169,8 @@ public class GraphActivity extends AppCompatActivity {
         cartesian.legend().enabled(true);
         cartesian.legend().fontSize(13d);
         cartesian.legend().padding(0d, 0d, 10d, 0d);
+
+        //TODO some stying
 
 //        cartesian.dataArea().background().enabled(true);
 //        cartesian.dataArea().background().fill("#ffd54f 0.2");
