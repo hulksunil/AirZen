@@ -67,7 +67,6 @@ public class MainActivity extends AppCompatActivity {
         humiditySVG = findViewById(R.id.humiditySVG);
         eCO2SVG = findViewById(R.id.eco2SVG);
 
-
         currentTemp = findViewById(R.id.currentTemp);
         currentHumidity = findViewById(R.id.currentHumidity);
         currentCo2 = findViewById(R.id.currenteCo2);

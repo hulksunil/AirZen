@@ -3,10 +3,12 @@ package com.example.airzen;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -36,6 +38,8 @@ public class GraphActivity extends AppCompatActivity {
     protected AtomicReference<ArrayList<SensorData>> pastValues;
     private ArrayList<DataEntry> seriesData = new ArrayList<>();
     private String graphToDisplay;
+    private Toolbar toolbar;
+    private TextView pageTitle;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +53,15 @@ public class GraphActivity extends AppCompatActivity {
         Intent intent = getIntent();
         graphToDisplay = intent.getStringExtra("TILE_ID");
 
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
+
+        pageTitle = findViewById(R.id.toolbarTextView);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
         assert graphToDisplay != null;
         Log.i("graphDisplay", graphToDisplay);
 
@@ -59,6 +72,12 @@ public class GraphActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        getOnBackPressedDispatcher().onBackPressed();
+        return super.onSupportNavigateUp();
     }
 
     private void readFirebaseSensorData() {
@@ -119,12 +138,15 @@ public class GraphActivity extends AppCompatActivity {
         switch (message) {
             case "tempTile":
                 tempGraph();
+                pageTitle.setText(getString(R.string.temp));
                 break;
             case "humidityTile":
                 humidityGraph();
+                pageTitle.setText(getString(R.string.humidity));
                 break;
             case "eCO2Tile":
                 eCO2Graph();
+                pageTitle.setText(getString(R.string.eco2));
                 break;
         }
     }
@@ -149,8 +171,6 @@ public class GraphActivity extends AppCompatActivity {
         cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
 
         cartesian.title("Your AirZen Temperature Historical Data Which Is Super Important");
-
-        Log.i("AlexRules", "" + pastValues.get());
 
         for (int i = 0; i < pastValues.get().size(); i++) {
             //TODO Parse the timestamp to obtain just the time so it can look better on the graph
@@ -195,7 +215,6 @@ public class GraphActivity extends AppCompatActivity {
 
         cartesian.title("Your AirZen Humidity Historical Data Which Is Super Important");
 
-        Log.i("AlexRules", "" + pastValues.get());
 
         for (int i=0; i<pastValues.get().size(); i++){
             seriesData.add(new SensorPlotValue(pastValues.get().get(i).getTimestamp(), pastValues.get().get(i).getHumidity()));
@@ -240,8 +259,6 @@ public class GraphActivity extends AppCompatActivity {
         cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
 
         cartesian.title("Your AirZen eCO2 Historical Data Which Is Super Important");
-
-        Log.i("AlexRules", "" + pastValues.get());
 
         for (int i=0; i<pastValues.get().size(); i++){
             seriesData.add(new SensorPlotValue(pastValues.get().get(i).getTimestamp(), pastValues.get().get(i).getCo2()));
