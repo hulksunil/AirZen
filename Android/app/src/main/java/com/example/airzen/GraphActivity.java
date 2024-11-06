@@ -3,12 +3,15 @@ package com.example.airzen;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -22,13 +25,16 @@ import com.anychart.core.cartesian.series.Line;
 import com.anychart.data.Mapping;
 import com.anychart.data.Set;
 import com.anychart.enums.TooltipPositionMode;
+import com.example.airzen.models.AssetConfigure;
 import com.example.airzen.models.SensorData;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicReference;
 
@@ -40,12 +46,19 @@ public class GraphActivity extends AppCompatActivity {
     private String graphToDisplay;
     private Toolbar toolbar;
     private TextView pageTitle;
+    private SensorData currentReadings;
+    private TextView currentValueLbl;
+    private ImageView currentReadSvg;
+    private TextView currentRead;
+    private TextView warnings;
+    private ConstraintLayout warningsBox;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_second);
+        setContentView(R.layout.activity_graph);
 
         anyChartView = findViewById(R.id.any_chart_view);
         anyChartView.setBackgroundColor(0);
@@ -58,6 +71,14 @@ public class GraphActivity extends AppCompatActivity {
         setSupportActionBar(toolbar);
 
         pageTitle = findViewById(R.id.toolbarTextView);
+
+        currentValueLbl = findViewById(R.id.selectedCurrentValue);
+        currentReadSvg = findViewById(R.id.selectedSVG);
+        currentRead = findViewById(R.id.currentRead);
+
+        warnings = findViewById(R.id.warningTextView);
+        warningsBox = findViewById(R.id.warningsBox);
+
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -83,6 +104,7 @@ public class GraphActivity extends AppCompatActivity {
     private void readFirebaseSensorData() {
         FirebaseDatabase database = FirebaseDatabase.getInstance(); // gets the default instance (us-central)
         DatabaseReference myRef = database.getReference("sensorData"); // gets the reference to the database that we want to read/write to
+        readCurrentData(myRef);
         readPastData(myRef);
     }
 
@@ -134,19 +156,62 @@ public class GraphActivity extends AppCompatActivity {
         });
     }
 
+    private void readCurrentData(DatabaseReference myRef) {
+        DatabaseReference currentDataRef = myRef.child("current");
+
+        // read data anytime the "current data" changes
+        currentDataRef.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                currentReadings = dataSnapshot.getValue(SensorData.class);
+
+                DecimalFormat df = new DecimalFormat("#.##");
+                switch (graphToDisplay) {
+                    case "tempTile":
+                        currentReadSvg.setImageDrawable(AssetConfigure.setTemperatureSVG(currentReadings.getTemperature(),GraphActivity.this));
+                        currentRead.setText(df.format(currentReadings.getTemperature())+""+getString(R.string.degreesC));
+                        temperatureWarning(currentReadings.getTemperature());
+                        break;
+                    case "humidityTile":
+                        currentReadSvg.setImageDrawable(AssetConfigure.setHumiditySVG(currentReadings.getHumidity(),GraphActivity.this));
+                        currentRead.setText(df.format(currentReadings.getHumidity())+""+getString(R.string.percent));
+                        humidityWarning(currentReadings.getHumidity());
+                        break;
+                    case "eCO2Tile":
+                        currentReadSvg.setImageDrawable(AssetConfigure.setEcos2SVG(currentReadings.getCo2(),GraphActivity.this));
+                        currentRead.setText(getString(R.string.ppm,currentReadings.getCo2()));
+                        co2Warning(currentReadings.getCo2());
+                        break;
+                }
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {}
+        });
+    }
+
     public void displayGraph(String message) {
+        DecimalFormat df = new DecimalFormat("#.##");
         switch (message) {
             case "tempTile":
                 tempGraph();
                 pageTitle.setText(getString(R.string.temp));
+                currentValueLbl.setText(getString(R.string.temp));
                 break;
             case "humidityTile":
                 humidityGraph();
                 pageTitle.setText(getString(R.string.humidity));
+                currentValueLbl.setText(getString(R.string.humidity));
                 break;
             case "eCO2Tile":
                 eCO2Graph();
                 pageTitle.setText(getString(R.string.eco2));
+                currentValueLbl.setText(getString(R.string.eco2));
+
+                currentReadSvg.setImageDrawable(AssetConfigure.setEcos2SVG(currentReadings.getCo2(),GraphActivity.this));
+
+                currentRead.setText(getString(R.string.ppm,currentReadings.getCo2()));
                 break;
         }
     }
@@ -290,5 +355,93 @@ public class GraphActivity extends AppCompatActivity {
         anyChartView.setChart(cartesian);
     }
 
+    private void temperatureWarning(Double currentTemperature){
+        warnings.setText(getString(R.string.warning));
+        boolean warningSet = false;
 
+        if(currentTemperature < 15){
+            warnings.append(getString(R.string.Temperature_sleepTempLow));
+            warningSet = true;
+        }
+        else if (currentTemperature > 21) {
+            warnings.append(getString(R.string.Temperature_sleepTempHigh));
+            warningSet = true;
+        }
+
+        if(currentTemperature > 24 || currentTemperature < 22){
+            warnings.append(getString(R.string.Temperature_workRange));
+            warningSet = true;
+        }
+
+        if(currentTemperature < 20 || currentTemperature > 22){
+            warnings.append(getString(R.string.Temperature_asthma));
+            warningSet = true;
+        }
+
+        if(!warningSet){
+            warningsBox.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void humidityWarning(Double currentHumidity){
+        warnings.setText(getString(R.string.warning));
+        boolean warningSet = false;
+
+        if(currentHumidity < 30 || currentHumidity > 50){
+            warnings.append(getString(R.string.Humidity_indoor));
+            warnings.append(getString(R.string.Humidity_asthma));
+            warningSet = true;
+        }
+
+        if(currentHumidity < 30){
+            warnings.append(getString(R.string.Humidity_low));
+            warningSet = true;
+        }
+
+        if(currentHumidity > 55){
+            warnings.append(getString(R.string.Humidity_high));
+            warnings.append(getString(R.string.Humidity_summer));
+            warningSet = true;
+        }
+
+        if(currentHumidity < 30 ||currentHumidity > 35){
+            warnings.append(getString(R.string.Humidity_winter));
+            warningSet = true;
+        }
+
+        if(!warningSet){
+            warningsBox.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    private void co2Warning(int currentCo2){
+        warnings.setText(getString(R.string.warning));
+        boolean warningSet = false;
+
+        if(currentCo2 > 1000){
+            warnings.append(getString(R.string.CO2_ventilation));
+            warnings.append(getString(R.string.CO2_longExposure));
+            warningSet = true;
+        }
+
+        if(currentCo2 > 1000 && currentCo2 < 2500){
+            warnings.append(getString(R.string.CO2_drowsiness));
+            warningSet = true;
+        }
+
+        if(currentCo2 > 2500){
+            warnings.append(getString(R.string.CO2_healthRisk));
+            warningSet = true;
+        }
+
+        if(currentCo2 > 2000 && currentCo2 < 5000){
+            warnings.append(getString(R.string.CO2_concentration));
+            warningSet = true;
+        }
+
+        if(!warningSet){
+            warningsBox.setVisibility(View.INVISIBLE);
+        }
+
+    }
 }

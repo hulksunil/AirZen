@@ -19,6 +19,7 @@ import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.airzen.models.AssetConfigure;
 import com.example.airzen.models.SensorData;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -61,7 +62,6 @@ public class MainActivity extends AppCompatActivity {
         tempTile = findViewById(R.id.tempTile);
         humidityTile = findViewById(R.id.humidityTile);
         eCO2Tile = findViewById(R.id.eCO2Tile);
-
 
         temperatureSVG = findViewById(R.id.tempSVG);
         humiditySVG = findViewById(R.id.humiditySVG);
@@ -161,15 +161,13 @@ public class MainActivity extends AppCompatActivity {
                     DecimalFormat df = new DecimalFormat("#.##");
 
                     currentTemp.setText(df.format(value.getTemperature())+""+getString(R.string.degreesC));
-                    setTemperatureSVG(value.getTemperature());
+                    temperatureSVG.setImageDrawable(AssetConfigure.setTemperatureSVG(value.getTemperature(),MainActivity.this));
 
                     currentCo2.setText(getString(R.string.ppm,value.getCo2()));
-                    setEcos2SVG(value.getCo2());
-
-
+                    eCO2SVG.setImageDrawable(AssetConfigure.setEcos2SVG(value.getCo2(),MainActivity.this));
 
                     currentHumidity.setText(df.format(value.getHumidity())+""+getString(R.string.percent));
-                    setHumiditySVG(value.getHumidity());
+                    humiditySVG.setImageDrawable(AssetConfigure.setHumiditySVG(value.getHumidity(),MainActivity.this));
                 }
                 else{
                     currentTemp.setText(getString(R.string.error));
@@ -213,21 +211,6 @@ public class MainActivity extends AppCompatActivity {
         }
     }*/
 
-    public void setTemperatureSVG(double currentTemp){
-        if(currentTemp >= 35.00){
-            temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_red));
-        }
-        else if(currentTemp < 35.00 && currentTemp >= 25.00){
-            temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_orange));
-        }
-        else if(currentTemp < 25.00 && currentTemp >= 15.00){
-            temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_green));
-        }
-        else{
-            temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_blue));
-        }
-    }
-
     private void slimChartInit(int number){
         final float[] stats = new float[2]; // The rings
         int[] colors = new int[2];//the colors in the rings
@@ -261,29 +244,6 @@ public class MainActivity extends AppCompatActivity {
         slimChart.setText(""+number);
 
         slimChart.setStrokeWidth(9);
-    }
-
-    public void setHumiditySVG(double currentHumidity){
-        if(currentHumidity >= 70 || currentHumidity < 25){
-            humiditySVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.humidity_red));
-        }
-        else if((currentHumidity >= 60 && currentHumidity < 70) || (currentHumidity >= 25 && currentHumidity < 30)){
-            humiditySVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.humidity_orange));
-        }
-        else if(currentHumidity >= 30 && currentHumidity < 60){
-            humiditySVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.humidity_green));
-        }
-    }
-
-    public void setEcos2SVG(int currentCO2){
-        if(currentCO2 > 2500){
-            eCO2SVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.co2_red));
-        } else if (currentCO2 > 1500 && currentCO2 < 2500) {
-            eCO2SVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.co2_orange));
-        }
-        else {
-            eCO2SVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.co2_green));
-        }
     }
 
     public void openGraphActivity(View view){

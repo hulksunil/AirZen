@@ -12,5 +12,10 @@
         <item name="android:textColor">@color/black</item>
     </style>
 
+    <style name="WarningBoxes">
+        <item name="android:background">@color/red</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
 
 </resources>

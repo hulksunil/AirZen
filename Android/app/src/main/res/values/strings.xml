@@ -4,7 +4,7 @@
     <string name="aqi">AQI</string>
     <string name="temp">Temperature</string>
     <string name="humidity">Humidity</string>
-    <string name="eco2">CO2</string>
+    <string name="eco2">CO₂</string>
 
     <string name="NA">N/A</string>
 
@@ -12,6 +12,30 @@
     <string name="degreesC">°C</string>
     <string name="ppm">%dppm</string>
     <string name="percent">%</string>
+
+    <string name="idealTemperature">%d  </string>
+
+    <string name="warning">Warning:</string>
+
+    <string name="Temperature_sleepTempLow">\nIf the room temperature is below 15°C, it may feel too cold for comfortable sleep. Consider raising the temperature slightly. The ideal temperature is around 18°C.</string>
+    <string name="Temperature_sleepTempHigh">\nIf the room temperature is above 21°C, it may be too warm for a good night\'s sleep. The ideal temperature is around 18°C.</string>
+    <string name="Temperature_workRange">\nThe ideal room temperature for working is between 22°C and 24°C. Consider adjusting the temperature to this range for comfort and productivity. High temperatures reduce productivity and concentration.</string>
+    <string name="Temperature_asthma">\nTemperature between 20°C and 22°C is ideal for asthmatics. This range will not irritate the airways. The room temperature is outside this range, consider adjusting to reduce potential irritation.</string>
+
+    <string name="Humidity_asthma">\nFor asthmatics, maintain an indoor humidity level between 30% and 50%. Levels above 50% may lead to increased asthma symptoms and difficulty breathing.</string>
+    <string name="Humidity_indoor">\nAbove 60% is harmful for indoor air quality, over long periods of time, this level encourages the growth of mold and dust mites. Use a dehumidifier to lower the humidity percentage.</string>
+    <string name="Humidity_low">\nBelow 30% humidity, use a humidifier to maintain 30% to 35%. This will alleviate dryness and prevent eczema flare-ups. Low humidity may cause skin allergies, eye irritation, cracked skin, and respiratory infections.</string>
+    <string name="Humidity_high">\nAbove 55%, use a dehumidifier to keep humidity between 30% to 35%. High humidity can promote the growth of mold and bacteria if sustained over long periods, causing health risks and discomfort. </string>
+    <string name="Humidity_summer">\nIn summer, keep indoor humidity below 50% for optimal comfort. Above 55% can cause discomfort and increase the release of volatile organic compounds (VOCs).</string>
+    <string name="Humidity_winter">\nIn winter, keep indoor humidity between 30% to 35%. This will prevent condensation on surfaces and minimizes respiratory issues. </string>
+
+    <string name="CO2_ventilation">\n700 ppm to 1,000 ppm are acceptable, though ventilation may be beneficial to improve air freshness. CO₂ levels between 350 ppm and 450 ppm indicate fresh air, and 450 ppm and 700 ppm are typical for normal indoor air quality.</string>
+    <string name="CO2_drowsiness">\nCO₂ levels from 1,000 ppm to 2,500 ppm may cause drowsiness, poor air quality, stale air quality, and discomfort. You must improve air flow for safety.</string>
+    <string name="CO2_healthRisk">\nCO₂ above 2,500 ppm can lead to negative health effects, including headaches, sleepiness, and stale, stuffy air. You must improve air flow for safety.</string>
+    <string name="CO2_longExposure">\nLong-term exposure above 1,000 ppm can lead to complaints of fatigue and poor air quality, which may affect focus and concentration. Improve air flow for safety.</string>
+    <string name="CO2_concentration">\nLevels between 2,000 and 5,000 ppm can cause headaches, drowsiness, poor concentration, and may also increase heart rate and cause slight nausea.</string>
+
+
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
