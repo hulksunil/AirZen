@@ -13,14 +13,15 @@
     <string name="ppm">%dppm</string>
     <string name="percent">%</string>
 
-    <string name="idealTemperature">%d  </string>
+    <string name="clickedMetric">Clicked Reading</string>
 
     <string name="warning">Warning:</string>
+    <string name="additionalInfo">Additional Information:</string>
 
     <string name="Temperature_sleepTempLow">\nIf the room temperature is below 15°C, it may feel too cold for comfortable sleep. Consider raising the temperature slightly. The ideal temperature is around 18°C.</string>
     <string name="Temperature_sleepTempHigh">\nIf the room temperature is above 21°C, it may be too warm for a good night\'s sleep. The ideal temperature is around 18°C.</string>
     <string name="Temperature_workRange">\nThe ideal room temperature for working is between 22°C and 24°C. Consider adjusting the temperature to this range for comfort and productivity. High temperatures reduce productivity and concentration.</string>
-    <string name="Temperature_asthma">\nTemperature between 20°C and 22°C is ideal for asthmatics. This range will not irritate the airways. The room temperature is outside this range, consider adjusting to reduce potential irritation.</string>
+    <string name="Temperature_asthma">\nTemperature between 20°C and 22°C is ideal for asthmatics, this range will not irritate lungs. Consider adjusting to reduce potential irritation.</string>
 
     <string name="Humidity_asthma">\nFor asthmatics, maintain an indoor humidity level between 30% and 50%. Levels above 50% may lead to increased asthma symptoms and difficulty breathing.</string>
     <string name="Humidity_indoor">\nAbove 60% is harmful for indoor air quality, over long periods of time, this level encourages the growth of mold and dust mites. Use a dehumidifier to lower the humidity percentage.</string>

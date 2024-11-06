@@ -52,6 +52,8 @@ public class GraphActivity extends AppCompatActivity {
     private TextView currentRead;
     private TextView warnings;
     private ConstraintLayout warningsBox;
+    private TextView additionalInfo;
+    private ConstraintLayout additionalInfoBox;
 
 
     @Override
@@ -78,6 +80,9 @@ public class GraphActivity extends AppCompatActivity {
 
         warnings = findViewById(R.id.warningTextView);
         warningsBox = findViewById(R.id.warningsBox);
+
+        additionalInfo = findViewById(R.id.additionalInfoTextView);
+        additionalInfoBox = findViewById(R.id.additionalInfoBox);
 
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -357,20 +362,23 @@ public class GraphActivity extends AppCompatActivity {
 
     private void temperatureWarning(Double currentTemperature){
         warnings.setText(getString(R.string.warning));
+        additionalInfo.setText(getString(R.string.additionalInfo));
+
         boolean warningSet = false;
+        boolean additionalSet = false;
 
         if(currentTemperature < 15){
-            warnings.append(getString(R.string.Temperature_sleepTempLow));
-            warningSet = true;
+            additionalInfo.append(getString(R.string.Temperature_sleepTempLow));
+            additionalSet = true;
         }
         else if (currentTemperature > 21) {
-            warnings.append(getString(R.string.Temperature_sleepTempHigh));
-            warningSet = true;
+            additionalInfo.append(getString(R.string.Temperature_sleepTempHigh));
+            additionalSet = true;
         }
 
         if(currentTemperature > 24 || currentTemperature < 22){
-            warnings.append(getString(R.string.Temperature_workRange));
-            warningSet = true;
+            additionalInfo.append(getString(R.string.Temperature_workRange));
+            additionalSet = true;
         }
 
         if(currentTemperature < 20 || currentTemperature > 22){
@@ -381,11 +389,16 @@ public class GraphActivity extends AppCompatActivity {
         if(!warningSet){
             warningsBox.setVisibility(View.INVISIBLE);
         }
+
+        if(!additionalSet){
+            additionalInfoBox.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void humidityWarning(Double currentHumidity){
         warnings.setText(getString(R.string.warning));
         boolean warningSet = false;
+        boolean additionalSet = false;
 
         if(currentHumidity < 30 || currentHumidity > 50){
             warnings.append(getString(R.string.Humidity_indoor));
@@ -412,11 +425,16 @@ public class GraphActivity extends AppCompatActivity {
         if(!warningSet){
             warningsBox.setVisibility(View.INVISIBLE);
         }
+
+        if(!additionalSet){
+            additionalInfoBox.setVisibility(View.INVISIBLE);
+        }
     }
 
     private void co2Warning(int currentCo2){
         warnings.setText(getString(R.string.warning));
         boolean warningSet = false;
+        boolean additionalSet = false;
 
         if(currentCo2 > 1000){
             warnings.append(getString(R.string.CO2_ventilation));
@@ -441,6 +459,10 @@ public class GraphActivity extends AppCompatActivity {
 
         if(!warningSet){
             warningsBox.setVisibility(View.INVISIBLE);
+        }
+
+        if(!additionalSet){
+            additionalInfoBox.setVisibility(View.INVISIBLE);
         }
 
     }

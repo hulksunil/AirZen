@@ -8,7 +8,7 @@
     android:layout_height="match_parent">
 
 
-
+<!-- The whole page -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -19,6 +19,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <!-- Current Read out card -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -38,7 +39,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="40dp"
-                    android:text="@string/temp"
+                    android:text="@string/clickedMetric"
                     android:theme="@style/labelThemeScroll"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -69,6 +70,7 @@
 
         </LinearLayout>
 
+        <!-- The graph displaying past info -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -101,6 +103,7 @@
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
 
+        <!-- The warning box -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -111,12 +114,41 @@
                 android:id="@+id/warningsBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/layout_tile_rounded_corners"
+                android:background="@drawable/layout_tile_rounded_corners_red_border"
                 android:theme="@style/MainActivityBoxes"
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
                     android:id="@+id/warningTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:textSize="18sp"
+                    android:padding="5dp"
+                    android:text="@string/lorem_ipsum"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </LinearLayout>
+
+        <!--Additional info about current reading -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_marginTop="15dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/additionalInfoBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/layout_tile_rounded_corners_green_border"
+                android:theme="@style/MainActivityBoxes"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <TextView
+                    android:id="@+id/additionalInfoTextView"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="18sp"
