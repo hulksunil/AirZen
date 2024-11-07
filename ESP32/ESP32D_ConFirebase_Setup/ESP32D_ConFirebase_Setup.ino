@@ -3,30 +3,40 @@
 #include "BME680.h"
 #include "ESP32_Firebase.h"
 
+extern void checkIaqSensorStatus(void);
+extern Bsec iaqSensor;
+
 void setup() {
   Serial.begin(115200);
   delay(5000);
 
-  //Connect to the WIFI:
+  // Connect to the WiFi
   WIFIstart();
 
-  //Connect to Firebase
+  // Connect to Firebase
   connectFB();
 
-  //Confirm the BME sensor is connected
+  // Initialize the BME680 sensor
   BME_Start();
-
 }
 
-//In the loop, we'll send the sensor data to the database.
 void loop() {
-  
- float temperature;
- float humidity;
- float pressure;
- float gas;
- float altitude;
- 
-  //The we'll call the firebase function and get the latest sensor readings.
-  sendFB(temperature, humidity, pressure, gas, altitude);
+  // Call the iaqSensor.run() method once in the loop to update sensor data
+  if (iaqSensor.run()) {
+    // Call the functions to get sensor data
+    float temperature = BMETemp();  // Get the temperature
+    float humidity = BMEHumidity();  // Get the humidity
+    float co2 = BMEco2();  // Get the CO2 equivalent
+    float gas = BMEVOC();  // Get the VOC equivalent (breath gas)
+    float aqi = BMEAQI();  // Get the IAQ (Indoor Air Quality)
+    float altitude = BMEAltitude();  // Get the altitude based on pressure
+
+    // Now that we have the sensor data, pass it to the sendFB function
+    sendFB(temperature, humidity, co2, gas, aqi, altitude);
+  } else {
+    checkIaqSensorStatus();
+  }
+
+  // Add a small delay to avoid flooding the Serial monitor and Firebase
+  delay(1000);
 }

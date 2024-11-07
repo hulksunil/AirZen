@@ -46,7 +46,7 @@ void connectFB() {
 
 
 //Now we need a function that can send values to the database:
-void sendFB(float temperature, float humidity, float pressure, float gas, float altitude) { //We want to send these five variables to the firebase.
+void sendFB(float temperature, float humidity, float co2, float gas, float aqi, float altitude) { //We want to send these five variables to the firebase.
   String dataPath = "/sensorData/current"; //We need a path defined for where the data will be sent.
 
 //Check to proceed:
@@ -73,9 +73,9 @@ if(Firebase.ready() && (millis() - sendDataPrevMillis > timeDelay || sendDataPre
     Serial.println("Failed: " +FB.errorReason());
 }
 
-//Pressure capture
-  if(Firebase.RTDB.setFloat(&FB,dataPath + "/pressure", BMEPressure())) {   //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
-   // Serial.print(BMEPressure()); //Printing the captured value
+//CO2 capture
+  if(Firebase.RTDB.setFloat(&FB,dataPath + "/co2", BMEco2())) {   //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
+   // Serial.print(BMECO2()); //Printing the captured value
     Serial.print(" --Succcessfully saved to: " + FB.dataPath());
     Serial.println();
 
@@ -84,8 +84,18 @@ if(Firebase.ready() && (millis() - sendDataPrevMillis > timeDelay || sendDataPre
   }
 
 //Gas Resistance capture
-  if(Firebase.RTDB.setFloat(&FB,dataPath + "/gas", BMEGas())) {   //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
+  if(Firebase.RTDB.setFloat(&FB,dataPath + "/gas", BMEVOC())) {   //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
    // Serial.print(BMEGas()); //Printing the captured value
+    Serial.print(" --Succcessfully saved to: " + FB.dataPath());
+    Serial.println();
+
+  } else { //If it failed to aquire the data:
+    Serial.println("Failed: " +FB.errorReason());
+  }
+
+  //AIQ capture
+  if(Firebase.RTDB.setFloat(&FB,dataPath + "/aqi", BMEAQI())) {   //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
+   // Serial.print(BMEAltitude()); //Printing the captured value
     Serial.print(" --Succcessfully saved to: " + FB.dataPath());
     Serial.println();
 
