@@ -6,7 +6,7 @@
 
 //Our credentials (for now):
 const char* ssid = "BELL075";  
-const char* password = "131AE124E65F"; 
+const char* password = "aaa"; 
 
 void WIFIstart() {
   delay(1000); //We will add some delay, as this reduces the risk or errors (from testing previously).
