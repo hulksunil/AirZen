@@ -42,11 +42,10 @@ public class MainActivity extends AppCompatActivity {
     protected ConstraintLayout tempTile, humidityTile, eCO2Tile;
     private ImageView temperatureSVG,humiditySVG,eCO2SVG;
 
-    private TextView currentTemp,currentHumidity,currenteCo2;
+    private TextView currentTemp,currentHumidity, currentCo2;
 
     private SlimChart slimChart;
 
-    private final int [] AQI_Index = new int[]{50, 100, 150, 200, 300};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -71,33 +70,11 @@ public class MainActivity extends AppCompatActivity {
 
         currentTemp = findViewById(R.id.currentTemp);
         currentHumidity = findViewById(R.id.currentHumidity);
-        currenteCo2 = findViewById(R.id.currenteCo2);
+        currentCo2 = findViewById(R.id.currenteCo2);
 
         slimChart= findViewById(R.id.slimChart);
 
         readFirebaseSensorData();
-
-        tempTile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openSecondActivity(v);
-            }
-        });
-
-        humidityTile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openSecondActivity(v);
-            }
-        });
-
-        eCO2Tile.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                openSecondActivity(v);
-            }
-        });
-
     }
 
 
@@ -120,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
      * Reads the past data from the database
      * The data is read anytime a new child value is given to the "pastValues" node.
      *
-     * @param myRef
+     * @param myRef the reference of the database
      */
     private void readPastData(DatabaseReference myRef) {
         Log.d(DATABASE_READ_TAG, "Reading PAST VALUE data from the database");
@@ -168,7 +145,7 @@ public class MainActivity extends AppCompatActivity {
     /**
      * Reads the current data from the database anytime the "current" node changes
      *
-     * @param myRef
+     * @param myRef the reference of the database
      */
     private void readCurrentData(DatabaseReference myRef) {
         // write data to the database (for testing purposes)
@@ -182,13 +159,15 @@ public class MainActivity extends AppCompatActivity {
                 if(value != null){
                     slimChartInit(value.getAqi());
 
-                    currentTemp.setText(value.getTemperature()+""+getString(R.string.degreesC));
+                    DecimalFormat df = new DecimalFormat("#.##");
+
+                    currentTemp.setText(df.format(value.getTemperature())+""+getString(R.string.degreesC));
                     setTemperatureSVG(value.getTemperature());
 
-                    currenteCo2.setText(getString(R.string.ppm,value.getCo2()));
+                    currentCo2.setText(getString(R.string.ppm,value.getCo2()));
                     setEcos2SVG(value.getCo2());
 
-                    DecimalFormat df = new DecimalFormat("#.##");
+
 
                     currentHumidity.setText(df.format(value.getHumidity())+""+getString(R.string.percent));
                     setHumiditySVG(value.getHumidity());
@@ -196,7 +175,7 @@ public class MainActivity extends AppCompatActivity {
                 else{
                     currentTemp.setText(getString(R.string.error));
                     currentHumidity.setText(getString(R.string.error));
-                    currenteCo2.setText(getString(R.string.error));
+                    currentCo2.setText(getString(R.string.error));
                 }
 
                 Log.d(DATABASE_READ_TAG, "Current value is: " + value);
@@ -276,7 +255,6 @@ public class MainActivity extends AppCompatActivity {
 
         stats[0] = 100;//This will be a grey circle to provide an outline
         stats[1] = (float) ((number /500.0)*100);
-        //Max AQI is 500 but it doesnt look at good
 
         slimChart.setStats(stats);
 
@@ -309,7 +287,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void openSecondActivity(View view){
+    public void openGraphActivity(View view){
         Intent intent = new Intent(MainActivity.this, GraphActivity.class);
         String longID = view.getResources().getResourceName(view.getId());
         String ID = longID.replace("com.example.airzen:id/", "");
