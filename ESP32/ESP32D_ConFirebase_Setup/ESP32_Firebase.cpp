@@ -2,6 +2,7 @@
 #include "addons/TokenHelper.h" //For token generation
 #include "addons/RTDBHelper.h" //For realtime database payload helping
 #include "BME680.h"
+#include "SensorData.h"
 
 
 //The two pieces (not One Piece sorry Moussa) that we need to find/connect to our database.
@@ -42,65 +43,102 @@ void connectFB() {
   Firebase.begin(&config, &auth);
   Firebase.reconnectWiFi(true);
 }
-
-
-
 //Now we need a function that can send values to the database:
-void sendFB(float temperature, float humidity, float pressure, float gas, float altitude) { //We want to send these five variables to the firebase.
-  String dataPath = "/sensorData/current"; //We need a path defined for where the data will be sent.
+void sendFB(const SensorData &data) {
+    String dataPath = "/sensorData/current";
 
-//Check to proceed:
-if(Firebase.ready() && (millis() - sendDataPrevMillis > timeDelay || sendDataPrevMillis == 0)){
-  sendDataPrevMillis = millis(); //Marks the current time when a transfer of data occurs
+    if (Firebase.ready() && (millis() - sendDataPrevMillis > timeDelay || sendDataPrevMillis == 0)) {
+        sendDataPrevMillis = millis();
 
-//Temperature capture
-  if(Firebase.RTDB.setFloat(&FB,dataPath + "/temperature", BMETemp())) {   //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
-   // Serial.print(BMETemp()); //Printing the captured value
-    Serial.print(" --Succcessfully saved to: " + FB.dataPath());
-    Serial.println();
+        // Sending all data from SensorData object
+        if (Firebase.RTDB.setFloat(&FB, dataPath + "/temperature", data.temperature)) {
+            Serial.println("Temperature saved to: " + FB.dataPath());
+        } else {
+            Serial.println("Failed: " + FB.errorReason());
+        }
 
-  } else { //If it failed to aquire the data:
-    Serial.println("Failed: " +FB.errorReason());
-}
+        if (Firebase.RTDB.setFloat(&FB, dataPath + "/humidity", data.humidity)) {
+            Serial.println("Humidity saved to: " + FB.dataPath());
+        } else {
+            Serial.println("Failed: " + FB.errorReason());
+        }
 
-//Humidity capture
-  if(Firebase.RTDB.setFloat(&FB,dataPath + "/humidity", BMEHumidity())) {   //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
-    //Serial.print(BMEHumidity()); //Printing the captured value
-    Serial.print(" --Succcessfully saved to: " + FB.dataPath());
-    Serial.println();
+        if (Firebase.RTDB.setFloat(&FB, dataPath + "/pressure", data.pressure)) {
+            Serial.println("Pressure saved to: " + FB.dataPath());
+        } else {
+            Serial.println("Failed: " + FB.errorReason());
+        }
 
-  } else { //If it failed to aquire the data:
-    Serial.println("Failed: " +FB.errorReason());
-}
+        if (Firebase.RTDB.setFloat(&FB, dataPath + "/gas", data.gas)) {
+            Serial.println("Gas saved to: " + FB.dataPath());
+        } else {
+            Serial.println("Failed: " + FB.errorReason());
+        }
 
-//Pressure capture
-  if(Firebase.RTDB.setFloat(&FB,dataPath + "/pressure", BMEPressure())) {   //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
-   // Serial.print(BMEPressure()); //Printing the captured value
-    Serial.print(" --Succcessfully saved to: " + FB.dataPath());
-    Serial.println();
-
-  } else { //If it failed to aquire the data:
-    Serial.println("Failed: " +FB.errorReason());
-  }
-
-//Gas Resistance capture
-  if(Firebase.RTDB.setFloat(&FB,dataPath + "/gas", BMEGas())) {   //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
-   // Serial.print(BMEGas()); //Printing the captured value
-    Serial.print(" --Succcessfully saved to: " + FB.dataPath());
-    Serial.println();
-
-  } else { //If it failed to aquire the data:
-    Serial.println("Failed: " +FB.errorReason());
-  }
-
-  //Altitude capture
-  if(Firebase.RTDB.setFloat(&FB,dataPath + "/altitude", BMEAltitude())) {   //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
-   // Serial.print(BMEAltitude()); //Printing the captured value
-    Serial.print(" --Succcessfully saved to: " + FB.dataPath());
-    Serial.println();
-
-  } else { //If it failed to aquire the data:
-    Serial.println("Failed: " +FB.errorReason());
-  }
+        if (Firebase.RTDB.setFloat(&FB, dataPath + "/altitude", data.altitude)) {
+            Serial.println("Altitude saved to: " + FB.dataPath());
+        } else {
+            Serial.println("Failed: " + FB.errorReason());
+        }
+    }
 }
 }
+
+// void sendFB(float temperature, float humidity, float pressure, float gas, float altitude) { //We want to send these five variables to the firebase.
+//   String dataPath = "/sensorData/current"; //We need a path defined for where the data will be sent.
+
+// //Check to proceed:
+// if(Firebase.ready() && (millis() - sendDataPrevMillis > timeDelay || sendDataPrevMillis == 0)){
+//   sendDataPrevMillis = millis(); //Marks the current time when a transfer of data occurs
+
+// //Temperature capture
+//   if(Firebase.RTDB.setFloat(&FB,dataPath + "/temperature", BMETemp())) {   //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
+//    // Serial.print(BMETemp()); //Printing the captured value
+//     Serial.print(" --Succcessfully saved to: " + FB.dataPath());
+//     Serial.println();
+
+//   } else { //If it failed to aquire the data:
+//     Serial.println("Failed: " +FB.errorReason());
+// }
+
+// //Humidity capture
+//   if(Firebase.RTDB.setFloat(&FB,dataPath + "/humidity", BMEHumidity())) {   //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
+//     //Serial.print(BMEHumidity()); //Printing the captured value
+//     Serial.print(" --Succcessfully saved to: " + FB.dataPath());
+//     Serial.println();
+
+//   } else { //If it failed to aquire the data:
+//     Serial.println("Failed: " +FB.errorReason());
+// }
+
+// //Pressure capture
+//   if(Firebase.RTDB.setFloat(&FB,dataPath + "/pressure", BMEPressure())) {   //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
+//    // Serial.print(BMEPressure()); //Printing the captured value
+//     Serial.print(" --Succcessfully saved to: " + FB.dataPath());
+//     Serial.println();
+
+//   } else { //If it failed to aquire the data:
+//     Serial.println("Failed: " +FB.errorReason());
+//   }
+
+// //Gas Resistance capture
+//   if(Firebase.RTDB.setFloat(&FB,dataPath + "/gas", BMEGas())) {   //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
+//    // Serial.print(BMEGas()); //Printing the captured value
+//     Serial.print(" --Succcessfully saved to: " + FB.dataPath());
+//     Serial.println();
+
+//   } else { //If it failed to aquire the data:
+//     Serial.println("Failed: " +FB.errorReason());
+//   }
+
+//   //Altitude capture
+//   if(Firebase.RTDB.setFloat(&FB,dataPath + "/altitude", BMEAltitude())) {   //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
+//    // Serial.print(BMEAltitude()); //Printing the captured value
+//     Serial.print(" --Succcessfully saved to: " + FB.dataPath());
+//     Serial.println();
+
+//   } else { //If it failed to aquire the data:
+//     Serial.println("Failed: " +FB.errorReason());
+//   }
+// }
+//}

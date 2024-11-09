@@ -20,13 +20,29 @@ void setup() {
 
 //In the loop, we'll send the sensor data to the database.
 void loop() {
-  
- float temperature;
- float humidity;
- float pressure;
- float gas;
- float altitude;
- 
-  //The we'll call the firebase function and get the latest sensor readings.
-  sendFB(temperature, humidity, pressure, gas, altitude);
+    // Create and populate a SensorData object
+    SensorData sensorData(
+        BMETemp(),      // Get temperature reading
+        BMEHumidity(),  // Get humidity reading
+        BMEPressure(),  // Get pressure reading
+        BMEGas(),       // Get gas reading
+        BMEAltitude()   // Get altitude reading
+    );
+
+    // Call sendFB with the SensorData object
+    sendFB(sensorData);
+    //delay(5000);  // Add a delay as needed to control data transmission frequency
 }
+
+
+// void loop() {
+  
+//  float temperature;
+//  float humidity;
+//  float pressure;
+//  float gas;
+//  float altitude;
+ 
+//   //The we'll call the firebase function and get the latest sensor readings.
+//   sendFB(temperature, humidity, pressure, gas, altitude);
+// }
