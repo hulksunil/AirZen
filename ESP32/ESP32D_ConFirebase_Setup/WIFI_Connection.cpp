@@ -5,8 +5,8 @@
 //https://randomnerdtutorials.com/esp32-esp8266-firebase-bme280-rtdb/
 
 //Our credentials (for now):
-const char* ssid = "Colin iPhone";  
-const char* password = "brandon1"; 
+const char* ssid = "BELL075";  
+const char* password = "aaa"; 
 
 void WIFIstart() {
   delay(1000); //We will add some delay, as this reduces the risk or errors (from testing previously).
