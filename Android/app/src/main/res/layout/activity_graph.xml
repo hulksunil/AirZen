@@ -48,7 +48,7 @@
                     android:id="@+id/selectedSVG"
                     android:layout_width="71dp"
                     android:layout_height="88dp"
-                    android:layout_marginStart="190dp"
+                    android:layout_marginStart="180dp"
                     android:layout_marginBottom="12dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"

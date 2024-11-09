@@ -3,6 +3,8 @@ package com.example.airzen;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -104,6 +106,23 @@ public class GraphActivity extends AppCompatActivity {
     public boolean onSupportNavigateUp() {
         getOnBackPressedDispatcher().onBackPressed();
         return super.onSupportNavigateUp();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.additional_information_menu,menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == R.id.learnMoreMenu){
+            Intent learnMore = new Intent(GraphActivity.this, InformationActivity.class);
+            learnMore.putExtra(getString(R.string.clickedMetric),pageTitle.getText());
+            startActivity(learnMore);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void readFirebaseSensorData() {
@@ -387,11 +406,11 @@ public class GraphActivity extends AppCompatActivity {
         }
 
         if(!warningSet){
-            warningsBox.setVisibility(View.INVISIBLE);
+            warningsBox.setVisibility(View.GONE);
         }
 
         if(!additionalSet){
-            additionalInfoBox.setVisibility(View.INVISIBLE);
+            additionalInfoBox.setVisibility(View.GONE);
         }
     }
 
@@ -423,11 +442,11 @@ public class GraphActivity extends AppCompatActivity {
         }
 
         if(!warningSet){
-            warningsBox.setVisibility(View.INVISIBLE);
+            warningsBox.setVisibility(View.GONE);
         }
 
         if(!additionalSet){
-            additionalInfoBox.setVisibility(View.INVISIBLE);
+            additionalInfoBox.setVisibility(View.GONE);
         }
     }
 
@@ -458,11 +477,11 @@ public class GraphActivity extends AppCompatActivity {
         }
 
         if(!warningSet){
-            warningsBox.setVisibility(View.INVISIBLE);
+            warningsBox.setVisibility(View.GONE);
         }
 
         if(!additionalSet){
-            additionalInfoBox.setVisibility(View.INVISIBLE);
+            additionalInfoBox.setVisibility(View.GONE);
         }
 
     }

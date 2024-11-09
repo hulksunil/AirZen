@@ -148,6 +148,8 @@ public class MainActivity extends AppCompatActivity {
     private void readCurrentData(DatabaseReference myRef) {
         // write data to the database (for testing purposes)
         DatabaseReference currentDataRef = myRef.child("current");
+        Log.i("what is broken",currentDataRef.toString());
+
 
         // read data anytime the "current data" changes
         currentDataRef.addValueEventListener(new ValueEventListener() {
@@ -201,46 +203,44 @@ public class MainActivity extends AppCompatActivity {
         newNode.setValue(new SensorData(100, 200, 50.43, 1000.23, 19.29, LocalDateTime.now().toString()));
     }
 
-    /*public void setTemperatureSVG(double currentTemp){
-        if(currentTemp > 25.00){
-            temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_red));
-        }
-        else{
-            temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_blue));
-        }
-    }*/
-
-    private void slimChartInit(int number){
+//https://atmotube.com/atmocube-support/indoor-air-quality-index-iaqi#:~:text=IAQI%20Categories%20and%20Breakpoint%20Table
+    private void slimChartInit(int iaqi){
         final float[] stats = new float[2]; // The rings
         int[] colors = new int[2];//the colors in the rings
 
-        if(number <= 50){ //Good green
+        if(iaqi <= 50){ // Excellent
             colors[1] = Color.rgb(0, 255, 0);
-
-        } else if (number <= 100) { // Moderate yellow
+        }
+        else if (iaqi >= 51 && iaqi <= 100) { // Good
+            colors[1] = Color.rgb(146, 208, 80);
+        }
+        else if (iaqi >= 101 && iaqi <= 150) { // Lightly polluted
             colors[1] = Color.rgb(255, 255, 0);
-
-        } else if (number <=150) {//Unhealthy for sensitive groups orange
+        }
+        else if (iaqi >= 151 && iaqi <= 200) { // Moderately Polluted
             colors[1] = Color.rgb(255, 165, 0);
         }
-        else if(number <= 200){//Unhealthy red
+        else if (iaqi >= 201 && iaqi <= 250) { // Heavily Polluted
             colors[1] = Color.rgb(255, 0, 0);
         }
-        else if(number <= 300) {//Very unhealthy purple
+        else if (iaqi >= 251 && iaqi <= 350) { //Severely Polluted
             colors[1] = Color.rgb(128, 0, 128);
-        } else {// 301 and greater brown
+        }
+        else { // > 351 Extremely Polluted
             colors[1] = Color.rgb(128, 0, 0);
         }
+
+
 
         colors[0]=Color.rgb(107, 107, 107);//grey outline ring
 
         stats[0] = 100;//This will be a grey circle to provide an outline
-        stats[1] = (float) ((number /500.0)*100);
+        stats[1] = (float) (iaqi/500.0)*100;
 
         slimChart.setStats(stats);
 
         slimChart.setColors(colors);
-        slimChart.setText(""+number);
+        slimChart.setText(""+iaqi);
 
         slimChart.setStrokeWidth(9);
     }
