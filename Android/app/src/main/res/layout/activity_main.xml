@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_gravity="center"
-            android:layout_marginTop="110dp"
+            android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp">
 
             <TextView
@@ -182,6 +182,57 @@
 
                 <TextView
                     android:id="@+id/currenteCo2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="35dp"
+                    android:layout_marginBottom="36dp"
+                    android:text="@string/NA"
+                    android:textSize="30sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </LinearLayout>
+
+        <!-- Card for VOC -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center"
+            android:layout_marginTop="15dp">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/Tile"
+                android:theme="@style/MainActivityBoxes"
+                android:layout_width="match_parent"
+                android:layout_height="116dp"
+                android:background="@drawable/layout_tile_rounded_corners"
+                android:onClick="openGraphActivity">
+
+                <TextView
+                    android:id="@+id/VOCTextView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="40dp"
+                    android:text="VOC"
+                    android:theme="@style/labelThemeScroll"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <ImageView
+                    android:id="@+id/VOCSVG"
+                    android:layout_width="54dp"
+                    android:layout_height="79dp"
+                    android:layout_marginStart="190dp"
+                    android:layout_marginBottom="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:srcCompat="@drawable/co2_green" />
+
+                <TextView
+                    android:id="@+id/currentVOC"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="35dp"
