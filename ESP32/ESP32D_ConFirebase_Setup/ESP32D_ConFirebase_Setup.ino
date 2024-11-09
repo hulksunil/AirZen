@@ -2,6 +2,7 @@
 #include "WIFI_Connection.h"
 #include "BME680.h"
 #include "ESP32_Firebase.h"
+#include "SensorData.h"
 
 void setup() {
   Serial.begin(115200);

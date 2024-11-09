@@ -82,7 +82,7 @@ void sendFB(const SensorData &data) {
         }
     }
 }
-}
+
 
 // void sendFB(float temperature, float humidity, float pressure, float gas, float altitude) { //We want to send these five variables to the firebase.
 //   String dataPath = "/sensorData/current"; //We need a path defined for where the data will be sent.
