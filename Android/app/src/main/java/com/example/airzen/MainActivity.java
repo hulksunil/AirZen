@@ -148,8 +148,6 @@ public class MainActivity extends AppCompatActivity {
     private void readCurrentData(DatabaseReference myRef) {
         // write data to the database (for testing purposes)
         DatabaseReference currentDataRef = myRef.child("current");
-        Log.i("what is broken",currentDataRef.toString());
-
 
         // read data anytime the "current data" changes
         currentDataRef.addValueEventListener(new ValueEventListener() {
