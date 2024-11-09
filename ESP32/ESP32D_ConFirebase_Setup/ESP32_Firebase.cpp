@@ -2,6 +2,7 @@
 #include "addons/TokenHelper.h" //For token generation
 #include "addons/RTDBHelper.h" //For realtime database payload helping
 #include "BME680.h"
+#include "GP2Y1010AU0F_DustSensor.h"
 
 
 //The two pieces (not One Piece sorry Moussa) that we need to find/connect to our database.
@@ -18,7 +19,7 @@ boolean signUpOK = false;
 
 //Setting up timer variables.
 unsigned long sendDataPrevMillis = 0; //Stores the time when the last data chunk was sent.
-unsigned long timeDelay = 5000; //Every 5 seconds, send more data to the database.
+unsigned long timeDelay = 10000; //Every 10 seconds, send more data to the database.
 
 //We have to connect to the firebase before we can send data
 void connectFB() {
@@ -46,7 +47,7 @@ void connectFB() {
 
 
 //Now we need a function that can send values to the database:
-void sendFB(float temperature, float humidity, float pressure, float gas, float altitude) { //We want to send these five variables to the firebase.
+void sendFB(float temperature, float humidity, float pressure, float gas, float altitude, float dustDensity) { //We want to send these five variables to the firebase.
   String dataPath = "/sensorData/current"; //We need a path defined for where the data will be sent.
 
 //Check to proceed:
@@ -81,7 +82,7 @@ if(Firebase.ready() && (millis() - sendDataPrevMillis > timeDelay || sendDataPre
 
   } else { //If it failed to aquire the data:
     Serial.println("Failed: " +FB.errorReason());
-  }
+}
 
 //Gas Resistance capture
   if(Firebase.RTDB.setFloat(&FB,dataPath + "/gas", BMEGas())) {   //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
@@ -91,7 +92,7 @@ if(Firebase.ready() && (millis() - sendDataPrevMillis > timeDelay || sendDataPre
 
   } else { //If it failed to aquire the data:
     Serial.println("Failed: " +FB.errorReason());
-  }
+}
 
   //Altitude capture
   if(Firebase.RTDB.setFloat(&FB,dataPath + "/altitude", BMEAltitude())) {   //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
@@ -101,6 +102,16 @@ if(Firebase.ready() && (millis() - sendDataPrevMillis > timeDelay || sendDataPre
 
   } else { //If it failed to aquire the data:
     Serial.println("Failed: " +FB.errorReason());
-  }
+}
+
+  //Dust Density capture
+   if(Firebase.RTDB.setFloat(&FB,dataPath + "/dustDensity", readDensity())) {   //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
+   // Serial.print(BMEAltitude()); //Printing the captured value
+    Serial.print(" --Succcessfully saved to: " + FB.dataPath());
+    Serial.println();
+
+  } else { //If it failed to aquire the data:
+    Serial.println("Failed: " +FB.errorReason());
+ }
 }
 }
