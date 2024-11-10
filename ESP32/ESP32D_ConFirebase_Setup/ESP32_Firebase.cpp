@@ -118,7 +118,7 @@ void sendFB(const SensorData &data) {
         }
         if (!Firebase.RTDB.setString(&FB, pastValuesPath + "/" + timestamp + "/timestamp", timestamp)) {
             Serial.println("Failed to save timestamp to pastValues: " + FB.errorReason());
-    } else {
+    } }else {
         Serial.println("Firebase not ready or time delay not met.");
     }
 }
