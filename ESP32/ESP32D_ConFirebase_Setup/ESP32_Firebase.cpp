@@ -122,7 +122,7 @@ void sendFB(const SensorData &data) {
 }
 
 //--------------------------------------------------------------------------------------------------------------------
-//Second Version of sendFB
+//Second Version of sendFB with current.
 // void sendFB(const SensorData &data) {
 //     String dataPath = "/sensorData/current";
 

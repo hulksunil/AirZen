@@ -8,6 +8,7 @@
 const char* ntpServer = "pool.ntp.org";  // NTP server
 const long gmtOffset_sec = -18000;            // Adjust for your timezone (e.g., GMT+0)
 const int daylightOffset_sec = 0;     // Daylight saving time offset (if applicable)
+
 void setup() {
   Serial.begin(115200);
   delay(5000);
