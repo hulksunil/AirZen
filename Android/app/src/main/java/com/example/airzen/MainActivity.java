@@ -229,7 +229,6 @@ public class MainActivity extends AppCompatActivity {
         }
 
 
-
         colors[0]=Color.rgb(107, 107, 107);//grey outline ring
 
         stats[0] = 100;//This will be a grey circle to provide an outline

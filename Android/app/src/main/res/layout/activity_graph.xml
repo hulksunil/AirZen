@@ -124,7 +124,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="18sp"
                     android:padding="5dp"
-                    android:text="@string/lorem_ipsum"
+                    android:text="@string/warning"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
@@ -143,7 +143,7 @@
                 android:id="@+id/additionalInfoBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/layout_tile_rounded_corners_green_border"
+                android:background="@drawable/layout_tile_rounded_corners_blue_border"
                 android:theme="@style/MainActivityBoxes"
                 app:layout_constraintTop_toTopOf="parent">
 
@@ -153,7 +153,7 @@
                     android:layout_height="wrap_content"
                     android:textSize="18sp"
                     android:padding="5dp"
-                    android:text="@string/lorem_ipsum"
+                    android:text="@string/additionalInfo"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 

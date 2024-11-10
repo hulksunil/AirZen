@@ -380,20 +380,8 @@ public class GraphActivity extends AppCompatActivity {
     }
 
     private void temperatureWarning(Double currentTemperature){
-        warnings.setText(getString(R.string.warning));
-        additionalInfo.setText(getString(R.string.additionalInfo));
-
         boolean warningSet = false;
         boolean additionalSet = false;
-
-        if(currentTemperature < 15){
-            additionalInfo.append(getString(R.string.Temperature_sleepTempLow));
-            additionalSet = true;
-        }
-        else if (currentTemperature > 21) {
-            additionalInfo.append(getString(R.string.Temperature_sleepTempHigh));
-            additionalSet = true;
-        }
 
         if(currentTemperature > 24 || currentTemperature < 22){
             additionalInfo.append(getString(R.string.Temperature_workRange));
@@ -403,6 +391,15 @@ public class GraphActivity extends AppCompatActivity {
         if(currentTemperature < 20 || currentTemperature > 22){
             warnings.append(getString(R.string.Temperature_asthma));
             warningSet = true;
+        }
+
+        if(currentTemperature < 15){
+            additionalInfo.append(getString(R.string.Temperature_sleepTempLow));
+            additionalSet = true;
+        }
+        else if (currentTemperature > 21) {
+            additionalInfo.append(getString(R.string.Temperature_sleepTempHigh));
+            additionalSet = true;
         }
 
         if(!warningSet){
@@ -415,7 +412,6 @@ public class GraphActivity extends AppCompatActivity {
     }
 
     private void humidityWarning(Double currentHumidity){
-        warnings.setText(getString(R.string.warning));
         boolean warningSet = false;
         boolean additionalSet = false;
 
@@ -432,13 +428,17 @@ public class GraphActivity extends AppCompatActivity {
 
         if(currentHumidity > 55){
             warnings.append(getString(R.string.Humidity_high));
-            warnings.append(getString(R.string.Humidity_summer));
             warningSet = true;
         }
 
         if(currentHumidity < 30 ||currentHumidity > 35){
-            warnings.append(getString(R.string.Humidity_winter));
-            warningSet = true;
+            additionalInfo.append(getString(R.string.Humidity_winter));
+            additionalSet = true;
+        }
+
+        if (currentHumidity > 50){
+            additionalInfo.append(getString(R.string.Humidity_summer));
+            additionalSet = true;
         }
 
         if(!warningSet){
@@ -451,7 +451,6 @@ public class GraphActivity extends AppCompatActivity {
     }
 
     private void co2Warning(int currentCo2){
-        warnings.setText(getString(R.string.warning));
         boolean warningSet = false;
         boolean additionalSet = false;
 
@@ -474,6 +473,11 @@ public class GraphActivity extends AppCompatActivity {
         if(currentCo2 > 2000 && currentCo2 < 5000){
             warnings.append(getString(R.string.CO2_concentration));
             warningSet = true;
+        }
+
+        if(currentCo2 <= 1000){
+            additionalInfo.append(getString(R.string.CO2_ventilation));
+            additionalSet = true;
         }
 
         if(!warningSet){

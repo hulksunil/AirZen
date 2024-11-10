@@ -252,6 +252,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
+                    android:textSize="16sp"
                     android:text="@string/Info_Humidity_Additional" />
             </LinearLayout>
 
@@ -287,7 +288,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginEnd="16dp"
                         android:text="@string/Info_CO2_green"
-                        android:textSize="15sp"
+                        android:textSize="16sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -347,7 +348,7 @@
                         android:layout_marginTop="10dp"
                         android:layout_marginEnd="16dp"
                         android:text="@string/Info_CO2_red"
-                        android:textSize="15sp"
+                        android:textSize="16sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
@@ -357,6 +358,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
+                    android:textSize="16sp"
                     android:text="@string/Info_CO2_Additional" />
 
             </LinearLayout>
