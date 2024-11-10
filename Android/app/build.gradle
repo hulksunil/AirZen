@@ -44,6 +44,7 @@ dependencies {
     androidTestImplementation libs.ext.junit
     androidTestImplementation libs.espresso.core
 
+
     implementation "com.github.mancj:SlimChart:0.1.2"
     //https://github.com/mancj/SlimChart?tab=readme-ov-file#to-get-a-slimchart-project-into-your-build
 
