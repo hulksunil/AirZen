@@ -116,6 +116,8 @@ void sendFB(const SensorData &data) {
         if (!Firebase.RTDB.setFloat(&FB, pastValuesPath + "/" + timestamp + "/altitude", data.altitude)) {
             Serial.println("Failed to save altitude to pastValues: " + FB.errorReason());
         }
+        if (!Firebase.RTDB.setFloat(&FB, pastValuesPath + "/" + timestamp + "/timestamp", timestamp)) {
+            Serial.println("Failed to save timestamp to pastValues: " + FB.errorReason());
     } else {
         Serial.println("Firebase not ready or time delay not met.");
     }
