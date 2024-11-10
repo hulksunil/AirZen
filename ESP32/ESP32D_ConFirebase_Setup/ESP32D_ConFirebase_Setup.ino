@@ -3,7 +3,11 @@
 #include "BME680.h"
 #include "ESP32_Firebase.h"
 #include "SensorData.h"
+#include <time.h>
 
+const char* ntpServer = "pool.ntp.org";  // NTP server
+const long gmtOffset_sec = -18000;            // Adjust for your timezone (e.g., GMT+0)
+const int daylightOffset_sec = 0;     // Daylight saving time offset (if applicable)
 void setup() {
   Serial.begin(115200);
   delay(5000);
@@ -11,6 +15,10 @@ void setup() {
   //Connect to the WIFI:
   WIFIstart();
 
+ // Set up NTP for time synchronization
+  configTime(gmtOffset_sec, daylightOffset_sec, ntpServer);
+  Serial.println("Time synchronized.");
+  
   //Connect to Firebase
   connectFB();
 
