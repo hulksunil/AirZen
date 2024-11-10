@@ -13,12 +13,12 @@ import android.widget.TextView;
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.airzen.models.AssetConfigure;
 import com.example.airzen.models.SensorData;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
@@ -62,11 +62,9 @@ public class MainActivity extends AppCompatActivity {
         humidityTile = findViewById(R.id.humidityTile);
         eCO2Tile = findViewById(R.id.eCO2Tile);
 
-
         temperatureSVG = findViewById(R.id.tempSVG);
         humiditySVG = findViewById(R.id.humiditySVG);
         eCO2SVG = findViewById(R.id.eco2SVG);
-
 
         currentTemp = findViewById(R.id.currentTemp);
         currentHumidity = findViewById(R.id.currentHumidity);
@@ -162,15 +160,13 @@ public class MainActivity extends AppCompatActivity {
                     DecimalFormat df = new DecimalFormat("#.##");
 
                     currentTemp.setText(df.format(value.getTemperature())+""+getString(R.string.degreesC));
-                    setTemperatureSVG(value.getTemperature());
+                    temperatureSVG.setImageDrawable(AssetConfigure.setTemperatureSVG(value.getTemperature(),MainActivity.this));
 
                     currentCo2.setText(getString(R.string.ppm,value.getCo2()));
-                    setEcos2SVG(value.getCo2());
-
-
+                    eCO2SVG.setImageDrawable(AssetConfigure.setEcos2SVG(value.getCo2(),MainActivity.this));
 
                     currentHumidity.setText(df.format(value.getHumidity())+""+getString(R.string.percent));
-                    setHumiditySVG(value.getHumidity());
+                    humiditySVG.setImageDrawable(AssetConfigure.setHumiditySVG(value.getHumidity(),MainActivity.this));
                 }
                 else{
                     currentTemp.setText(getString(R.string.error));
@@ -205,86 +201,45 @@ public class MainActivity extends AppCompatActivity {
         newNode.setValue(new SensorData(100, 200, 50.43, 1000.23, 19.29, LocalDateTime.now().toString()));
     }
 
-    /*public void setTemperatureSVG(double currentTemp){
-        if(currentTemp > 25.00){
-            temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_red));
-        }
-        else{
-            temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_blue));
-        }
-    }*/
-
-    public void setTemperatureSVG(double currentTemp){
-        if(currentTemp >= 35.00){
-            temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_red));
-        }
-        else if(currentTemp < 35.00 && currentTemp >= 25.00){
-            temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_orange));
-        }
-        else if(currentTemp < 25.00 && currentTemp >= 15.00){
-            temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_green));
-        }
-        else{
-            temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_blue));
-        }
-    }
-
-    private void slimChartInit(int number){
+//https://atmotube.com/atmocube-support/indoor-air-quality-index-iaqi#:~:text=IAQI%20Categories%20and%20Breakpoint%20Table
+    private void slimChartInit(int iaqi){
         final float[] stats = new float[2]; // The rings
         int[] colors = new int[2];//the colors in the rings
 
-        if(number <= 50){ //Good green
+        if(iaqi <= 50){ // Excellent
             colors[1] = Color.rgb(0, 255, 0);
-
-        } else if (number <= 100) { // Moderate yellow
+        }
+        else if (iaqi >= 51 && iaqi <= 100) { // Good
+            colors[1] = Color.rgb(146, 208, 80);
+        }
+        else if (iaqi >= 101 && iaqi <= 150) { // Lightly polluted
             colors[1] = Color.rgb(255, 255, 0);
-
-        } else if (number <=150) {//Unhealthy for sensitive groups orange
+        }
+        else if (iaqi >= 151 && iaqi <= 200) { // Moderately Polluted
             colors[1] = Color.rgb(255, 165, 0);
         }
-        else if(number <= 200){//Unhealthy red
+        else if (iaqi >= 201 && iaqi <= 250) { // Heavily Polluted
             colors[1] = Color.rgb(255, 0, 0);
         }
-        else if(number <= 300) {//Very unhealthy purple
+        else if (iaqi >= 251 && iaqi <= 350) { //Severely Polluted
             colors[1] = Color.rgb(128, 0, 128);
-        } else {// 301 and greater brown
+        }
+        else { // > 351 Extremely Polluted
             colors[1] = Color.rgb(128, 0, 0);
         }
+
 
         colors[0]=Color.rgb(107, 107, 107);//grey outline ring
 
         stats[0] = 100;//This will be a grey circle to provide an outline
-        stats[1] = (float) ((number /500.0)*100);
+        stats[1] = (float) (iaqi/500.0)*100;
 
         slimChart.setStats(stats);
 
         slimChart.setColors(colors);
-        slimChart.setText(""+number);
+        slimChart.setText(""+iaqi);
 
         slimChart.setStrokeWidth(9);
-    }
-
-    public void setHumiditySVG(double currentHumidity){
-        if(currentHumidity >= 70 || currentHumidity < 25){
-            humiditySVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.humidity_red));
-        }
-        else if((currentHumidity >= 60 && currentHumidity < 70) || (currentHumidity >= 25 && currentHumidity < 30)){
-            humiditySVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.humidity_orange));
-        }
-        else if(currentHumidity >= 30 && currentHumidity < 60){
-            humiditySVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.humidity_green));
-        }
-    }
-
-    public void setEcos2SVG(int currentCO2){
-        if(currentCO2 > 2500){
-            eCO2SVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.co2_red));
-        } else if (currentCO2 > 1500 && currentCO2 < 2500) {
-            eCO2SVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.co2_orange));
-        }
-        else {
-            eCO2SVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.co2_green));
-        }
     }
 
     public void openGraphActivity(View view){

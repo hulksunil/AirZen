@@ -2,9 +2,10 @@
     <string name="app_name">AirZen</string>
 
     <string name="aqi">AQI</string>
+    <string name="iaqi">IAQI</string>
     <string name="temp">Temperature</string>
     <string name="humidity">Humidity</string>
-    <string name="eco2">CO2</string>
+    <string name="eco2">CO₂</string>
 
     <string name="NA">N/A</string>
 
@@ -12,6 +13,59 @@
     <string name="degreesC">°C</string>
     <string name="ppm">%dppm</string>
     <string name="percent">%</string>
+
+    <string name="clickedMetric">Clicked Reading</string>
+
+    <string name="warning">Warning:</string>
+    <string name="additionalInfo">Additional Information:</string>
+
+    <string name="Temperature_sleepTempLow">\nIf the room temperature is below 15°C, it may feel too cold for comfortable sleep. Consider raising the temperature slightly. The ideal temperature is around 18°C.</string>
+    <string name="Temperature_sleepTempHigh">\nIf the room temperature is above 21°C, it may be too warm for a good night\'s sleep. The ideal temperature is around 18°C.</string>
+    <string name="Temperature_workRange">\nThe ideal room temperature for working is between 22°C and 24°C. Consider adjusting the temperature to this range for comfort and productivity. High temperatures reduce productivity and concentration.</string>
+    <string name="Temperature_asthma">\nTemperature between 20°C and 22°C is ideal for asthmatics, this range will not irritate lungs. Consider adjusting to reduce potential irritation.</string>
+
+    <string name="Humidity_asthma">\nFor asthmatics, maintain an indoor humidity level between 30% and 50%. Levels above 50% may lead to increased asthma symptoms and difficulty breathing.</string>
+    <string name="Humidity_indoor">\nAbove 60% is harmful for indoor air quality, over long periods of time, this level encourages the growth of mold and dust mites. Use a dehumidifier to lower the humidity percentage.</string>
+    <string name="Humidity_low">\nBelow 30% humidity, use a humidifier to maintain 30% to 35%. This will alleviate dryness and prevent eczema flare-ups. Low humidity may cause skin allergies, eye irritation, cracked skin, and respiratory infections.</string>
+    <string name="Humidity_high">\nAbove 55%, use a dehumidifier to keep humidity between 30% to 35%. High humidity can promote the growth of mold and bacteria if sustained over long periods, causing health risks and discomfort. </string>
+    <string name="Humidity_summer">\nIn summer, keep indoor humidity below 50% for optimal comfort. Above 55% can cause discomfort and increase the release of volatile organic compounds (VOCs).</string>
+    <string name="Humidity_winter">\nIn winter, keep indoor humidity between 30% to 35%. This will prevent condensation on surfaces and minimizes respiratory issues. </string>
+
+    <string name="CO2_ventilation">\n700 ppm to 1,000 ppm are acceptable, though ventilation may be beneficial to improve air freshness. CO₂ levels between 350 ppm and 450 ppm indicate fresh air, and 450 ppm to 700 ppm are typical for normal indoor air quality.</string>
+    <string name="CO2_drowsiness">\nCO₂ levels from 1,000 ppm to 2,500 ppm may cause drowsiness, poor air quality, stale air quality, and discomfort. You must improve air flow for safety.</string>
+    <string name="CO2_healthRisk">\nCO₂ above 2,500 ppm can lead to negative health effects, including headaches, sleepiness, and stale, stuffy air. You must improve air flow for safety.</string>
+    <string name="CO2_longExposure">\nLong-term exposure above 1,000 ppm can lead to complaints of fatigue and poor air quality, which may affect focus and concentration. Improve air flow for safety.</string>
+    <string name="CO2_concentration">\nLevels between 2,000 and 5,000 ppm can cause headaches, drowsiness, poor concentration, and may also increase heart rate and cause slight nausea.</string>
+
+    <string name="learnMore">Learn More</string>
+
+    <string name="temporary">Temporary value</string>
+    
+    
+    <string name="Info_Temperature_blue">This icon will show when the temperature is below 15°C</string>
+    <string name="Info_Temperature_green">This icon will show when the temperature is between 15°C and 25°C</string>
+    <string name="Info_Temperature_orange">This icon will show when the temperature is between 25°C and 35°C</string>
+    <string name="Info_Temperature_red">This icon will show when the temperature is above 35°C</string>
+
+    <string name="Info_Humidity_green">This icon will show when the humidity is above 30%. </string>
+    <string name="Info_Humidity_orange">This icon will show when the humidity is between 25% to 35% or above 60%. </string>
+    <string name="Info_Humidity_red">This icon will show when the humidity is less than 25% or above 70%. </string>
+    <string name="Info_Humidity_Additional">Below 30% humidity, you should use a humidifier to maintain levels between 30% and 35%\nAbove 55%, if maintained for long periods, can promote mold and bacteria growth. Also, during winter, moisture can accumulate on surfaces like pipes and windows, and during summer, off gassing will occur releasing VOCs.\nIt is recommended to use a dehumidifier when levels reach above 50% to 60% which is the limit for indoors</string>
+
+    <string name="Info_CO2_green">This icon will show when the CO₂ levels are below 1500ppm. Safe levels.</string>
+    <string name="Info_CO2_orange">This icon will show when the CO₂ levels are between 1500ppm and 2500ppm. Mildly concerning levels. Ventilation should be increased for comfort and safety.</string>
+    <string name="Info_CO2_red">This icon will show when the CO₂ levels are above 2500ppm. Levels above this point are very negative on your health for long periods of time.</string>
+    <string name="Info_CO2_Additional">
+        Fresh Air : 350ppm to 450ppm\nNormal Levels : 450ppm to 700ppm\nAcceptable: : 700ppm to 1,000ppm\nComplaints of drowsiness : 1,000ppm to 2,500 ppm\nNegative health : 2,500ppm\n\nThe threshold for long term concentration for indoors is approximately 1,000ppm\nLevels from 2,000ppm to 5,000ppm are often associated with headaches,sleepiness, stagnant, stale, stuffy air, poor concentration,loss of attention, increased heart rate and slight nausea may also be present.\nLevels from 400ppm to 1,000ppm is the general levels for indoor environments. Otherwise, air circulation is suggested\nOffices and classrooms are suggested to be below the range of 800ppm to 1,000ppm.\n
+        CO₂ is produced by our daily activities. This includes breathing, cooking, burning candles, and certain kitchen or house hold appliances like a fire place, gas stove, water heater, food in the compost bin, to name a few.
+    </string>
+
+    <string name="Info_VOC_color1">This icon will show when the VOC levels are </string>
+    <string name="Info_VOC_color2">This icon will show when the VOC levels are </string>
+    <string name="Info_VOC_color3">This icon will show when the VOC levels are </string>
+
+    <string name="Info_VOC_Additional">Levels ranging from 0ppb to 400ppb are acceptable for indoors\nLevels between 400ppb and 2,200ppb are associated with headaches, nausea, dizziness, and irritation of the respiratory tract and eyes\n800ppb and above you must improve ventilation for safety. It is highly recommended to find the source of this VOC and eliminate it.\n Levels of 2,200 to 30,000 are extremely unhealthy and over long exposure, will cause liver, kidney damage, respiratory and cardiovascular diseases, and possibly cancer\nVolatile Organic Compounds (VOCs) are a group of chemicals that easily evaporate into the air and affect indoor air quality. Substances like paint, cleaning products, air fresheners, candles, new furniture (a process called off gassing), and building material all emmit VOCs.</string>
+
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
