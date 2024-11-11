@@ -146,6 +146,7 @@ public class GraphActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot snapshot, String previousChildName) {
                 SensorData value = snapshot.getValue(SensorData.class);
                 pastValues.get().add(value);
+                Log.i("PastValuesCount",""+snapshot.getChildrenCount());
 
                 if (pastValues.get().size() == snapshot.getChildrenCount()) {
                     Log.i("PastValues", "" + pastValues.get());
@@ -206,6 +207,16 @@ public class GraphActivity extends AppCompatActivity {
                         currentRead.setText(getString(R.string.ppm,currentReadings.getCo2()));
                         co2Warning(currentReadings.getCo2());
                         break;
+                    case "dustTile":
+                        currentReadSvg.setImageDrawable(getDrawable(R.drawable.dust_icon));
+                        currentRead.setText(df.format(currentReadings.getDustDensity())+""+getString(R.string.ug));
+                        dustWarning(currentReadings.getDustDensity());
+                        break;
+                    default:
+                        currentRead.setText(getString(R.string.NA));
+                        dustWarning(currentReadings.getDustDensity());
+                        notYetImplemented();
+                        break;
                 }
 
             }
@@ -232,11 +243,17 @@ public class GraphActivity extends AppCompatActivity {
                 eCO2Graph();
                 pageTitle.setText(getString(R.string.eco2));
                 currentValueLbl.setText(getString(R.string.eco2));
-
-                currentReadSvg.setImageDrawable(AssetConfigure.setEcos2SVG(currentReadings.getCo2(),GraphActivity.this));
-
-                currentRead.setText(getString(R.string.ppm,currentReadings.getCo2()));
                 break;
+            case "dustTile":
+                currentValueLbl.setText(getString(R.string.dust));
+                anyChartView.setVisibility(View.GONE);
+                findViewById(R.id.progress_bar).setVisibility(View.GONE);
+                break;
+            default:
+                anyChartView.setVisibility(View.GONE);
+                findViewById(R.id.progress_bar).setVisibility(View.GONE);
+                break;
+
         }
     }
 
@@ -487,6 +504,15 @@ public class GraphActivity extends AppCompatActivity {
         if(!additionalSet){
             additionalInfoBox.setVisibility(View.GONE);
         }
+    }
 
+    private void dustWarning(double currentDust){
+        warningsBox.setVisibility(View.GONE);
+        additionalInfoBox.setVisibility(View.GONE);
+    }
+
+    private void notYetImplemented(){
+        warningsBox.setVisibility(View.GONE);
+        additionalInfoBox.setVisibility(View.GONE);
     }
 }
