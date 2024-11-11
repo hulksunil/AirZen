@@ -17,7 +17,7 @@ import com.example.airzen.models.AssetConfigure;
 
 public class InformationActivity extends AppCompatActivity {
     private Toolbar toolbar;
-    private LinearLayout temperatureInfo,humidityInfo,co2Info;
+    private LinearLayout temperatureInfo, humidityInfo, co2Info;
     private TextView notYetImpl;
 
     @Override
@@ -50,7 +50,7 @@ public class InformationActivity extends AppCompatActivity {
     }
 
 
-    private void informationToDisplay(String clickedMetric){
+    private void informationToDisplay(String clickedMetric) {
         switch (clickedMetric) {
             case "Temperature":
                 temperatureInfo.setVisibility(View.VISIBLE);

@@ -1,11 +1,7 @@
 package com.example.airzen;
 
-import android.app.NotificationChannel;
-import android.app.NotificationManager;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
-import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -18,9 +14,6 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -46,10 +39,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String DATABASE_READ_TAG = "DATABASE_READ_TAG";
     private ListView listOfItems; // (FOR TESTING PURPOSES) (remove later)
 
-    protected ConstraintLayout tempTile, humidityTile, eCO2Tile;
-    private ImageView temperatureSVG,humiditySVG,eCO2SVG;
-
-    private TextView currentTemp,currentHumidity, currentCo2,currentDust;
+    protected ConstraintLayout tempTile, humidityTile, eCO2Tile, vocTile;
+    private ImageView temperatureSVG, humiditySVG, eCO2SVG, vocSVG;
+    private TextView currentTemp, currentHumidity, currentCo2, currentVOC, currentDust;
 
     private SlimChart slimChart;
 
@@ -67,17 +59,20 @@ public class MainActivity extends AppCompatActivity {
         tempTile = findViewById(R.id.tempTile);
         humidityTile = findViewById(R.id.humidityTile);
         eCO2Tile = findViewById(R.id.eCO2Tile);
+        vocTile = findViewById(R.id.vocTile);
 
         temperatureSVG = findViewById(R.id.tempSVG);
         humiditySVG = findViewById(R.id.humiditySVG);
         eCO2SVG = findViewById(R.id.eco2SVG);
+        vocSVG = findViewById(R.id.vocSVG);
 
         currentTemp = findViewById(R.id.currentTemp);
         currentHumidity = findViewById(R.id.currentHumidity);
         currentCo2 = findViewById(R.id.currenteCo2);
         currentDust = findViewById(R.id.currentDust);
+        currentVOC = findViewById(R.id.currentVOC);
 
-        slimChart= findViewById(R.id.slimChart);
+        slimChart = findViewById(R.id.slimChart);
 
         readFirebaseSensorData();
         NotificationHelper.createNotificationChannel(this);
@@ -163,26 +158,29 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 SensorData value = dataSnapshot.getValue(SensorData.class);
-                if(value != null){
+                if (value != null) {
                     slimChartInit(value.getAqi());
 
                     DecimalFormat df = new DecimalFormat("#.##");
 
-                    currentTemp.setText(df.format(value.getTemperature())+""+getString(R.string.degreesC));
-                    temperatureSVG.setImageDrawable(AssetConfigure.setTemperatureSVG(value.getTemperature(),MainActivity.this));
+                    currentTemp.setText(df.format(value.getTemperature()) + "" + getString(R.string.degreesC));
+                    temperatureSVG.setImageDrawable(AssetConfigure.setTemperatureSVG(value.getTemperature(), MainActivity.this));
 
-                    currentCo2.setText(getString(R.string.ppm,value.getCo2()));
-                    eCO2SVG.setImageDrawable(AssetConfigure.setEcos2SVG(value.getCo2(),MainActivity.this));
+                    currentCo2.setText(getString(R.string.ppm, value.getCo2()));
+                    eCO2SVG.setImageDrawable(AssetConfigure.setEcos2SVG(value.getCo2(), MainActivity.this));
 
-                    currentHumidity.setText(df.format(value.getHumidity())+""+getString(R.string.percent));
-                    humiditySVG.setImageDrawable(AssetConfigure.setHumiditySVG(value.getHumidity(),MainActivity.this));
+                    currentVOC.setText(df.format(value.getVOC()) + "ppm");
+                    vocSVG.setImageDrawable(AssetConfigure.setVOCSVG(value.getVOC(), MainActivity.this));
 
-                    currentDust.setText(df.format(value.getDustDensity())+""+getString(R.string.ug));
-                }
-                else{
+                    currentHumidity.setText(df.format(value.getHumidity()) + "" + getString(R.string.percent));
+                    humiditySVG.setImageDrawable(AssetConfigure.setHumiditySVG(value.getHumidity(), MainActivity.this));
+
+                    currentDust.setText(df.format(value.getDustDensity()) + "" + getString(R.string.ug));
+                } else {
                     currentTemp.setText(getString(R.string.error));
                     currentHumidity.setText(getString(R.string.error));
                     currentCo2.setText(getString(R.string.error));
+                    currentVOC.setText(getString(R.string.error));
                 }
 
                 Log.d(DATABASE_READ_TAG, "Current value is: " + value);
@@ -209,55 +207,49 @@ public class MainActivity extends AppCompatActivity {
         // Do something in response to button click
         DatabaseReference pastValuesDataRef = myRef.child("pastValues");
         DatabaseReference newNode = pastValuesDataRef.push();
-        newNode.setValue(new SensorData(100, 200, 50.43, 1000.23, 19.29, LocalDateTime.now().toString()));
+        newNode.setValue(new SensorData(100, 200, 50.43, 1000.23, 19.29, 174.466, LocalDateTime.now().toString()));
     }
 
-//https://cdn-shop.adafruit.com/product-files/3660/BME680.pdf
-    private void slimChartInit(int iaqi){
+    //https://cdn-shop.adafruit.com/product-files/3660/BME680.pdf
+    private void slimChartInit(int iaqi) {
         final float[] stats = new float[2]; // The rings
         int[] colors = new int[2];//the colors in the rings
 
-        if(iaqi <= 50){ // Excellent
+        if (iaqi <= 50) { // Excellent
             colors[1] = Color.rgb(0, 255, 0);
-        }
-        else if (iaqi >= 51 && iaqi <= 100) { // Good
+        } else if (iaqi >= 51 && iaqi <= 100) { // Good
             colors[1] = Color.rgb(146, 208, 80);
-        }
-        else if (iaqi >= 101 && iaqi <= 150) { // Lightly polluted
+        } else if (iaqi >= 101 && iaqi <= 150) { // Lightly polluted
             colors[1] = Color.rgb(255, 255, 0);
-        }
-        else if (iaqi >= 151 && iaqi <= 200) { // Moderately Polluted
+        } else if (iaqi >= 151 && iaqi <= 200) { // Moderately Polluted
             colors[1] = Color.rgb(255, 165, 0);
-        }
-        else if (iaqi >= 201 && iaqi <= 250) { // Heavily Polluted
+        } else if (iaqi >= 201 && iaqi <= 250) { // Heavily Polluted
             colors[1] = Color.rgb(255, 0, 0);
-        }
-        else if (iaqi >= 251 && iaqi <= 350) { //Severely Polluted
+        } else if (iaqi >= 251 && iaqi <= 350) { //Severely Polluted
             colors[1] = Color.rgb(128, 0, 128);
-        }
-        else { // > 351 Extremely Polluted
+        } else { // > 351 Extremely Polluted
             colors[1] = Color.rgb(128, 0, 0);
         }
 
 
-        colors[0]=Color.rgb(107, 107, 107);//grey outline ring
+        colors[0] = Color.rgb(107, 107, 107);//grey outline ring
 
         stats[0] = 100;//This will be a grey circle to provide an outline
-        stats[1] = (float) (iaqi/500.0)*100;
+        stats[1] = (float) (iaqi / 500.0) * 100;
 
         slimChart.setStats(stats);
 
         slimChart.setColors(colors);
-        slimChart.setText(""+iaqi);
+        slimChart.setText("" + iaqi);
 
         slimChart.setStrokeWidth(9);
     }
 
-    public void openGraphActivity(View view){
+    public void openGraphActivity(View view) {
         Intent intent = new Intent(MainActivity.this, GraphActivity.class);
         String longID = view.getResources().getResourceName(view.getId());
         String ID = longID.replace("com.example.airzen:id/", "");
-        Log.i("openSecondActivity",ID);
+        Log.i("openSecondActivity", ID);
         String tileID = "Not Implemented";
         switch (ID) {
             case "tempTile": {
@@ -272,8 +264,12 @@ public class MainActivity extends AppCompatActivity {
                 tileID = "eCO2Tile";
                 break;
             }
-            case "dustTile":{
+            case "dustTile": {
                 tileID = "dustTile";
+                break;
+            }
+            case "vocTile": {
+                tileID = "vocTile";
                 break;
             }
         }
