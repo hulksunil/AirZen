@@ -269,7 +269,6 @@ public class GraphActivity extends AppCompatActivity {
         }
     }
 
-
     //temperature graph function
     private void tempGraph() {
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
@@ -452,6 +451,9 @@ public class GraphActivity extends AppCompatActivity {
         boolean warningSet = false;
         boolean additionalSet = false;
 
+        additionalInfo.setText(getString(R.string.additionalInfo));
+        warnings.setText(getString(R.string.warning));
+
         if (currentTemperature > 24 || currentTemperature < 22) {
             additionalInfo.append(getString(R.string.Temperature_workRange));
             additionalSet = true;
@@ -482,6 +484,9 @@ public class GraphActivity extends AppCompatActivity {
     private void humidityWarning(Double currentHumidity) {
         boolean warningSet = false;
         boolean additionalSet = false;
+
+        additionalInfo.setText(getString(R.string.additionalInfo));
+        warnings.setText(getString(R.string.warning));
 
         if (currentHumidity < 30 || currentHumidity > 50) {
             warnings.append(getString(R.string.Humidity_indoor));
@@ -521,6 +526,9 @@ public class GraphActivity extends AppCompatActivity {
     private void co2Warning(int currentCo2) {
         boolean warningSet = false;
         boolean additionalSet = false;
+
+        additionalInfo.setText(getString(R.string.additionalInfo));
+        warnings.setText(getString(R.string.warning));
 
         if (currentCo2 > 1000) {
             warnings.append(getString(R.string.CO2_ventilation));
