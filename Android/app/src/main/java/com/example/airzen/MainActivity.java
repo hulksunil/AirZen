@@ -1,7 +1,11 @@
 package com.example.airzen;
 
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -14,10 +18,14 @@ import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
+import com.example.airzen.models.NotificationHelper;
 import com.example.airzen.models.AssetConfigure;
 import com.example.airzen.models.SensorData;
 import com.google.firebase.database.ChildEventListener;
@@ -72,6 +80,8 @@ public class MainActivity extends AppCompatActivity {
         slimChart= findViewById(R.id.slimChart);
 
         readFirebaseSensorData();
+        NotificationHelper.createNotificationChannel(this);
+        NotificationHelper.requestPermissions(this);
     }
 
 
