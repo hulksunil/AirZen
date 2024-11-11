@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="200dp"
+    android:height="200dp"
+    android:viewportWidth="512"
+    android:viewportHeight="512">
+
+    <!-- Black Triangle (Padding) -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M16,496 L496,496 L256,16 Z" /> <!-- Black triangle with padding around the yellow triangle -->
+
+    <!-- Pale Yellow Triangle (Raised by 2 more pixels) -->
+    <path
+        android:fillColor="#FFEB3B"
+        android:pathData="M256,29 L480,495 L32,495 Z" /> <!-- Yellow triangle raised by 2 more pixels -->
+
+    <!-- Green Circle (Lowered) -->
+    <path
+        android:fillColor="#FF0000"
+        android:pathData="M256,200 C300,200 336,236 336,280 C336,324 300,360 256,360 C212,360 176,324 176,280 C176,236 212,200 256,200 Z" /> <!-- Green circle lowered -->
+
+    <!-- Black Exclamation Mark (Lowered) -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M248,240 L264,240 L264,320 L248,320 Z" /> <!-- Exclamation mark line (lowered) -->
+    <path
+        android:fillColor="#000000"
+        android:pathData="M256,336 C252,336 248,340 248,344 C248,348 252,352 256,352 C260,352 264,348 264,344 C264,340 260,336 256,336 Z" /> <!-- Exclamation mark dot (lowered) -->
+
+</vector>
