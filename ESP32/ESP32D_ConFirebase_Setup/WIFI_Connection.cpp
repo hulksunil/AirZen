@@ -8,7 +8,6 @@
 const char* ssid = "BELL075";  
 const char* password = ""; 
 
-
 void WIFIstart() {
   delay(1000); //We will add some delay, as this reduces the risk or errors (from testing previously).
   //WIFI connection begins
