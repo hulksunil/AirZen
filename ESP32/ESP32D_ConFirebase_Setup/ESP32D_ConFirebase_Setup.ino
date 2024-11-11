@@ -4,13 +4,19 @@
 #include "ESP32_Firebase.h"
 #include "SensorData.h"
 #include <time.h>
+#include "GP2Y1010AU0F_DustSensor.h"
 
 const char* ntpServer = "pool.ntp.org";  // NTP server
 const long gmtOffset_sec = -18000;            // Adjust for your timezone (e.g., GMT+0)
 const int daylightOffset_sec = 0;     // Daylight saving time offset (if applicable)
 
+
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(19200);
+  //We should also set the attenuation level of the GPIO 34 ADC PIN to read higher voltages safely. 
+  analogSetPinAttenuation(34, ADC_11db); //Increasing the attenuation of the ADC PIN.
+  pinMode(34, INPUT); // GPIO 34 (the ADC PIN for the analog reading of VO) is set as an input.
+  pinMode(13, OUTPUT); // GPIO 13 (the LED PIN for the IR LED with diode pulse) is set as an output.
   delay(5000);
 
   //Connect to the WIFI:
@@ -43,16 +49,3 @@ void loop() {
     sendFB(sensorData);
     delay(5000);  // Add a delay as needed to control data transmission frequency
 }
-
-
-// void loop() {
-  
-//  float temperature;
-//  float humidity;
-//  float pressure;
-//  float gas;
-//  float altitude;
- 
-//   //The we'll call the firebase function and get the latest sensor readings.
-//   sendFB(temperature, humidity, pressure, gas, altitude);
-// }

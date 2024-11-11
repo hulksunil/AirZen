@@ -1,5 +1,10 @@
 [versions]
+<<<<<<< HEAD
 agp = "8.7.1"
+=======
+agp = "8.6.1"
+core = "2.2.0"
+>>>>>>> 6bcc23233c97daced0b722434b7472a74d064092
 firebaseDatabase = "21.0.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
@@ -13,6 +18,7 @@ navigationFragment = "2.8.3"
 navigationUi = "2.8.3"
 
 [libraries]
+core = { module = "androidx.core:core", version.ref = "core" }
 firebase-database = { module = "com.google.firebase:firebase-database", version.ref = "firebaseDatabase" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
 ext-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
