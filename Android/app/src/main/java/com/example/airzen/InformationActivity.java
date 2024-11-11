@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,6 +18,7 @@ import com.example.airzen.models.AssetConfigure;
 public class InformationActivity extends AppCompatActivity {
     private Toolbar toolbar;
     private LinearLayout temperatureInfo,humidityInfo,co2Info;
+    private TextView notYetImpl;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,6 +33,8 @@ public class InformationActivity extends AppCompatActivity {
         temperatureInfo = findViewById(R.id.temperatureInfo);
         humidityInfo = findViewById(R.id.humidityInfo);
         co2Info = findViewById(R.id.co2Info);
+
+        notYetImpl = findViewById(R.id.todo);
 
         informationToDisplay(getIntent().getStringExtra(getString(R.string.clickedMetric)));
 
@@ -56,6 +60,9 @@ public class InformationActivity extends AppCompatActivity {
                 break;
             case "CO₂":
                 co2Info.setVisibility(View.VISIBLE);
+                break;
+            default:
+                notYetImpl.setVisibility(View.VISIBLE);
                 break;
         }
 

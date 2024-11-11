@@ -6,6 +6,7 @@
     <string name="temp">Temperature</string>
     <string name="humidity">Humidity</string>
     <string name="eco2">CO₂</string>
+    <string name="dust">Dust Density</string>
 
     <string name="NA">N/A</string>
 
@@ -13,6 +14,7 @@
     <string name="degreesC">°C</string>
     <string name="ppm">%dppm</string>
     <string name="percent">%</string>
+    <string name="ug">ug/m³</string>
 
     <string name="clickedMetric">Clicked Reading</string>
 
@@ -40,8 +42,7 @@
     <string name="learnMore">Learn More</string>
 
     <string name="temporary">Temporary value</string>
-    
-    
+
     <string name="Info_Temperature_blue">This icon will show when the temperature is below 15°C</string>
     <string name="Info_Temperature_green">This icon will show when the temperature is between 15°C and 25°C</string>
     <string name="Info_Temperature_orange">This icon will show when the temperature is between 25°C and 35°C</string>
@@ -66,6 +67,7 @@
 
     <string name="Info_VOC_Additional">Levels ranging from 0ppb to 400ppb are acceptable for indoors\nLevels between 400ppb and 2,200ppb are associated with headaches, nausea, dizziness, and irritation of the respiratory tract and eyes\n800ppb and above you must improve ventilation for safety. It is highly recommended to find the source of this VOC and eliminate it.\n Levels of 2,200 to 30,000 are extremely unhealthy and over long exposure, will cause liver, kidney damage, respiratory and cardiovascular diseases, and possibly cancer\nVolatile Organic Compounds (VOCs) are a group of chemicals that easily evaporate into the air and affect indoor air quality. Substances like paint, cleaning products, air fresheners, candles, new furniture (a process called off gassing), and building material all emmit VOCs.</string>
 
+    <string name="notYet">View Not Yet Implemented</string>
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
