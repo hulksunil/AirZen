@@ -126,6 +126,9 @@ public class GraphActivity extends AppCompatActivity {
             case "eCO2Tile":
                 eCO2Graph();
                 break;
+            case "vocTile":
+                VOCGraph();
+                break;
         }
     }
 
@@ -256,6 +259,52 @@ public class GraphActivity extends AppCompatActivity {
         Line series1 = cartesian.line(series1Mapping);
         series1.color("#32a83a");
         series1.name("CO2");
+
+
+        cartesian.legend().enabled(true);
+        cartesian.legend().fontSize(13d);
+        cartesian.legend().padding(0d, 0d, 10d, 0d);
+
+
+//        cartesian.dataArea().background().enabled(true);
+//        cartesian.dataArea().background().fill("#ffd54f 0.2");
+//
+//
+//        cartesian.background().enabled(true);
+//        cartesian.background().fill("#3a56b0");
+
+        anyChartView.setChart(cartesian);
+    }
+
+    private void VOCGraph() {
+
+        anyChartView.setProgressBar(findViewById(R.id.progress_bar));
+
+        Cartesian cartesian = AnyChart.line();
+
+        cartesian.animation(true);
+
+        cartesian.padding(10d, 20d, 5d, 20d);
+
+        cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
+
+        cartesian.title("Your AirZen VOC Historical Data Which Is Super Important");
+
+        Log.i("AlexRules", "" + pastValues.get());
+
+        for (int i=0; i<pastValues.get().size(); i++){
+            seriesData.add(new SensorPlotValue(pastValues.get().get(i).getTimestamp(), pastValues.get().get(i).getVOC()));
+        }
+
+        Log.i("SensorLength", "" + seriesData.size());
+
+        Set set = Set.instantiate();
+        set.data(seriesData);
+        Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
+
+        Line series1 = cartesian.line(series1Mapping);
+        series1.color("#32a83a");
+        series1.name("VOC");
 
 
         cartesian.legend().enabled(true);

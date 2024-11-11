@@ -27,12 +27,12 @@ void loop() {
     float temperature = BMETemp();  // Get the temperature
     float humidity = BMEHumidity();  // Get the humidity
     float co2 = BMEco2();  // Get the CO2 equivalent
-    float gas = BMEVOC();  // Get the VOC equivalent (breath gas)
+    float voc = BMEVOC();  // Get the VOC equivalent (breath gas)
     float aqi = BMEAQI();  // Get the IAQ (Indoor Air Quality)
     float altitude = BMEAltitude();  // Get the altitude based on pressure
 
     // Now that we have the sensor data, pass it to the sendFB function
-    sendFB(temperature, humidity, co2, gas, aqi, altitude);
+    sendFB(temperature, humidity, co2, voc, aqi, altitude);
   } else {
     checkIaqSensorStatus();
   }

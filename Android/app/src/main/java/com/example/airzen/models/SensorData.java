@@ -6,14 +6,16 @@ public class SensorData {
     private double humidity;
     private double pressure;
     private double temperature;
+    private double voc;
     private String timestamp;
 
-    public SensorData(int co2, int aqi, double humidity, double pressure, double temperature, String timestamp) {
+    public SensorData(int co2, int aqi, double humidity, double pressure, double temperature, double voc, String timestamp) {
         this.co2 = co2;
         this.aqi = aqi;
         this.humidity = humidity;
         this.pressure = pressure;
         this.temperature = temperature;
+        this.voc = voc;
         this.timestamp = timestamp;
     }
 
@@ -60,6 +62,14 @@ public class SensorData {
         this.pressure = pressure;
     }
 
+    public double getVOC() {
+        return voc;
+    }
+
+    public void setVOC(double voc) {
+        this.voc = voc;
+    }
+
     public String getTimestamp() {
         return timestamp;
     }
@@ -76,6 +86,7 @@ public class SensorData {
                 ", humidity=" + humidity +
                 ", pressure=" + pressure +
                 ", temperature=" + temperature +
+                ", voc=" + voc +
                 ", timestamp='" + timestamp + '\'' +
                 '}';
     }

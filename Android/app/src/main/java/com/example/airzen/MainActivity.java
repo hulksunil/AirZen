@@ -39,10 +39,10 @@ public class MainActivity extends AppCompatActivity {
     private static final String DATABASE_READ_TAG = "DATABASE_READ_TAG";
     private ListView listOfItems; // (FOR TESTING PURPOSES) (remove later)
 
-    protected ConstraintLayout tempTile, humidityTile, eCO2Tile;
-    private ImageView temperatureSVG,humiditySVG,eCO2SVG;
+    protected ConstraintLayout tempTile, humidityTile, eCO2Tile, vocTile;
+    private ImageView temperatureSVG,humiditySVG,eCO2SVG, vocSVG;
 
-    private TextView currentTemp,currentHumidity, currentCo2;
+    private TextView currentTemp,currentHumidity, currentCo2, currentVOC;
 
     private SlimChart slimChart;
 
@@ -61,16 +61,18 @@ public class MainActivity extends AppCompatActivity {
         tempTile = findViewById(R.id.tempTile);
         humidityTile = findViewById(R.id.humidityTile);
         eCO2Tile = findViewById(R.id.eCO2Tile);
+        vocTile = findViewById(R.id.vocTile);
 
 
         temperatureSVG = findViewById(R.id.tempSVG);
         humiditySVG = findViewById(R.id.humiditySVG);
         eCO2SVG = findViewById(R.id.eco2SVG);
-
+        vocSVG = findViewById(R.id.vocSVG);
 
         currentTemp = findViewById(R.id.currentTemp);
         currentHumidity = findViewById(R.id.currentHumidity);
         currentCo2 = findViewById(R.id.currenteCo2);
+        currentVOC = findViewById(R.id.currentVOC);
 
         slimChart= findViewById(R.id.slimChart);
 
@@ -167,7 +169,8 @@ public class MainActivity extends AppCompatActivity {
                     currentCo2.setText(getString(R.string.ppm,value.getCo2()));
                     setEcos2SVG(value.getCo2());
 
-
+                    currentVOC.setText((df.format(value.getVOC())+ "ppm"));
+                    setVOCSVG(value.getVOC());
 
                     currentHumidity.setText(df.format(value.getHumidity())+""+getString(R.string.percent));
                     setHumiditySVG(value.getHumidity());
@@ -176,6 +179,7 @@ public class MainActivity extends AppCompatActivity {
                     currentTemp.setText(getString(R.string.error));
                     currentHumidity.setText(getString(R.string.error));
                     currentCo2.setText(getString(R.string.error));
+                    currentVOC.setText(getString(R.string.error));
                 }
 
                 Log.d(DATABASE_READ_TAG, "Current value is: " + value);
@@ -202,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
         // Do something in response to button click
         DatabaseReference pastValuesDataRef = myRef.child("pastValues");
         DatabaseReference newNode = pastValuesDataRef.push();
-        newNode.setValue(new SensorData(100, 200, 50.43, 1000.23, 19.29, LocalDateTime.now().toString()));
+        newNode.setValue(new SensorData(100, 200, 50.43, 1000.23, 19.29,174.466, LocalDateTime.now().toString()));
     }
 
     /*public void setTemperatureSVG(double currentTemp){
@@ -287,6 +291,17 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    public void setVOCSVG(double currentVOC){
+        if(currentVOC > 2.2){
+            vocSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.voc_red));
+        } else if (currentVOC > 0.66 && currentVOC < 2.2) {
+            vocSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.voc_orange));
+        }
+        else {
+            vocSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.voc_green));
+        }
+    }
+
     public void openGraphActivity(View view){
         Intent intent = new Intent(MainActivity.this, GraphActivity.class);
         String longID = view.getResources().getResourceName(view.getId());
@@ -305,6 +320,11 @@ public class MainActivity extends AppCompatActivity {
             }
             case "eCO2Tile": {
                 String tileID = "eCO2Tile";
+                intent.putExtra("TILE_ID", tileID);
+                break;
+            }
+            case "VOCTile": {
+                String tileID = "VOCTile";
                 intent.putExtra("TILE_ID", tileID);
                 break;
             }

@@ -46,7 +46,7 @@ void connectFB() {
 
 
 //Now we need a function that can send values to the database:
-void sendFB(float temperature, float humidity, float co2, float gas, float aqi, float altitude) { //We want to send these five variables to the firebase.
+void sendFB(float temperature, float humidity, float co2, float voc, float aqi, float altitude) { //We want to send these five variables to the firebase.
   String dataPath = "/sensorData/current"; //We need a path defined for where the data will be sent.
 
 //Check to proceed:
@@ -84,7 +84,7 @@ if(Firebase.ready() && (millis() - sendDataPrevMillis > timeDelay || sendDataPre
   }
 
 //Gas Resistance capture
-  if(Firebase.RTDB.setFloat(&FB,dataPath + "/gas", BMEVOC())) {   //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
+  if(Firebase.RTDB.setFloat(&FB,dataPath + "/voc", BMEVOC())) {   //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
    // Serial.print(BMEGas()); //Printing the captured value
     Serial.print(" --Succcessfully saved to: " + FB.dataPath());
     Serial.println();

@@ -203,15 +203,14 @@
             android:layout_marginTop="15dp">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/Tile"
+                android:id="@+id/vocTile"
                 android:theme="@style/MainActivityBoxes"
                 android:layout_width="match_parent"
                 android:layout_height="116dp"
-                android:background="@drawable/layout_tile_rounded_corners"
-                android:onClick="openGraphActivity">
+                android:background="@drawable/layout_tile_rounded_corners">
 
                 <TextView
-                    android:id="@+id/VOCTextView"
+                    android:id="@+id/vocTextView"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
@@ -222,14 +221,14 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageView
-                    android:id="@+id/VOCSVG"
+                    android:id="@+id/vocSVG"
                     android:layout_width="54dp"
                     android:layout_height="79dp"
                     android:layout_marginStart="190dp"
                     android:layout_marginBottom="16dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:srcCompat="@drawable/co2_green" />
+                    app:srcCompat="@drawable/voc_green" />
 
                 <TextView
                     android:id="@+id/currentVOC"
