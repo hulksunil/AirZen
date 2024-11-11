@@ -110,15 +110,15 @@ public class GraphActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.additional_information_menu,menu);
+        getMenuInflater().inflate(R.menu.additional_information_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if(item.getItemId() == R.id.learnMoreMenu){
+        if (item.getItemId() == R.id.learnMoreMenu) {
             Intent learnMore = new Intent(GraphActivity.this, InformationActivity.class);
-            learnMore.putExtra(getString(R.string.clickedMetric),pageTitle.getText());
+            learnMore.putExtra(getString(R.string.clickedMetric), pageTitle.getText());
             startActivity(learnMore);
             return true;
         }
@@ -146,7 +146,7 @@ public class GraphActivity extends AppCompatActivity {
             public void onChildAdded(@NonNull DataSnapshot snapshot, String previousChildName) {
                 SensorData value = snapshot.getValue(SensorData.class);
                 pastValues.get().add(value);
-                Log.i("PastValuesCount",""+snapshot.getChildrenCount());
+                Log.i("PastValuesCount", "" + snapshot.getChildrenCount());
 
                 if (pastValues.get().size() == snapshot.getChildrenCount()) {
                     Log.i("PastValues", "" + pastValues.get());
@@ -193,41 +193,44 @@ public class GraphActivity extends AppCompatActivity {
                 DecimalFormat df = new DecimalFormat("#.##");
                 switch (graphToDisplay) {
                     case "tempTile":
-                        currentReadSvg.setImageDrawable(AssetConfigure.setTemperatureSVG(currentReadings.getTemperature(),GraphActivity.this));
-                        currentRead.setText(df.format(currentReadings.getTemperature())+""+getString(R.string.degreesC));
+                        currentReadSvg.setImageDrawable(AssetConfigure.setTemperatureSVG(currentReadings.getTemperature(), GraphActivity.this));
+                        currentRead.setText(df.format(currentReadings.getTemperature()) + "" + getString(R.string.degreesC));
                         temperatureWarning(currentReadings.getTemperature());
                         break;
                     case "humidityTile":
-                        currentReadSvg.setImageDrawable(AssetConfigure.setHumiditySVG(currentReadings.getHumidity(),GraphActivity.this));
-                        currentRead.setText(df.format(currentReadings.getHumidity())+""+getString(R.string.percent));
+                        currentReadSvg.setImageDrawable(AssetConfigure.setHumiditySVG(currentReadings.getHumidity(), GraphActivity.this));
+                        currentRead.setText(df.format(currentReadings.getHumidity()) + "" + getString(R.string.percent));
                         humidityWarning(currentReadings.getHumidity());
                         break;
                     case "eCO2Tile":
-                        currentReadSvg.setImageDrawable(AssetConfigure.setEcos2SVG(currentReadings.getCo2(),GraphActivity.this));
-                        currentRead.setText(getString(R.string.ppm,currentReadings.getCo2()));
+                        currentReadSvg.setImageDrawable(AssetConfigure.setEcos2SVG(currentReadings.getCo2(), GraphActivity.this));
+                        currentRead.setText(getString(R.string.ppm, currentReadings.getCo2()));
                         co2Warning(currentReadings.getCo2());
                         break;
                     case "dustTile":
                         currentReadSvg.setImageDrawable(getDrawable(R.drawable.dust_icon));
-                        currentRead.setText(df.format(currentReadings.getDustDensity())+""+getString(R.string.ug));
+                        currentRead.setText(df.format(currentReadings.getDustDensity()) + "" + getString(R.string.ug));
                         dustWarning(currentReadings.getDustDensity());
+                        break;
+                    case "vocTile":
+                        currentReadSvg.setImageDrawable(AssetConfigure.setVOCSVG(currentReadings.getVOC(), GraphActivity.this));
+                        currentRead.setText(df.format(currentReadings.getVOC()) + "ppm");
+                        vocWarning(currentReadings.getVOC());
                         break;
                     default:
                         currentRead.setText(getString(R.string.NA));
-                        dustWarning(currentReadings.getDustDensity());
                         notYetImplemented();
                         break;
                 }
-
             }
 
             @Override
-            public void onCancelled(DatabaseError error) {}
+            public void onCancelled(DatabaseError error) {
+            }
         });
     }
 
     public void displayGraph(String message) {
-        DecimalFormat df = new DecimalFormat("#.##");
         switch (message) {
             case "tempTile":
                 tempGraph();
@@ -249,11 +252,14 @@ public class GraphActivity extends AppCompatActivity {
                 anyChartView.setVisibility(View.GONE);
                 findViewById(R.id.progress_bar).setVisibility(View.GONE);
                 break;
-            default:
-                anyChartView.setVisibility(View.GONE);
-                findViewById(R.id.progress_bar).setVisibility(View.GONE);
+            case "vocTile":
+                VOCGraph();
+                pageTitle.setText(getString(R.string.voc));
+                currentValueLbl.setText(getString(R.string.voc));
                 break;
-
+            default:
+                notYetImplemented();
+                break;
         }
     }
 
@@ -322,7 +328,7 @@ public class GraphActivity extends AppCompatActivity {
         cartesian.title("Your AirZen Humidity Historical Data Which Is Super Important");
 
 
-        for (int i=0; i<pastValues.get().size(); i++){
+        for (int i = 0; i < pastValues.get().size(); i++) {
             seriesData.add(new SensorPlotValue(pastValues.get().get(i).getTimestamp(), pastValues.get().get(i).getHumidity()));
         }
 
@@ -366,7 +372,7 @@ public class GraphActivity extends AppCompatActivity {
 
         cartesian.title("Your AirZen eCO2 Historical Data Which Is Super Important");
 
-        for (int i=0; i<pastValues.get().size(); i++){
+        for (int i = 0; i < pastValues.get().size(); i++) {
             seriesData.add(new SensorPlotValue(pastValues.get().get(i).getTimestamp(), pastValues.get().get(i).getCo2()));
         }
 
@@ -396,123 +402,177 @@ public class GraphActivity extends AppCompatActivity {
         anyChartView.setChart(cartesian);
     }
 
-    private void temperatureWarning(Double currentTemperature){
+    private void VOCGraph() {
+
+        anyChartView.setProgressBar(findViewById(R.id.progress_bar));
+
+        Cartesian cartesian = AnyChart.line();
+
+        cartesian.animation(true);
+
+        cartesian.padding(10d, 20d, 5d, 20d);
+
+        cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
+
+        cartesian.title("Your AirZen VOC Historical Data Which Is Super Important");
+
+        Log.i("AlexRules", "" + pastValues.get());
+
+        for (int i = 0; i < pastValues.get().size(); i++) {
+            seriesData.add(new SensorPlotValue(pastValues.get().get(i).getTimestamp(), pastValues.get().get(i).getVOC()));
+        }
+
+        Log.i("SensorLength", "" + seriesData.size());
+
+        Set set = Set.instantiate();
+        set.data(seriesData);
+        Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
+
+        Line series1 = cartesian.line(series1Mapping);
+        series1.color("#32a83a");
+        series1.name("VOC");
+
+
+        cartesian.legend().enabled(true);
+        cartesian.legend().fontSize(13d);
+        cartesian.legend().padding(0d, 0d, 10d, 0d);
+
+
+//        cartesian.dataArea().background().enabled(true);
+//        cartesian.dataArea().background().fill("#ffd54f 0.2");
+//
+//
+//        cartesian.background().enabled(true);
+//        cartesian.background().fill("#3a56b0");
+
+        anyChartView.setChart(cartesian);
+    }
+
+    private void temperatureWarning(Double currentTemperature) {
         boolean warningSet = false;
         boolean additionalSet = false;
 
-        if(currentTemperature > 24 || currentTemperature < 22){
+        if (currentTemperature > 24 || currentTemperature < 22) {
             additionalInfo.append(getString(R.string.Temperature_workRange));
             additionalSet = true;
         }
 
-        if(currentTemperature < 20 || currentTemperature > 22){
+        if (currentTemperature < 20 || currentTemperature > 22) {
             warnings.append(getString(R.string.Temperature_asthma));
             warningSet = true;
         }
 
-        if(currentTemperature < 15){
+        if (currentTemperature < 15) {
             additionalInfo.append(getString(R.string.Temperature_sleepTempLow));
             additionalSet = true;
-        }
-        else if (currentTemperature > 21) {
+        } else if (currentTemperature > 21) {
             additionalInfo.append(getString(R.string.Temperature_sleepTempHigh));
             additionalSet = true;
         }
 
-        if(!warningSet){
+        if (!warningSet) {
             warningsBox.setVisibility(View.GONE);
         }
 
-        if(!additionalSet){
+        if (!additionalSet) {
             additionalInfoBox.setVisibility(View.GONE);
         }
     }
 
-    private void humidityWarning(Double currentHumidity){
+    private void humidityWarning(Double currentHumidity) {
         boolean warningSet = false;
         boolean additionalSet = false;
 
-        if(currentHumidity < 30 || currentHumidity > 50){
+        if (currentHumidity < 30 || currentHumidity > 50) {
             warnings.append(getString(R.string.Humidity_indoor));
             warnings.append(getString(R.string.Humidity_asthma));
             warningSet = true;
         }
 
-        if(currentHumidity < 30){
+        if (currentHumidity < 30) {
             warnings.append(getString(R.string.Humidity_low));
             warningSet = true;
         }
 
-        if(currentHumidity > 55){
+        if (currentHumidity > 55) {
             warnings.append(getString(R.string.Humidity_high));
             warningSet = true;
         }
 
-        if(currentHumidity < 30 ||currentHumidity > 35){
+        if (currentHumidity < 30 || currentHumidity > 35) {
             additionalInfo.append(getString(R.string.Humidity_winter));
             additionalSet = true;
         }
 
-        if (currentHumidity > 50){
+        if (currentHumidity > 50) {
             additionalInfo.append(getString(R.string.Humidity_summer));
             additionalSet = true;
         }
 
-        if(!warningSet){
+        if (!warningSet) {
             warningsBox.setVisibility(View.GONE);
         }
 
-        if(!additionalSet){
+        if (!additionalSet) {
             additionalInfoBox.setVisibility(View.GONE);
         }
     }
 
-    private void co2Warning(int currentCo2){
+    private void co2Warning(int currentCo2) {
         boolean warningSet = false;
         boolean additionalSet = false;
 
-        if(currentCo2 > 1000){
+        if (currentCo2 > 1000) {
             warnings.append(getString(R.string.CO2_ventilation));
             warnings.append(getString(R.string.CO2_longExposure));
             warningSet = true;
         }
 
-        if(currentCo2 > 1000 && currentCo2 < 2500){
+        if (currentCo2 > 1000 && currentCo2 < 2500) {
             warnings.append(getString(R.string.CO2_drowsiness));
             warningSet = true;
         }
 
-        if(currentCo2 > 2500){
+        if (currentCo2 > 2500) {
             warnings.append(getString(R.string.CO2_healthRisk));
             warningSet = true;
         }
 
-        if(currentCo2 > 2000 && currentCo2 < 5000){
+        if (currentCo2 > 2000 && currentCo2 < 5000) {
             warnings.append(getString(R.string.CO2_concentration));
             warningSet = true;
         }
 
-        if(currentCo2 <= 1000){
+        if (currentCo2 <= 1000) {
             additionalInfo.append(getString(R.string.CO2_ventilation));
             additionalSet = true;
         }
 
-        if(!warningSet){
+        if (!warningSet) {
             warningsBox.setVisibility(View.GONE);
         }
 
-        if(!additionalSet){
+        if (!additionalSet) {
             additionalInfoBox.setVisibility(View.GONE);
         }
     }
 
-    private void dustWarning(double currentDust){
+    private void dustWarning(double currentDust) {
         warningsBox.setVisibility(View.GONE);
         additionalInfoBox.setVisibility(View.GONE);
     }
 
-    private void notYetImplemented(){
+    private void vocWarning(double currentVOC) {
         warningsBox.setVisibility(View.GONE);
         additionalInfoBox.setVisibility(View.GONE);
     }
+
+    private void notYetImplemented() {
+        anyChartView.setVisibility(View.GONE);
+        findViewById(R.id.progress_bar).setVisibility(View.GONE);
+
+        warningsBox.setVisibility(View.GONE);
+        additionalInfoBox.setVisibility(View.GONE);
+    }
+
 }
