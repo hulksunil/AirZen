@@ -10,7 +10,6 @@ public:
     float gas;
     float altitude;
     float dustDensity;
-    //float 
 
     SensorData(float temp = 0, float hum = 0, float pres = 0, float g = 0, float alt = 0, float dust = 0)
         : temperature(temp), humidity(hum), pressure(pres), gas(g), altitude(alt), dustDensity(dust) {}

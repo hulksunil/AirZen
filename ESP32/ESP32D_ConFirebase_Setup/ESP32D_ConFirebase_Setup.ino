@@ -42,7 +42,8 @@ void loop() {
         BMEHumidity(),  // Get humidity reading
         BMEPressure(),  // Get pressure reading
         BMEGas(),       // Get gas reading
-        BMEAltitude()   // Get altitude reading
+        BMEAltitude(),   // Get altitude reading
+        readDensity()   // Get Dust reading
     );
 
     // Call sendFB with the SensorData object

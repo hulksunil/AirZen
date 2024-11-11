@@ -1,10 +1,7 @@
 [versions]
-<<<<<<< HEAD
+
 agp = "8.7.1"
-=======
-agp = "8.6.1"
 core = "2.2.0"
->>>>>>> 6bcc23233c97daced0b722434b7472a74d064092
 firebaseDatabase = "21.0.0"
 junit = "4.13.2"
 junitVersion = "1.2.1"
