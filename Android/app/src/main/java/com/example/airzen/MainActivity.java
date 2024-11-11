@@ -43,17 +43,15 @@ import java.text.DecimalFormat;
 
 public class MainActivity extends AppCompatActivity {
 
-
     private static final String DATABASE_READ_TAG = "DATABASE_READ_TAG";
     private ListView listOfItems; // (FOR TESTING PURPOSES) (remove later)
 
     protected ConstraintLayout tempTile, humidityTile, eCO2Tile;
     private ImageView temperatureSVG,humiditySVG,eCO2SVG;
 
-    private TextView currentTemp,currentHumidity, currentCo2;
+    private TextView currentTemp,currentHumidity, currentCo2,currentDust;
 
     private SlimChart slimChart;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,6 +75,7 @@ public class MainActivity extends AppCompatActivity {
         currentTemp = findViewById(R.id.currentTemp);
         currentHumidity = findViewById(R.id.currentHumidity);
         currentCo2 = findViewById(R.id.currenteCo2);
+        currentDust = findViewById(R.id.currentDust);
 
         slimChart= findViewById(R.id.slimChart);
 
@@ -177,6 +176,8 @@ public class MainActivity extends AppCompatActivity {
 
                     currentHumidity.setText(df.format(value.getHumidity())+""+getString(R.string.percent));
                     humiditySVG.setImageDrawable(AssetConfigure.setHumiditySVG(value.getHumidity(),MainActivity.this));
+
+                    currentDust.setText(df.format(value.getDustDensity())+""+getString(R.string.ug));
                 }
                 else{
                     currentTemp.setText(getString(R.string.error));
@@ -211,7 +212,7 @@ public class MainActivity extends AppCompatActivity {
         newNode.setValue(new SensorData(100, 200, 50.43, 1000.23, 19.29, LocalDateTime.now().toString()));
     }
 
-//https://atmotube.com/atmocube-support/indoor-air-quality-index-iaqi#:~:text=IAQI%20Categories%20and%20Breakpoint%20Table
+//https://cdn-shop.adafruit.com/product-files/3660/BME680.pdf
     private void slimChartInit(int iaqi){
         final float[] stats = new float[2]; // The rings
         int[] colors = new int[2];//the colors in the rings
@@ -257,23 +258,26 @@ public class MainActivity extends AppCompatActivity {
         String longID = view.getResources().getResourceName(view.getId());
         String ID = longID.replace("com.example.airzen:id/", "");
         Log.i("openSecondActivity",ID);
+        String tileID = "Not Implemented";
         switch (ID) {
             case "tempTile": {
-                String tileID = "tempTile";
-                intent.putExtra("TILE_ID", tileID);
+                tileID = "tempTile";
                 break;
             }
             case "humidityTile": {
-                String tileID = "humidityTile";
-                intent.putExtra("TILE_ID", tileID);
+                tileID = "humidityTile";
                 break;
             }
             case "eCO2Tile": {
-                String tileID = "eCO2Tile";
-                intent.putExtra("TILE_ID", tileID);
+                tileID = "eCO2Tile";
+                break;
+            }
+            case "dustTile":{
+                tileID = "dustTile";
                 break;
             }
         }
+        intent.putExtra("TILE_ID", tileID);
         startActivity(intent);
     }
 }

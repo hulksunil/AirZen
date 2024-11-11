@@ -7,6 +7,7 @@ public class SensorData {
     private double pressure;
     private double temperature;
     private String timestamp;
+    private double dustDensity;
 
     public SensorData(int co2, int aqi, double humidity, double pressure, double temperature, String timestamp) {
         this.co2 = co2;
@@ -66,6 +67,14 @@ public class SensorData {
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
+    }
+
+    public double getDustDensity() {
+        return dustDensity;
+    }
+
+    public void setDustDensity(double dustDensity) {
+        this.dustDensity = dustDensity;
     }
 
     @Override
