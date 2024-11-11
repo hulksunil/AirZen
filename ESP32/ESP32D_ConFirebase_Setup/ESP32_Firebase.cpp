@@ -131,22 +131,10 @@ void sendFB(const SensorData &data) {
         }
         if (!Firebase.RTDB.setString(&FB, pastValuesPath + "/" + timestamp + "/timestamp", timestamp)) {
             Serial.println("Failed to save timestamp to pastValues: " + FB.errorReason());
-    } }else {
+    } } 
+     else {
         Serial.println("Firebase not ready or time delay not met.");
     }
 }
 
-
-
-//   //Dust Density capture
-//    if(Firebase.RTDB.setFloat(&FB,dataPath + "/dustDensity", readDensity())) {   //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
-//    // Serial.print(BMEAltitude()); //Printing the captured value
-//     Serial.print(" --Succcessfully saved to: " + FB.dataPath());
-//     Serial.println();
-
-//   } else { //If it failed to aquire the data:
-//     Serial.println("Failed: " +FB.errorReason());
-//  }
-// }
-// }
 

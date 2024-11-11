@@ -48,5 +48,5 @@ void loop() {
 
     // Call sendFB with the SensorData object
     sendFB(sensorData);
-    delay(5000);  // Add a delay as needed to control data transmission frequency
+    delay(10000);  // Add a delay as needed to control data transmission frequency
 }
