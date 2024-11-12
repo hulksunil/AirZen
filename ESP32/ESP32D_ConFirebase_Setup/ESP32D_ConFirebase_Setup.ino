@@ -18,7 +18,11 @@ const int daylightOffset_sec = 0;     // Daylight saving time offset (if applica
 
 void setup() {
   Serial.begin(115200);
+  analogSetPinAttenuation(34, ADC_11db); //Increasing the attenuation of the ADC PIN.
+  pinMode(34, INPUT); // GPIO 34 (the ADC PIN for the analog reading of VO) is set as an input.
+  pinMode(13, OUTPUT); // GPIO 13 (the LED PIN for the IR LED with diode pulse) is set as an output.
   delay(5000);
+  
 
   // Connect to the WiFi
   WIFIstart();

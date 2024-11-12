@@ -62,7 +62,7 @@ void BME_Start() {
 float BMETemp() {
   float temperature = iaqSensor.temperature;
   Serial.print("Temperature: ");
-  Serial.print(temperature, 2);
+  Serial.println(temperature, 2);
   // Serial.println(" °C");
   return temperature;
 }
@@ -71,8 +71,8 @@ float BMETemp() {
 float BMEHumidity() {
   float humidity = iaqSensor.humidity;
   Serial.print("Humidity: ");
-  Serial.print(humidity, 2);
-  Serial.println(" %");
+  Serial.println(humidity, 2);
+  //Serial.println(" %");
   return humidity;
 }
 
@@ -80,7 +80,7 @@ float BMEHumidity() {
 float BMEco2() {
   float co2 = iaqSensor.co2Equivalent;
   Serial.print("CO2 Equivalent: ");
-  Serial.print(co2, 2);
+  Serial.println(co2, 2);
   // Serial.println(" ppm");
   return co2;
 }
@@ -89,7 +89,7 @@ float BMEco2() {
 float BMEVOC() {
   float voc = iaqSensor.breathVocEquivalent;
   Serial.print("VOC Equivalent: ");
-  Serial.print(voc, 2);
+  Serial.println(voc, 2);
   // Serial.println(" ppb");
   return voc;
 }
@@ -98,7 +98,7 @@ float BMEVOC() {
 float BMEAQI() {
   float aqi = iaqSensor.iaq;
   Serial.print("IAQ (Indoor Air Quality): ");
-  Serial.print(aqi, 2);
+  Serial.println(aqi, 2);
   // Serial.println(" ");
   return aqi;
 }
