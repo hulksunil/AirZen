@@ -47,8 +47,8 @@ void loop() {
         BMEHumidity(),  // Get humidity reading
         BMEco2(),  // Get CO2 reading
         BMEVOC(),       // Get VOC reading
-        readDensity()   // Get Dust reading
-         BMEAQI(),       // Get AQI
+        readDensity(),  // Get Dust reading
+         BMEAQI()      // Get AQI
     );
     
     // Call sendFB with the SensorData object
