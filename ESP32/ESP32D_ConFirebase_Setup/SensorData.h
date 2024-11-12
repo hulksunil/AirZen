@@ -8,7 +8,6 @@ public:
     float humidity;
     float co2;
     float voc; //gas
-    //float altitude;
     float dustDensity;
     float aqi;
 
