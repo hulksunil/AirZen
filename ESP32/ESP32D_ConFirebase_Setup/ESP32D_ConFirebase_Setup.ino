@@ -44,7 +44,7 @@ void loop() {
         BMEco2(),  // Get CO2 reading
         BMEVOC(),       // Get VOC reading
         BMEAQI(),       // Get AQI
-        BMEAltitude(),   // Get altitude reading
+       // BMEAltitude(),   // Get altitude reading
         readDensity()   // Get Dust reading
     );
     

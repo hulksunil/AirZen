@@ -85,26 +85,26 @@ void sendFB(const SensorData &data) {
         if (Firebase.RTDB.setFloat(&FB, currentDataPath + "/co2", data.co2)) {
             Serial.println("CO2 saved to current node.");
         } else {
-            Serial.println("Failed to save pressure: " + FB.errorReason());
+            Serial.println("Failed to save CO2: " + FB.errorReason());
         }
 
         if (Firebase.RTDB.setFloat(&FB, currentDataPath + "/voc", data.voc)) {
             Serial.println("VOC saved to current node.");
         } else {
-            Serial.println("Failed to save gas: " + FB.errorReason());
+            Serial.println("Failed to save VOC: " + FB.errorReason());
         }
 
         if (Firebase.RTDB.setFloat(&FB, currentDataPath + "/aqi", data.aqi)) {
             Serial.println("AQI saved to current node.");
         } else {
-            Serial.println("Failed to save gas: " + FB.errorReason());
+            Serial.println("Failed to save AQI: " + FB.errorReason());
         }
 
-        if (Firebase.RTDB.setFloat(&FB, currentDataPath + "/altitude", data.altitude)) {
-            Serial.println("Altitude saved to current node.");
-        } else {
-            Serial.println("Failed to save altitude: " + FB.errorReason());
-        }
+        // if (Firebase.RTDB.setFloat(&FB, currentDataPath + "/altitude", data.altitude)) {
+        //     Serial.println("Altitude saved to current node.");
+        // } else {
+        //     Serial.println("Failed to save altitude: " + FB.errorReason());
+        // }
 
         if (Firebase.RTDB.setFloat(&FB, currentDataPath + "/dustDensity", data.dustDensity)) {
             Serial.println("Dust Density saved to current node.");
@@ -129,9 +129,9 @@ void sendFB(const SensorData &data) {
         if (!Firebase.RTDB.setFloat(&FB, pastValuesPath + "/" + timestamp + "/voc", data.voc)) {
             Serial.println("Failed to save VOC to pastValues: " + FB.errorReason());
         }
-        if (!Firebase.RTDB.setFloat(&FB, pastValuesPath + "/" + timestamp + "/altitude", data.altitude)) {
-            Serial.println("Failed to save altitude to pastValues: " + FB.errorReason());
-        }
+        // if (!Firebase.RTDB.setFloat(&FB, pastValuesPath + "/" + timestamp + "/altitude", data.altitude)) {
+        //     Serial.println("Failed to save altitude to pastValues: " + FB.errorReason());
+        //}
         if (!Firebase.RTDB.setFloat(&FB, pastValuesPath + "/" + timestamp + "/dustDensity", data.dustDensity)) {
             Serial.println("Failed to save dust Density to pastValues: " + FB.errorReason());
         }

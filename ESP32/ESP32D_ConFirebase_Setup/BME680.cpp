@@ -63,7 +63,7 @@ float BMETemp() {
   float temperature = iaqSensor.temperature;
   Serial.print("Temperature: ");
   Serial.print(temperature, 2);
-  Serial.println(" °C");
+  // Serial.println(" °C");
   return temperature;
 }
 
@@ -81,7 +81,7 @@ float BMEco2() {
   float co2 = iaqSensor.co2Equivalent;
   Serial.print("CO2 Equivalent: ");
   Serial.print(co2, 2);
-  Serial.println(" ppm");
+  // Serial.println(" ppm");
   return co2;
 }
 
@@ -90,7 +90,7 @@ float BMEVOC() {
   float voc = iaqSensor.breathVocEquivalent;
   Serial.print("VOC Equivalent: ");
   Serial.print(voc, 2);
-  Serial.println(" ppb");
+  // Serial.println(" ppb");
   return voc;
 }
 
@@ -99,22 +99,22 @@ float BMEAQI() {
   float aqi = iaqSensor.iaq;
   Serial.print("IAQ (Indoor Air Quality): ");
   Serial.print(aqi, 2);
-  Serial.println(" ");
+  // Serial.println(" ");
   return aqi;
 }
 
-// Calculate altitude from pressure using the barometric formula.
-float calculateAltitude(float pressure) {
-  return 44330 * (1 - (pow(pressure / SEALEVELPRESSURE_HPA, (1 / 5.255))));
-}
+// // Calculate altitude from pressure using the barometric formula.
+// float calculateAltitude(float pressure) {
+//   return 44330 * (1 - (pow(pressure / SEALEVELPRESSURE_HPA, (1 / 5.255))));
+// }
 
 // Function to read and return altitude from the sensor.
-float BMEAltitude() {
-  float altitude = calculateAltitude(iaqSensor.pressure);
-  Serial.print("Pressure: ");
-  Serial.print(iaqSensor.pressure, 2);
-  Serial.print("Altitude: ");
-  Serial.print(altitude, 2);
-  Serial.println(" meters");
-  return altitude;
-}
+// float BMEAltitude() {
+//   float altitude = calculateAltitude(iaqSensor.pressure);
+//   Serial.print("Pressure: ");
+//   Serial.print(iaqSensor.pressure, 2);
+//   Serial.print("Altitude: ");
+//   Serial.print(altitude, 2);
+//   Serial.println(" meters");
+//   return altitude;
+// }
