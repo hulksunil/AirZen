@@ -1,4 +1,5 @@
 [versions]
+
 agp = "8.6.1"
 core = "2.2.0"
 firebaseDatabase = "21.0.0"

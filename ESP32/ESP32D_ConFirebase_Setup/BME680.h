@@ -9,7 +9,6 @@ float BMEHumidity();
 float BMEco2();
 float BMEVOC();
 float BMEAQI();
-float BMEAltitude();
 void BME_Start();
 
 #endif // BME680_H
