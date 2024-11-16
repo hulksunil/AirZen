@@ -34,6 +34,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.text.DecimalFormat;
@@ -159,50 +160,28 @@ public class GraphActivity extends AppCompatActivity {
      */
     private void readPastData(DatabaseReference myRef) {
         pastValues = new AtomicReference<>(new ArrayList<>());
+        int desiredChildCount = 50; // Number of children to retrieve
 
         // Reference to the "pastValues" node
         DatabaseReference pastValuesDataRef = myRef.child("pastValues");
 
-        // Listen for new data being added
-        pastValuesDataRef.addChildEventListener(new ChildEventListener() {
+        // Query to get the desired number of latest children
+        Query query = pastValuesDataRef.orderByKey().limitToLast(desiredChildCount); // Order by key or timestamp
 
-            //!! We only care about new data being added
+        query.addValueEventListener(new ValueEventListener() {
             @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, String previousChildName) {
-                SensorData value = snapshot.getValue(SensorData.class);
-                pastValues.get().add(value);
-                Log.i("PastValuesCount", "" + snapshot.getChildrenCount());
-
-                // If all the data has been read, display the graph
-                if (pastValues.get().size() == snapshot.getChildrenCount()) {
-                    Log.i("PastValues", "" + pastValues.get());
-                    displayGraph(graphToDisplay);
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                pastValues.get().clear(); // Clear previous data
+                for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                    SensorData value = childSnapshot.getValue(SensorData.class);
+                    pastValues.get().add(value);
                 }
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, String previousChildName) {
-
-                // Handle child changed if needed
-                //This will be used to monitor when there is a new past value in the db
-                // and can live update the specific graph
-                //snapshot will need to be reassigned to the pastValues class var
-
-                Log.i("PastValuesChanged", "" + snapshot.getValue(SensorData.class));
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                // Handle child removed if needed
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, String previousChildName) {
-                // Handle child moved if needed
+                displayGraph(graphToDisplay);
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
+                // Handle errors
             }
         });
     }
