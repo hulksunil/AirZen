@@ -102,18 +102,34 @@ public class GraphActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * Sets up the toolbar for the data activity by enabling the back button
+     * @return
+     */
     @Override
     public boolean onSupportNavigateUp() {
         getOnBackPressedDispatcher().onBackPressed();
         return super.onSupportNavigateUp();
     }
 
+    /**
+     * Inflates the menu
+     * @param menu The options menu in which you place your items.
+     *
+     * @return
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.additional_information_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
+    /**
+     * Adds the functionality to the learn more menu item.
+     * @param item The menu item that was selected.
+     *
+     * @return
+     */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.learnMoreMenu) {
@@ -125,6 +141,9 @@ public class GraphActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Connects to the Firebase database and reads the sensor data from the "current" and "pastValues" node in the database
+     */
     private void readFirebaseSensorData() {
         FirebaseDatabase database = FirebaseDatabase.getInstance(); // gets the default instance (us-central)
         DatabaseReference myRef = database.getReference("sensorData"); // gets the reference to the database that we want to read/write to
@@ -132,6 +151,12 @@ public class GraphActivity extends AppCompatActivity {
         readPastData(myRef);
     }
 
+    /**
+     * Reads the past data from the database
+     * The data is read anytime a new child value is given to the "pastValues" node.
+     *
+     * @param myRef the reference of the database
+     */
     private void readPastData(DatabaseReference myRef) {
         pastValues = new AtomicReference<>(new ArrayList<>());
 
@@ -148,6 +173,7 @@ public class GraphActivity extends AppCompatActivity {
                 pastValues.get().add(value);
                 Log.i("PastValuesCount", "" + snapshot.getChildrenCount());
 
+                // If all the data has been read, display the graph
                 if (pastValues.get().size() == snapshot.getChildrenCount()) {
                     Log.i("PastValues", "" + pastValues.get());
                     displayGraph(graphToDisplay);
