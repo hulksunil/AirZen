@@ -95,54 +95,7 @@ public class MainActivity extends AppCompatActivity {
 //        readPastData(myRef);
     }
 
-    /**
-     * Reads the past data from the database
-     * The data is read anytime a new child value is given to the "pastValues" node.
-     *
-     * @param myRef the reference of the database
-     */
-    private void readPastData(DatabaseReference myRef) {
-        Log.d(DATABASE_READ_TAG, "Reading PAST VALUE data from the database");
-        AtomicReference<ArrayList<SensorData>> pastValues = new AtomicReference<>(new ArrayList<>());
 
-        // Reference to the "pastValues" node
-        DatabaseReference pastValuesDataRef = myRef.child("pastValues");
-
-        // Listen for new data being added
-        pastValuesDataRef.addChildEventListener(new ChildEventListener() {
-
-            //!! We only care about new data being added
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, String previousChildName) {
-                SensorData value = snapshot.getValue(SensorData.class);
-                pastValues.get().add(value);
-                Log.d(DATABASE_READ_TAG, "New PAST VALUE added: " + snapshot.getKey() + " : " + value);
-
-                // FOR TESTING PURPOSES (remove later)
-                listOfItems.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, pastValues.get()));
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, String previousChildName) {
-                // Handle child changed if needed
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                // Handle child removed if needed
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, String previousChildName) {
-                // Handle child moved if needed
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(DATABASE_READ_TAG, "Error listening for new data", error.toException());
-            }
-        });
-    }
 
     /**
      * Reads the current data from the database anytime the "current" node changes
@@ -191,23 +144,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.w(DATABASE_READ_TAG, "Failed to read value.", error.toException());
             }
         });
-    }
-
-    /**
-     * (FOR TESTING PURPOSES) (remove later)
-     * Called when the button is clicked
-     * Writes a new SensorData object to the database in the "pastValues" node
-     *
-     * @param view
-     */
-    public void onButtonClicked(View view) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance(); // gets the default instance (us-central)
-        DatabaseReference myRef = database.getReference("sensorData"); // gets the reference to the database that we want to read/write to
-
-        // Do something in response to button click
-        DatabaseReference pastValuesDataRef = myRef.child("pastValues");
-        DatabaseReference newNode = pastValuesDataRef.push();
-        newNode.setValue(new SensorData(100, 200, 50.43, 1000.23, 19.29, 174.466, LocalDateTime.now().toString()));
     }
 
     //https://cdn-shop.adafruit.com/product-files/3660/BME680.pdf
