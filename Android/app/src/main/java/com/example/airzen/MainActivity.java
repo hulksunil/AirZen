@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ArrayAdapter;
@@ -13,18 +14,16 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.ActionBarDrawerToggle;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.content.res.AppCompatResources;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
-import androidx.core.view.GravityCompat;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
-import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.airzen.models.NotificationHelper;
+import com.example.airzen.models.AssetConfigure;
 import com.example.airzen.models.SensorData;
-import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -40,91 +39,56 @@ import java.text.DecimalFormat;
 
 public class MainActivity extends AppCompatActivity {
 
-
     private static final String DATABASE_READ_TAG = "DATABASE_READ_TAG";
     private ListView listOfItems; // (FOR TESTING PURPOSES) (remove later)
 
-    protected ConstraintLayout tempTile, humidityTile, eCO2Tile;
-    private ImageView temperatureSVG,humiditySVG,eCO2SVG;
-
-    private TextView currentTemp,currentHumidity, currentCo2;
+    protected ConstraintLayout tempTile, humidityTile, eCO2Tile, vocTile;
+    private ImageView temperatureSVG, humiditySVG, eCO2SVG, vocSVG;
+    private TextView currentTemp, currentHumidity, currentCo2, currentVOC, currentDust;
 
     private SlimChart slimChart;
 
-    private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
-    private ActionBarDrawerToggle toggle;
-
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_main);
-
-        drawerLayout = findViewById(R.id.drawer_layout);
-        NavigationView navigationView = findViewById(R.id.nav_view);
-
-        toggle = new ActionBarDrawerToggle(this, drawerLayout, R.string.open, R.string.close);
-        drawerLayout.addDrawerListener(toggle);
-        toggle.syncState();
-
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-        navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                if (item.getItemId() == R.id.view_profile) {
-                    Intent intent = new Intent(MainActivity.this, ProfileActivity.class);
-                    startActivity(intent);
-
-                    drawerLayout.closeDrawer(GravityCompat.START);
-                    return true;
-                }
-                drawerLayout.closeDrawer(GravityCompat.START);
-                return false;
-            }
-        });
-
-
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+
         });
 
         tempTile = findViewById(R.id.tempTile);
         humidityTile = findViewById(R.id.humidityTile);
         eCO2Tile = findViewById(R.id.eCO2Tile);
-
+        vocTile = findViewById(R.id.vocTile);
 
         temperatureSVG = findViewById(R.id.tempSVG);
         humiditySVG = findViewById(R.id.humiditySVG);
         eCO2SVG = findViewById(R.id.eco2SVG);
-
+        vocSVG = findViewById(R.id.vocSVG);
 
         currentTemp = findViewById(R.id.currentTemp);
         currentHumidity = findViewById(R.id.currentHumidity);
         currentCo2 = findViewById(R.id.currenteCo2);
+        currentDust = findViewById(R.id.currentDust);
+        currentVOC = findViewById(R.id.currentVOC);
 
-        slimChart= findViewById(R.id.slimChart);
+        slimChart = findViewById(R.id.slimChart);
 
         readFirebaseSensorData();
+        NotificationHelper.createNotificationChannel(this);
+        NotificationHelper.requestPermissions(this);
+
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
     }
 
-    /*private void initToolbar() {
-        Toolbar myToolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(myToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setTitle(R.string.settingsTitle);}*/
-
-    @Override
-    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (toggle.onOptionsItemSelected(item)) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     /**
      * Connects to the Firebase database and reads the sensor data
@@ -141,54 +105,7 @@ public class MainActivity extends AppCompatActivity {
 //        readPastData(myRef);
     }
 
-    /**
-     * Reads the past data from the database
-     * The data is read anytime a new child value is given to the "pastValues" node.
-     *
-     * @param myRef the reference of the database
-     */
-    private void readPastData(DatabaseReference myRef) {
-        Log.d(DATABASE_READ_TAG, "Reading PAST VALUE data from the database");
-        AtomicReference<ArrayList<SensorData>> pastValues = new AtomicReference<>(new ArrayList<>());
 
-        // Reference to the "pastValues" node
-        DatabaseReference pastValuesDataRef = myRef.child("pastValues");
-
-        // Listen for new data being added
-        pastValuesDataRef.addChildEventListener(new ChildEventListener() {
-
-            //!! We only care about new data being added
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, String previousChildName) {
-                SensorData value = snapshot.getValue(SensorData.class);
-                pastValues.get().add(value);
-                Log.d(DATABASE_READ_TAG, "New PAST VALUE added: " + snapshot.getKey() + " : " + value);
-
-                // FOR TESTING PURPOSES (remove later)
-                listOfItems.setAdapter(new ArrayAdapter<>(MainActivity.this, android.R.layout.simple_list_item_1, pastValues.get()));
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, String previousChildName) {
-                // Handle child changed if needed
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                // Handle child removed if needed
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, String previousChildName) {
-                // Handle child moved if needed
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-                Log.e(DATABASE_READ_TAG, "Error listening for new data", error.toException());
-            }
-        });
-    }
 
     /**
      * Reads the current data from the database anytime the "current" node changes
@@ -204,26 +121,29 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 SensorData value = dataSnapshot.getValue(SensorData.class);
-                if(value != null){
+                if (value != null) {
                     slimChartInit(value.getAqi());
 
                     DecimalFormat df = new DecimalFormat("#.##");
 
-                    currentTemp.setText(df.format(value.getTemperature())+""+getString(R.string.degreesC));
-                    setTemperatureSVG(value.getTemperature());
+                    currentTemp.setText(df.format(value.getTemperature()) + "" + getString(R.string.degreesC));
+                    temperatureSVG.setImageDrawable(AssetConfigure.setTemperatureSVG(value.getTemperature(), MainActivity.this));
 
-                    currentCo2.setText(getString(R.string.ppm,value.getCo2()));
-                    setEcos2SVG(value.getCo2());
+                    currentCo2.setText(getString(R.string.ppm, value.getCo2()));
+                    eCO2SVG.setImageDrawable(AssetConfigure.setEcos2SVG(value.getCo2(), MainActivity.this));
 
+                    currentVOC.setText(df.format(value.getVOC()) + "ppm");
+                    vocSVG.setImageDrawable(AssetConfigure.setVOCSVG(value.getVOC(), MainActivity.this));
 
+                    currentHumidity.setText(df.format(value.getHumidity()) + "" + getString(R.string.percent));
+                    humiditySVG.setImageDrawable(AssetConfigure.setHumiditySVG(value.getHumidity(), MainActivity.this));
 
-                    currentHumidity.setText(df.format(value.getHumidity())+""+getString(R.string.percent));
-                    setHumiditySVG(value.getHumidity());
-                }
-                else{
+                    currentDust.setText(df.format(value.getDustDensity()) + "" + getString(R.string.ug));
+                } else {
                     currentTemp.setText(getString(R.string.error));
                     currentHumidity.setText(getString(R.string.error));
                     currentCo2.setText(getString(R.string.error));
+                    currentVOC.setText(getString(R.string.error));
                 }
 
                 Log.d(DATABASE_READ_TAG, "Current value is: " + value);
@@ -236,128 +156,94 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    /**
-     * (FOR TESTING PURPOSES) (remove later)
-     * Called when the button is clicked
-     * Writes a new SensorData object to the database in the "pastValues" node
-     *
-     * @param view
-     */
-    public void onButtonClicked(View view) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance(); // gets the default instance (us-central)
-        DatabaseReference myRef = database.getReference("sensorData"); // gets the reference to the database that we want to read/write to
-
-        // Do something in response to button click
-        DatabaseReference pastValuesDataRef = myRef.child("pastValues");
-        DatabaseReference newNode = pastValuesDataRef.push();
-        newNode.setValue(new SensorData(100, 200, 50.43, 1000.23, 19.29, LocalDateTime.now().toString()));
-    }
-
-    /*public void setTemperatureSVG(double currentTemp){
-        if(currentTemp > 25.00){
-            temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_red));
-        }
-        else{
-            temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_blue));
-        }
-    }*/
-
-    public void setTemperatureSVG(double currentTemp){
-        if(currentTemp >= 35.00){
-            temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_red));
-        }
-        else if(currentTemp < 35.00 && currentTemp >= 25.00){
-            temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_orange));
-        }
-        else if(currentTemp < 25.00 && currentTemp >= 15.00){
-            temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_green));
-        }
-        else{
-            temperatureSVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.thermometer_blue));
-        }
-    }
-
-    private void slimChartInit(int number){
+    //https://cdn-shop.adafruit.com/product-files/3660/BME680.pdf
+    private void slimChartInit(int iaqi) {
         final float[] stats = new float[2]; // The rings
         int[] colors = new int[2];//the colors in the rings
 
-        if(number <= 50){ //Good green
+        if (iaqi <= 50) { // Excellent
             colors[1] = Color.rgb(0, 255, 0);
-
-        } else if (number <= 100) { // Moderate yellow
+        } else if (iaqi >= 51 && iaqi <= 100) { // Good
+            colors[1] = Color.rgb(146, 208, 80);
+        } else if (iaqi >= 101 && iaqi <= 150) { // Lightly polluted
             colors[1] = Color.rgb(255, 255, 0);
-
-        } else if (number <=150) {//Unhealthy for sensitive groups orange
+        } else if (iaqi >= 151 && iaqi <= 200) { // Moderately Polluted
             colors[1] = Color.rgb(255, 165, 0);
-        }
-        else if(number <= 200){//Unhealthy red
+        } else if (iaqi >= 201 && iaqi <= 250) { // Heavily Polluted
             colors[1] = Color.rgb(255, 0, 0);
-        }
-        else if(number <= 300) {//Very unhealthy purple
+        } else if (iaqi >= 251 && iaqi <= 350) { //Severely Polluted
             colors[1] = Color.rgb(128, 0, 128);
-        } else {// 301 and greater brown
+        } else { // > 351 Extremely Polluted
             colors[1] = Color.rgb(128, 0, 0);
         }
 
-        colors[0]=Color.rgb(107, 107, 107);//grey outline ring
+
+        colors[0] = Color.rgb(107, 107, 107);//grey outline ring
 
         stats[0] = 100;//This will be a grey circle to provide an outline
-        stats[1] = (float) ((number /500.0)*100);
+        stats[1] = (float) (iaqi / 500.0) * 100;
 
         slimChart.setStats(stats);
 
         slimChart.setColors(colors);
-        slimChart.setText(""+number);
+        slimChart.setText("" + iaqi);
 
         slimChart.setStrokeWidth(9);
     }
 
-    public void setHumiditySVG(double currentHumidity){
-        if(currentHumidity >= 70 || currentHumidity < 25){
-            humiditySVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.humidity_red));
-        }
-        else if((currentHumidity >= 60 && currentHumidity < 70) || (currentHumidity >= 25 && currentHumidity < 30)){
-            humiditySVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.humidity_orange));
-        }
-        else if(currentHumidity >= 30 && currentHumidity < 60){
-            humiditySVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.humidity_green));
-        }
-    }
-
-    public void setEcos2SVG(int currentCO2){
-        if(currentCO2 > 2500){
-            eCO2SVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.co2_red));
-        } else if (currentCO2 > 1500 && currentCO2 < 2500) {
-            eCO2SVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.co2_orange));
-        }
-        else {
-            eCO2SVG.setImageDrawable(AppCompatResources.getDrawable(MainActivity.this,R.drawable.co2_green));
-        }
-    }
-
-    public void openGraphActivity(View view){
+    public void openGraphActivity(View view) {
         Intent intent = new Intent(MainActivity.this, GraphActivity.class);
         String longID = view.getResources().getResourceName(view.getId());
         String ID = longID.replace("com.example.airzen:id/", "");
-        Log.i("openSecondActivity",ID);
+        Log.i("openSecondActivity", ID);
+        String tileID = "Not Implemented";
         switch (ID) {
             case "tempTile": {
-                String tileID = "tempTile";
-                intent.putExtra("TILE_ID", tileID);
+                tileID = "tempTile";
                 break;
             }
             case "humidityTile": {
-                String tileID = "humidityTile";
-                intent.putExtra("TILE_ID", tileID);
+                tileID = "humidityTile";
                 break;
             }
             case "eCO2Tile": {
-                String tileID = "eCO2Tile";
-                intent.putExtra("TILE_ID", tileID);
+                tileID = "eCO2Tile";
+                break;
+            }
+            case "dustTile": {
+                tileID = "dustTile";
+                break;
+            }
+            case "vocTile": {
+                tileID = "vocTile";
                 break;
             }
         }
+        intent.putExtra("TILE_ID", tileID);
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        getOnBackPressedDispatcher().onBackPressed();
+        return super.onSupportNavigateUp();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.create_profile_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.createProfileMenu) {
+            Intent profileCreation = new Intent(MainActivity.this, ProfileActivity.class);
+            //profileCreation.putExtra(getString(R.string.clickedMetric), pageTitle.getText());
+            startActivity(profileCreation);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
 
