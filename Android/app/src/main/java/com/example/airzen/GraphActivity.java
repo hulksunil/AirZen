@@ -37,8 +37,15 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.DateFormat;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class GraphActivity extends AppCompatActivity {
@@ -268,6 +275,9 @@ public class GraphActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Class to store the data to be displayed on the graph
+     */
     private static class SensorPlotValue extends ValueDataEntry {
         SensorPlotValue(String time, Number primarySensorData) {
             super(time, primarySensorData);
@@ -278,62 +288,29 @@ public class GraphActivity extends AppCompatActivity {
     private void tempGraph() {
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
-        Cartesian cartesian = AnyChart.line();
+        ArrayList<SensorData> sensorDataValues = pastValues.get();
+        for(SensorData sensorData : sensorDataValues){
+            String time = parseSensorDataTimestamp(sensorData);
 
-        cartesian.animation(true);
-
-        cartesian.padding(10d, 20d, 5d, 20d);
-
-        cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
-
-        cartesian.title("Your AirZen Temperature Historical Data Which Is Super Important");
-
-        for (int i = 0; i < pastValues.get().size(); i++) {
-            //TODO Parse the timestamp to obtain just the time so it can look better on the graph
-            seriesData.add(new SensorPlotValue(pastValues.get().get(i).getTimestamp(), pastValues.get().get(i).getTemperature()));
-            Log.i("pastValues", "" + pastValues.get().get(i));
+            seriesData.add(new SensorPlotValue(time, sensorData.getTemperature()));
         }
 
         Set set = Set.instantiate();
         set.data(seriesData);
         Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
 
-        Line series1 = cartesian.line(series1Mapping);
-        series1.color("#FF0000");
-        series1.name("Temperature");
-
-        cartesian.legend().enabled(true);
-        cartesian.legend().fontSize(13d);
-        cartesian.legend().padding(0d, 0d, 10d, 0d);
-
-        //TODO some stying
-
-//        cartesian.dataArea().background().enabled(true);
-//        cartesian.dataArea().background().fill("#ffd54f 0.2");
-//
-//        cartesian.background().enabled(true);
-//        cartesian.background().fill("#3a56b0");
+        Cartesian cartesian = initCartesianGraph(series1Mapping,"Temperature","#FF0000");
 
         anyChartView.setChart(cartesian);
     }
 
     private void humidityGraph() {
-
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
-        Cartesian cartesian = AnyChart.line();
-
-        cartesian.animation(true);
-
-        cartesian.padding(10d, 20d, 5d, 20d);
-
-        cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
-
-        cartesian.title("Your AirZen Humidity Historical Data Which Is Super Important");
-
-
-        for (int i = 0; i < pastValues.get().size(); i++) {
-            seriesData.add(new SensorPlotValue(pastValues.get().get(i).getTimestamp(), pastValues.get().get(i).getHumidity()));
+        ArrayList<SensorData> sensorDataValues = pastValues.get();
+        for(SensorData sensorData : sensorDataValues){
+            String time = parseSensorDataTimestamp(sensorData);
+            seriesData.add(new SensorPlotValue(time, sensorData.getHumidity()));
         }
 
         Log.i("SensorLength", "" + seriesData.size());
@@ -342,42 +319,18 @@ public class GraphActivity extends AppCompatActivity {
         set.data(seriesData);
         Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
 
-        Line series1 = cartesian.line(series1Mapping);
-        series1.color("#326da8");
-        series1.name("Humidity");
-
-
-        cartesian.legend().enabled(true);
-        cartesian.legend().fontSize(13d);
-        cartesian.legend().padding(0d, 0d, 10d, 0d);
-
-
-//        cartesian.dataArea().background().enabled(true);
-//        cartesian.dataArea().background().fill("#ffd54f 0.2");
-//
-//
-//        cartesian.background().enabled(true);
-//        cartesian.background().fill("#3a56b0");
+        Cartesian cartesian = initCartesianGraph(series1Mapping,"Humidity","#326da8");
 
         anyChartView.setChart(cartesian);
     }
 
     private void eCO2Graph() {
-
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
-        Cartesian cartesian = AnyChart.line();
-
-        cartesian.animation(true);
-
-        cartesian.padding(10d, 20d, 5d, 20d);
-
-        cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
-
-        cartesian.title("Your AirZen eCO2 Historical Data Which Is Super Important");
-
-        for (int i = 0; i < pastValues.get().size(); i++) {
-            seriesData.add(new SensorPlotValue(pastValues.get().get(i).getTimestamp(), pastValues.get().get(i).getCo2()));
+        ArrayList<SensorData> sensorDataValues = pastValues.get();
+        for(SensorData sensorData : sensorDataValues){
+            String time = parseSensorDataTimestamp(sensorData);
+            seriesData.add(new SensorPlotValue(time, sensorData.getCo2()));
         }
 
         Log.i("SensorLength", "" + seriesData.size());
@@ -386,44 +339,19 @@ public class GraphActivity extends AppCompatActivity {
         set.data(seriesData);
         Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
 
-        Line series1 = cartesian.line(series1Mapping);
-        series1.color("#32a83a");
-        series1.name("CO2");
-
-
-        cartesian.legend().enabled(true);
-        cartesian.legend().fontSize(13d);
-        cartesian.legend().padding(0d, 0d, 10d, 0d);
-
-
-//        cartesian.dataArea().background().enabled(true);
-//        cartesian.dataArea().background().fill("#ffd54f 0.2");
-//
-//
-//        cartesian.background().enabled(true);
-//        cartesian.background().fill("#3a56b0");
+        Cartesian cartesian = initCartesianGraph(series1Mapping,"CO2","#32a83a");
 
         anyChartView.setChart(cartesian);
     }
 
     private void VOCGraph() {
-
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
-
-        Cartesian cartesian = AnyChart.line();
-
-        cartesian.animation(true);
-
-        cartesian.padding(10d, 20d, 5d, 20d);
-
-        cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
-
-        cartesian.title("Your AirZen VOC Historical Data Which Is Super Important");
 
         Log.i("AlexRules", "" + pastValues.get());
 
-        for (int i = 0; i < pastValues.get().size(); i++) {
-            seriesData.add(new SensorPlotValue(pastValues.get().get(i).getTimestamp(), pastValues.get().get(i).getVOC()));
+        ArrayList<SensorData> sensorDataValues = pastValues.get();
+        for(SensorData sensorData : sensorDataValues){
+            seriesData.add(new SensorPlotValue(sensorData.getTimestamp(), sensorData.getVOC()));
         }
 
         Log.i("SensorLength", "" + seriesData.size());
@@ -432,22 +360,7 @@ public class GraphActivity extends AppCompatActivity {
         set.data(seriesData);
         Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
 
-        Line series1 = cartesian.line(series1Mapping);
-        series1.color("#32a83a");
-        series1.name("VOC");
-
-
-        cartesian.legend().enabled(true);
-        cartesian.legend().fontSize(13d);
-        cartesian.legend().padding(0d, 0d, 10d, 0d);
-
-
-//        cartesian.dataArea().background().enabled(true);
-//        cartesian.dataArea().background().fill("#ffd54f 0.2");
-//
-//
-//        cartesian.background().enabled(true);
-//        cartesian.background().fill("#3a56b0");
+        Cartesian cartesian = initCartesianGraph(series1Mapping,"VOC","#32a83a");
 
         anyChartView.setChart(cartesian);
     }
@@ -586,6 +499,68 @@ public class GraphActivity extends AppCompatActivity {
 
         warningsBox.setVisibility(View.GONE);
         additionalInfoBox.setVisibility(View.GONE);
+    }
+
+
+    /**
+     * Parses the timestamp from the sensor data into a more readable format (dd-MMM HH:mm:ss) (cuts out the year) (24-hour clock)
+     * @param sensorData
+     * @return
+     */
+    private static String parseSensorDataTimestamp(SensorData sensorData) {
+        String time;
+        try{
+            // Parse the string into a LocalDateTime object
+            LocalDateTime dateTime = LocalDateTime.parse(sensorData.getTimestamp());
+
+            // Define the desired output format
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MMM HH:mm:ss");
+
+            // Format the LocalDateTime into the desired format
+            time = dateTime.format(formatter);
+        } catch (Exception e) {
+            time = sensorData.getTimestamp();
+        }
+        return time;
+    }
+
+
+    /**
+     * Initializes the cartesian graph with the given parameters
+     * @param series1Mapping The mapping of the data to the graph
+     * @param sensorReadingType The type of sensor reading (Temperature, VOC, CO2, Dust, Humidity, etc.)
+     * @param lineColor The color of the line on the graph (HEX value)
+     * @return
+     */
+    @NonNull
+    private static Cartesian initCartesianGraph(Mapping series1Mapping, String sensorReadingType, String lineColor) {
+        Cartesian cartesian = AnyChart.line();
+
+        cartesian.animation(true);
+
+        cartesian.padding(10d, 20d, 5d, 20d);
+
+        cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
+
+        cartesian.title("Your AirZen "+sensorReadingType+" Historical Data");
+
+        Line series1 = cartesian.line(series1Mapping);
+        series1.color(lineColor);
+        series1.name(sensorReadingType);
+
+        cartesian.legend().enabled(true);
+        cartesian.legend().fontSize(13d);
+        cartesian.legend().padding(0d, 0d, 10d, 0d);
+
+        //TODO some stying
+
+//        cartesian.dataArea().background().enabled(true);
+//        cartesian.dataArea().background().fill("#ffd54f 0.2");
+//
+//        cartesian.background().enabled(true);
+//        cartesian.background().fill("#3a56b0");
+
+        return cartesian;
     }
 
 }
