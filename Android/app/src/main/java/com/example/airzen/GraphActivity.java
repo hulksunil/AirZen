@@ -351,34 +351,45 @@ public class GraphActivity extends AppCompatActivity {
 
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
-        Cartesian cartesian = AnyChart.line();
-
-        cartesian.animation(true);
-
-        cartesian.padding(10d, 20d, 5d, 20d);
-
-        cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
-
-        cartesian.title("Your AirZen Dust Density Historical Data Which Is Super Important");
-
-        for (int i = 0; i < pastValues.get().size(); i++) {
-            seriesData.add(new SensorPlotValue(pastValues.get().get(i).getTimestamp(), pastValues.get().get(i).getDustDensity()));
+        ArrayList<SensorData> sensorDataValues = pastValues.get();
+        for(SensorData sensorData : sensorDataValues){
+            String time = parseSensorDataTimestamp(sensorData);
+            seriesData.add(new SensorPlotValue(time, sensorData.getDustDensity()));
         }
 
         Log.i("SensorLength", "" + seriesData.size());
-
         Set set = Set.instantiate();
         set.data(seriesData);
         Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
 
-        Line series1 = cartesian.line(series1Mapping);
-        series1.color("#32a83a");
-        series1.name("DustDensity");
+        Cartesian cartesian = initCartesianGraph(series1Mapping,"DustDensity","#fcba03");
+
+        anyChartView.setChart(cartesian);
+//        Cartesian cartesian = AnyChart.line();
+//
+//        cartesian.animation(true);
+//
+//        cartesian.padding(10d, 20d, 5d, 20d);
+//
+//        cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
+//
+//        cartesian.title("Your AirZen Dust Density Historical Data Which Is Super Important");
+
+//        for (int i = 0; i < pastValues.get().size(); i++) {
+//            seriesData.add(new SensorPlotValue(pastValues.get().get(i).getTimestamp(), pastValues.get().get(i).getDustDensity()));
+//        }
 
 
-        cartesian.legend().enabled(true);
-        cartesian.legend().fontSize(13d);
-        cartesian.legend().padding(0d, 0d, 10d, 0d);
+
+
+//        Line series1 = cartesian.line(series1Mapping);
+//        series1.color("#32a83a");
+//        series1.name("DustDensity");
+//
+//
+//        cartesian.legend().enabled(true);
+//        cartesian.legend().fontSize(13d);
+//        cartesian.legend().padding(0d, 0d, 10d, 0d);
 
 
 //        cartesian.dataArea().background().enabled(true);
@@ -388,7 +399,7 @@ public class GraphActivity extends AppCompatActivity {
 //        cartesian.background().enabled(true);
 //        cartesian.background().fill("#3a56b0");
 
-        anyChartView.setChart(cartesian);
+
     }
 
 
