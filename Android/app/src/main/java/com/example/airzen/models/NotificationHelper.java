@@ -31,16 +31,13 @@ public  class NotificationHelper {
         ActivityCompat.requestPermissions(context, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 1);
     }
 
-
-//    final double TEMP_THRESHOLD = 35.00;
-//    final double HUM_THRESHOLD = 70;
-//    final double CO2_THRESHOLD = 1000;
-//    final double VOC_THRESHOLD = 100;
-//    final double DUST_THRESHOLD = 100;
-//    final double GAS_THRESHOLD = 100;
-//    final double AQI_THRESHOLD = 100;
-//    final double PRESSURE_THRESHOLD = 100;
-//    final double ALTITUDE_THRESHOLD = 100;
+    private final static double TEMPERATURE_UPPER_THRESHOLD = 35.00;
+    private final static double HUMIDITY_UPPER_THRESHOLD = 70;
+    private final static double HUMIDITY_LOWER_THRESHOLD = 25;
+    private final static double CO2_UPPER_THRESHOLD = 2500;
+    private final static double VOC_UPPER_THRESHOLD = 100;
+    private final static double DUST_UPPER_THRESHOLD = 100;
+    private final static double AQI_UPPER_THRESHOLD = 100;
 
 
     public static void createNotificationChannel(Activity context) {
@@ -79,7 +76,7 @@ public  class NotificationHelper {
     // TOOO: fix the threshold values
 
     public static void notifyTemperatureIfBeyondThreshold(Activity context, double temperature)  {
-        if (temperature >= 35.00) {
+        if (temperature >= TEMPERATURE_UPPER_THRESHOLD) {
             if(tempNotificationSent){
                 return;
             }
@@ -91,7 +88,7 @@ public  class NotificationHelper {
     }
 
     public static void notifyHumidityIfBeyondThreshold(Activity context, double humidity)  {
-        if (humidity >= 70 || humidity < 25) {
+        if (humidity >= HUMIDITY_UPPER_THRESHOLD || humidity < HUMIDITY_LOWER_THRESHOLD) {
             if(humNotificationSent){
                 return;
             }
@@ -103,7 +100,7 @@ public  class NotificationHelper {
     }
 
     public static void notifyCo2IfBeyondThreshold(Activity context, int co2)  {
-        if (co2 >= 2500) {
+        if (co2 >= CO2_UPPER_THRESHOLD) {
             if(co2NotificationSent){
                 return;
             }
@@ -115,7 +112,7 @@ public  class NotificationHelper {
     }
 
     public static void notifyVocIfBeyondThreshold(Activity context, int voc)  {
-        if (voc >= 100) {
+        if (voc >= VOC_UPPER_THRESHOLD) {
             if(vocNotificationSent){
                 return;
             }
@@ -127,7 +124,7 @@ public  class NotificationHelper {
     }
 
     public static void notifyDustIfBeyondThreshold(Activity context, int dust)  {
-        if (dust > 100) {
+        if (dust > DUST_UPPER_THRESHOLD) {
             if(dustNotificationSent){
                 return;
             }
@@ -141,7 +138,7 @@ public  class NotificationHelper {
 
 
     public static void notifyAqiIfBeyondThreshold(Activity context, int aqi)  {
-        if (aqi > 100) {
+        if (aqi > AQI_UPPER_THRESHOLD) {
             if(aqiNotificationSent){
                 return;
             }
@@ -151,32 +148,6 @@ public  class NotificationHelper {
             aqiNotificationSent = false;
         }
     }
-
-    public static void notifyPressureIfBeyondThreshold(Activity context, int pressure)  {
-        if (pressure > 100) {
-            if(pressureNotificationSent){
-                return;
-            }
-            notifyUserOfHighThreshold(context, "Pressure");
-            pressureNotificationSent = true;
-        }else {
-            pressureNotificationSent = false;
-        }
-    }
-
-    public static void notifyAltitudeIfBeyondThreshold(Activity context, int altitude)  {
-        if (altitude > 100) {
-            if(altitudeNotificationSent){
-                return;
-            }
-            notifyUserOfHighThreshold(context, "Altitude");
-            altitudeNotificationSent = true;
-        }else {
-            altitudeNotificationSent = false;
-        }
-    }
-
-
 
 
 }
