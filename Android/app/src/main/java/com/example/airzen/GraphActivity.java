@@ -243,7 +243,6 @@ public class GraphActivity extends AppCompatActivity {
             switch (message) {
                 case "tempTile":
                     if(!pastValues.get().isEmpty()) tempGraph();
-
                     pageTitle.setText(getString(R.string.temp));
                     currentValueLbl.setText(getString(R.string.temp));
                     break;
@@ -258,9 +257,9 @@ public class GraphActivity extends AppCompatActivity {
                     currentValueLbl.setText(getString(R.string.eco2));
                     break;
                 case "dustTile":
+                    if(!pastValues.get().isEmpty()) dustDensityGraph();
+                    pageTitle.setText(getString(R.string.dust));
                     currentValueLbl.setText(getString(R.string.dust));
-                    anyChartView.setVisibility(View.GONE);
-                    findViewById(R.id.progress_bar).setVisibility(View.GONE);
                     break;
                 case "vocTile":
                     if(!pastValues.get().isEmpty()) VOCGraph();
@@ -347,10 +346,31 @@ public class GraphActivity extends AppCompatActivity {
         anyChartView.setChart(cartesian);
     }
 
-    private void VOCGraph() throws SetException {
+    private void dustDensityGraph() {
+
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
-        Log.i("AlexRules", "" + pastValues.get());
+        ArrayList<SensorData> sensorDataValues = pastValues.get();
+        for(SensorData sensorData : sensorDataValues){
+            String time = parseSensorDataTimestamp(sensorData);
+            seriesData.add(new SensorPlotValue(time, sensorData.getDustDensity()));
+        }
+
+        Log.i("SensorLength", "" + seriesData.size());
+        Set set = Set.instantiate();
+        set.data(seriesData);
+        Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
+
+        Cartesian cartesian = initCartesianGraph(series1Mapping,"DustDensity","#fcba03");
+
+        anyChartView.setChart(cartesian);
+    }
+
+
+    private void VOCGraph() throws SetException{
+        anyChartView.setProgressBar(findViewById(R.id.progress_bar));
+
+//        Log.i("AlexRules", "" + pastValues.get());
 
         ArrayList<SensorData> sensorDataValues = pastValues.get();
         for(SensorData sensorData : sensorDataValues){
@@ -499,11 +519,13 @@ public class GraphActivity extends AppCompatActivity {
     private void dustWarning(double currentDust) {
         warningsBox.setVisibility(View.GONE);
         additionalInfoBox.setVisibility(View.GONE);
+        //TODO
     }
 
     private void vocWarning(double currentVOC) {
         warningsBox.setVisibility(View.GONE);
         additionalInfoBox.setVisibility(View.GONE);
+        //TODO
     }
 
     private void notYetImplemented() {
