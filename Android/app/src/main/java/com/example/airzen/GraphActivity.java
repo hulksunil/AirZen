@@ -29,7 +29,6 @@ import com.anychart.data.Set;
 import com.anychart.enums.TooltipPositionMode;
 import com.example.airzen.models.AssetConfigure;
 import com.example.airzen.models.SensorData;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -37,15 +36,10 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
-import java.text.DateFormat;
 import java.text.DecimalFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
-import java.util.Locale;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class GraphActivity extends AppCompatActivity {
@@ -117,6 +111,7 @@ public class GraphActivity extends AppCompatActivity {
     @Override
     public boolean onSupportNavigateUp() {
         getOnBackPressedDispatcher().onBackPressed();
+        finish();
         return super.onSupportNavigateUp();
     }
 
@@ -178,6 +173,7 @@ public class GraphActivity extends AppCompatActivity {
         query.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                seriesData.clear();
                 pastValues.get().clear(); // Clear previous data
                 for (DataSnapshot childSnapshot : snapshot.getChildren()) {
                     SensorData value = childSnapshot.getValue(SensorData.class);
@@ -243,35 +239,41 @@ public class GraphActivity extends AppCompatActivity {
     }
 
     public void displayGraph(String message) {
-        switch (message) {
-            case "tempTile":
-                tempGraph();
-                pageTitle.setText(getString(R.string.temp));
-                currentValueLbl.setText(getString(R.string.temp));
-                break;
-            case "humidityTile":
-                humidityGraph();
-                pageTitle.setText(getString(R.string.humidity));
-                currentValueLbl.setText(getString(R.string.humidity));
-                break;
-            case "eCO2Tile":
-                eCO2Graph();
-                pageTitle.setText(getString(R.string.eco2));
-                currentValueLbl.setText(getString(R.string.eco2));
-                break;
-            case "dustTile":
-                currentValueLbl.setText(getString(R.string.dust));
-                anyChartView.setVisibility(View.GONE);
-                findViewById(R.id.progress_bar).setVisibility(View.GONE);
-                break;
-            case "vocTile":
-                VOCGraph();
-                pageTitle.setText(getString(R.string.voc));
-                currentValueLbl.setText(getString(R.string.voc));
-                break;
-            default:
-                notYetImplemented();
-                break;
+        try{
+            switch (message) {
+                case "tempTile":
+                    if(!pastValues.get().isEmpty()) tempGraph();
+                    pageTitle.setText(getString(R.string.temp));
+                    currentValueLbl.setText(getString(R.string.temp));
+                    break;
+                case "humidityTile":
+                    if(!pastValues.get().isEmpty()) humidityGraph();
+                    pageTitle.setText(getString(R.string.humidity));
+                    currentValueLbl.setText(getString(R.string.humidity));
+                    break;
+                case "eCO2Tile":
+                    if(!pastValues.get().isEmpty()) eCO2Graph();
+                    pageTitle.setText(getString(R.string.eco2));
+                    currentValueLbl.setText(getString(R.string.eco2));
+                    break;
+                case "dustTile":
+                    if(!pastValues.get().isEmpty()) dustDensityGraph();
+                    pageTitle.setText(getString(R.string.dust));
+                    currentValueLbl.setText(getString(R.string.dust));
+                    break;
+                case "vocTile":
+                    if(!pastValues.get().isEmpty()) VOCGraph();
+                    pageTitle.setText(getString(R.string.voc));
+                    currentValueLbl.setText(getString(R.string.voc));
+                    break;
+                default:
+                    notYetImplemented();
+                    break;
+            }
+        }
+        catch (SetException setException){
+            Log.e("SetException",setException.getMessage());
+            finish();
         }
     }
 
@@ -285,7 +287,7 @@ public class GraphActivity extends AppCompatActivity {
     }
 
     //temperature graph function
-    private void tempGraph() {
+    private void tempGraph() throws SetException {
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
         ArrayList<SensorData> sensorDataValues = pastValues.get();
@@ -295,7 +297,7 @@ public class GraphActivity extends AppCompatActivity {
             seriesData.add(new SensorPlotValue(time, sensorData.getTemperature()));
         }
 
-        Set set = Set.instantiate();
+        Set set = getSet("Temperature");
         set.data(seriesData);
         Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
 
@@ -304,7 +306,7 @@ public class GraphActivity extends AppCompatActivity {
         anyChartView.setChart(cartesian);
     }
 
-    private void humidityGraph() {
+    private void humidityGraph() throws SetException {
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
         ArrayList<SensorData> sensorDataValues = pastValues.get();
@@ -313,9 +315,9 @@ public class GraphActivity extends AppCompatActivity {
             seriesData.add(new SensorPlotValue(time, sensorData.getHumidity()));
         }
 
-        Log.i("SensorLength", "" + seriesData.size());
+            Log.i("SensorLength", "" + seriesData.size());
 
-        Set set = Set.instantiate();
+        Set set = getSet("Humidity");
         set.data(seriesData);
         Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
 
@@ -324,7 +326,7 @@ public class GraphActivity extends AppCompatActivity {
         anyChartView.setChart(cartesian);
     }
 
-    private void eCO2Graph() {
+    private void eCO2Graph() throws SetException {
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
         ArrayList<SensorData> sensorDataValues = pastValues.get();
@@ -335,7 +337,7 @@ public class GraphActivity extends AppCompatActivity {
 
         Log.i("SensorLength", "" + seriesData.size());
 
-        Set set = Set.instantiate();
+        Set set = getSet("eCO2");
         set.data(seriesData);
         Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
 
@@ -344,10 +346,31 @@ public class GraphActivity extends AppCompatActivity {
         anyChartView.setChart(cartesian);
     }
 
-    private void VOCGraph() {
+    private void dustDensityGraph() {
+
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
-        Log.i("AlexRules", "" + pastValues.get());
+        ArrayList<SensorData> sensorDataValues = pastValues.get();
+        for(SensorData sensorData : sensorDataValues){
+            String time = parseSensorDataTimestamp(sensorData);
+            seriesData.add(new SensorPlotValue(time, sensorData.getDustDensity()));
+        }
+
+        Log.i("SensorLength", "" + seriesData.size());
+        Set set = Set.instantiate();
+        set.data(seriesData);
+        Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
+
+        Cartesian cartesian = initCartesianGraph(series1Mapping,"DustDensity","#fcba03");
+
+        anyChartView.setChart(cartesian);
+    }
+
+
+    private void VOCGraph() throws SetException{
+        anyChartView.setProgressBar(findViewById(R.id.progress_bar));
+
+//        Log.i("AlexRules", "" + pastValues.get());
 
         ArrayList<SensorData> sensorDataValues = pastValues.get();
         for(SensorData sensorData : sensorDataValues){
@@ -355,14 +378,24 @@ public class GraphActivity extends AppCompatActivity {
         }
 
         Log.i("SensorLength", "" + seriesData.size());
-
-        Set set = Set.instantiate();
+        Set set = getSet("VOC");
         set.data(seriesData);
         Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
 
         Cartesian cartesian = initCartesianGraph(series1Mapping,"VOC","#32a83a");
 
         anyChartView.setChart(cartesian);
+    }
+
+    private @NonNull Set getSet(String from) throws SetException {
+        Set set = null;
+        try{
+            set = Set.instantiate();
+        }
+        catch (NullPointerException npe){
+            throw new SetException("Set Exception "+from);
+        }
+        return set;
     }
 
     private void temperatureWarning(Double currentTemperature) {
@@ -486,11 +519,13 @@ public class GraphActivity extends AppCompatActivity {
     private void dustWarning(double currentDust) {
         warningsBox.setVisibility(View.GONE);
         additionalInfoBox.setVisibility(View.GONE);
+        //TODO
     }
 
     private void vocWarning(double currentVOC) {
         warningsBox.setVisibility(View.GONE);
         additionalInfoBox.setVisibility(View.GONE);
+        //TODO
     }
 
     private void notYetImplemented() {
@@ -563,4 +598,9 @@ public class GraphActivity extends AppCompatActivity {
         return cartesian;
     }
 
+    class SetException extends Exception {
+        public SetException(String s) {
+            super(s);// Call constructor of parent Exception
+        }
+    }
 }
