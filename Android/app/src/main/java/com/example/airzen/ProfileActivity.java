@@ -28,7 +28,7 @@ public class ProfileActivity extends AppCompatActivity {
         TextView userName = findViewById(R.id.userName);
 
         SharedPreferences sharedPreferences = getSharedPreferences("UserPreferences", MODE_PRIVATE);
-        String profileName = sharedPreferences.getString("profile_name", "Default Name");
+        String profileName = sharedPreferences.getString("profileName", "Default Name");
 
         // Set the profile name to the TextView
         userName.setText(profileName);

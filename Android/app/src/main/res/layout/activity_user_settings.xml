@@ -27,6 +27,7 @@
         android:layout_marginStart="32dp"
         android:layout_marginEnd="32dp"
         android:hint="Profile Name :"
+        android:inputType="textPersonName"
         app:endIconMode="clear_text"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -49,6 +50,7 @@
         android:layout_marginEnd="32dp"
         android:layout_marginTop="16dp"
         android:hint="Ideal Temperature :"
+        android:inputType="numberDecimal"
         app:endIconMode="clear_text"
         app:layout_constraintEnd_toEndOf="@id/profileName"
         app:layout_constraintStart_toStartOf="@id/profileName"
@@ -57,7 +59,7 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
-    </com.google.android.material.textfield.TextInputLayout>
+        </com.google.android.material.textfield.TextInputLayout>
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/userIdealHumidity"
@@ -68,6 +70,7 @@
         android:layout_marginEnd="32dp"
         android:layout_marginTop="16dp"
         android:hint="Ideal Humidity :"
+        android:inputType="numberDecimal"
         app:endIconMode="clear_text"
         app:layout_constraintEnd_toEndOf="@id/userIdealTemp"
         app:layout_constraintStart_toStartOf="@id/userIdealTemp"
@@ -80,15 +83,16 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/userIdealCO2"
-    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:layout_marginStart="32dp"
-    android:layout_marginEnd="32dp"
-    android:layout_marginTop="16dp"
-    android:hint="Ideal CO2 :"
-    app:endIconMode="clear_text"
-    app:layout_constraintEnd_toEndOf="@id/userIdealHumidity"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
+        android:layout_marginTop="16dp"
+        android:hint="Ideal CO2 :"
+        android:inputType="numberDecimal"
+        app:endIconMode="clear_text"
+        app:layout_constraintEnd_toEndOf="@id/userIdealHumidity"
         app:layout_constraintStart_toStartOf="@id/userIdealHumidity"
         app:layout_constraintTop_toBottomOf="@id/userIdealHumidity">
 
@@ -106,6 +110,7 @@
         android:layout_marginEnd="32dp"
         android:layout_marginTop="16dp"
         android:hint="Ideal Dust Density :"
+        android:inputType="numberDecimal"
         app:endIconMode="clear_text"
         app:layout_constraintEnd_toEndOf="@id/userIdealCO2"
         app:layout_constraintStart_toStartOf="@id/userIdealCO2"
@@ -125,6 +130,7 @@
         android:layout_marginEnd="32dp"
         android:layout_marginTop="16dp"
         android:hint="Ideal VOC :"
+        android:inputType="numberDecimal"
         app:endIconMode="clear_text"
         app:layout_constraintEnd_toEndOf="@id/userIdealDustDensity"
         app:layout_constraintStart_toStartOf="@id/userIdealDustDensity"
