@@ -2,5 +2,5 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item android:id="@+id/createProfileMenu"
-        android:title="@string/create_user_profile" />
+        android:title="View Profile" />
 </menu>

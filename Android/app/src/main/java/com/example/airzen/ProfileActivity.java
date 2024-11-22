@@ -38,5 +38,11 @@ public class ProfileActivity extends AppCompatActivity {
             Intent intent = new Intent(ProfileActivity.this, UserSettings.class);
             startActivity(intent);
         });
+
+        findViewById(R.id.homeButton).setOnClickListener(v -> {
+            // Create intent to start UserSettings activity
+            Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
+            startActivity(intent);
+        });
     }
 }
