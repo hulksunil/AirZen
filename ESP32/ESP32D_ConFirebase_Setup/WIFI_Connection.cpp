@@ -23,7 +23,7 @@ void WIFIstart() {
     WiFiManager wm;
    
     // The resetSettings() erases the stored credentials (IP address and network) on the WiFiManager object. This is for testing only; the final product will NOT have this.
-   // wm.resetSettings();
+    wm.resetSettings();
 
     // Automatically connect using saved credentials,
     // if connection fails, it starts an access point with the specified name ("AutoConnectAP"),
@@ -52,7 +52,7 @@ void WIFIstart() {
    //If the network chosen by the user is established:
     Serial.println("Connected to WIFI");
     Serial.println(WiFi.localIP());  // Prints the IP address
-    delay(5000);
+    delay(10000);
 
 }
 

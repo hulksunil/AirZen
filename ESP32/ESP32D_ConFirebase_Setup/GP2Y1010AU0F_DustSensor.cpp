@@ -32,6 +32,8 @@ float readDensity() {
   if (density < 0) {
     density = 0;
   }
+  Serial.print("Voltage");
+  Serial.println(v0);
   Serial.print("Dust Density = ");
   Serial.println(density);
   return density;
