@@ -260,9 +260,12 @@ public class GraphActivity extends AppCompatActivity {
                 currentValueLbl.setText(getString(R.string.eco2));
                 break;
             case "dustTile":
+                DustDensityGraph();
+               // currentValueLbl.setText(getString(R.string.dust));
+                pageTitle.setText(getString(R.string.dust));
+               // anyChartView.setVisibility(View.GONE);
                 currentValueLbl.setText(getString(R.string.dust));
-                anyChartView.setVisibility(View.GONE);
-                findViewById(R.id.progress_bar).setVisibility(View.GONE);
+               // findViewById(R.id.progress_bar).setVisibility(View.GONE);
                 break;
             case "vocTile":
                 VOCGraph();
@@ -343,6 +346,62 @@ public class GraphActivity extends AppCompatActivity {
 
         anyChartView.setChart(cartesian);
     }
+
+    private void DustDensityGraph() {
+
+        anyChartView.setProgressBar(findViewById(R.id.progress_bar));
+
+        ArrayList<SensorData> sensorDataValues = pastValues.get();
+        for(SensorData sensorData : sensorDataValues){
+            String time = parseSensorDataTimestamp(sensorData);
+            seriesData.add(new SensorPlotValue(time, sensorData.getDustDensity()));
+        }
+
+        Log.i("SensorLength", "" + seriesData.size());
+        Set set = Set.instantiate();
+        set.data(seriesData);
+        Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
+
+        Cartesian cartesian = initCartesianGraph(series1Mapping,"DustDensity","#fcba03");
+
+        anyChartView.setChart(cartesian);
+//        Cartesian cartesian = AnyChart.line();
+//
+//        cartesian.animation(true);
+//
+//        cartesian.padding(10d, 20d, 5d, 20d);
+//
+//        cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
+//
+//        cartesian.title("Your AirZen Dust Density Historical Data Which Is Super Important");
+
+//        for (int i = 0; i < pastValues.get().size(); i++) {
+//            seriesData.add(new SensorPlotValue(pastValues.get().get(i).getTimestamp(), pastValues.get().get(i).getDustDensity()));
+//        }
+
+
+
+
+//        Line series1 = cartesian.line(series1Mapping);
+//        series1.color("#32a83a");
+//        series1.name("DustDensity");
+//
+//
+//        cartesian.legend().enabled(true);
+//        cartesian.legend().fontSize(13d);
+//        cartesian.legend().padding(0d, 0d, 10d, 0d);
+
+
+//        cartesian.dataArea().background().enabled(true);
+//        cartesian.dataArea().background().fill("#ffd54f 0.2");
+//
+//
+//        cartesian.background().enabled(true);
+//        cartesian.background().fill("#3a56b0");
+
+
+    }
+
 
     private void VOCGraph() {
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
