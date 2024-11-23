@@ -23,8 +23,6 @@ public  class NotificationHelper {
     private static boolean vocNotificationSent = false;
     private static boolean dustNotificationSent = false;
     private static boolean aqiNotificationSent = false;
-    private static boolean pressureNotificationSent = false;
-    private static boolean altitudeNotificationSent = false;
 
 
     public static void requestPermissions(Activity context){
@@ -35,7 +33,7 @@ public  class NotificationHelper {
     private final static double HUMIDITY_UPPER_THRESHOLD = 70;
     private final static double HUMIDITY_LOWER_THRESHOLD = 25;
     private final static double CO2_UPPER_THRESHOLD = 2500;
-    private final static double VOC_UPPER_THRESHOLD = 100;
+    private final static double VOC_UPPER_THRESHOLD = 2.2;
     private final static double DUST_UPPER_THRESHOLD = 100;
     private final static double AQI_UPPER_THRESHOLD = 100;
 
@@ -59,7 +57,7 @@ public  class NotificationHelper {
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "your_channel_id")
                 .setSmallIcon(R.drawable.ic_launcher_foreground)  // Replace with your app's icon
                 .setContentTitle("Environmental Alert")
-                .setContentText(measurement+ " value exceeded high threshold")
+                .setContentText(measurement+ " value exceeded threshold limits")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         // Show the notification
@@ -99,7 +97,7 @@ public  class NotificationHelper {
         }
     }
 
-    public static void notifyCo2IfBeyondThreshold(Activity context, int co2)  {
+    public static void notifyCo2IfBeyondThreshold(Activity context, double co2)  {
         if (co2 >= CO2_UPPER_THRESHOLD) {
             if(co2NotificationSent){
                 return;
@@ -111,7 +109,7 @@ public  class NotificationHelper {
         }
     }
 
-    public static void notifyVocIfBeyondThreshold(Activity context, int voc)  {
+    public static void notifyVocIfBeyondThreshold(Activity context, double voc)  {
         if (voc >= VOC_UPPER_THRESHOLD) {
             if(vocNotificationSent){
                 return;
@@ -123,7 +121,7 @@ public  class NotificationHelper {
         }
     }
 
-    public static void notifyDustIfBeyondThreshold(Activity context, int dust)  {
+    public static void notifyDustIfBeyondThreshold(Activity context, double dust)  {
         if (dust > DUST_UPPER_THRESHOLD) {
             if(dustNotificationSent){
                 return;
@@ -137,7 +135,7 @@ public  class NotificationHelper {
 
 
 
-    public static void notifyAqiIfBeyondThreshold(Activity context, int aqi)  {
+    public static void notifyAqiIfBeyondThreshold(Activity context, double aqi)  {
         if (aqi > AQI_UPPER_THRESHOLD) {
             if(aqiNotificationSent){
                 return;
