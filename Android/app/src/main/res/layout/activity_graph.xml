@@ -119,14 +119,26 @@
                 app:layout_constraintTop_toTopOf="parent">
 
                 <TextView
-                    android:id="@+id/warningTextView"
+                    android:id="@+id/warning"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textStyle="bold"
                     android:textSize="18sp"
                     android:padding="5dp"
                     android:text="@string/warning"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/warningTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:padding="5dp"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="@string/lorem_ipsum" />
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
@@ -146,16 +158,27 @@
                 android:background="@drawable/layout_tile_rounded_corners_blue_border"
                 android:theme="@style/MainActivityBoxes"
                 app:layout_constraintTop_toTopOf="parent">
-
                 <TextView
-                    android:id="@+id/additionalInfoTextView"
+                    android:id="@+id/additionalInfo"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:textStyle="bold"
                     android:textSize="18sp"
                     android:padding="5dp"
                     android:text="@string/additionalInfo"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/additionalInfoTextView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:textSize="18sp"
+                    android:padding="5dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    tools:text="@string/lorem_ipsum"/>
 
 
             </androidx.constraintlayout.widget.ConstraintLayout>
