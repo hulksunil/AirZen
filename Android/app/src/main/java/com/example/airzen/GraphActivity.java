@@ -174,12 +174,13 @@ public class GraphActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 seriesData.clear();
-                pastValues.get().clear(); // Clear previous data
-                for (DataSnapshot childSnapshot : snapshot.getChildren()) {
-                    SensorData value = childSnapshot.getValue(SensorData.class);
-                    pastValues.get().add(value);
+                if(pastValues.get().isEmpty()){ // prevents the map from updating everytime there is new data
+                    for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                        SensorData value = childSnapshot.getValue(SensorData.class);
+                        pastValues.get().add(value);
+                    }
+                    displayGraph(graphToDisplay);
                 }
-                displayGraph(graphToDisplay);
             }
 
             @Override
@@ -243,26 +244,31 @@ public class GraphActivity extends AppCompatActivity {
             switch (message) {
                 case "tempTile":
                     if(!pastValues.get().isEmpty()) tempGraph();
+                    else hideGraph();
                     pageTitle.setText(getString(R.string.temp));
                     currentValueLbl.setText(getString(R.string.temp));
                     break;
                 case "humidityTile":
                     if(!pastValues.get().isEmpty()) humidityGraph();
+                    else hideGraph();
                     pageTitle.setText(getString(R.string.humidity));
                     currentValueLbl.setText(getString(R.string.humidity));
                     break;
                 case "eCO2Tile":
                     if(!pastValues.get().isEmpty()) eCO2Graph();
+                    else hideGraph();
                     pageTitle.setText(getString(R.string.eco2));
                     currentValueLbl.setText(getString(R.string.eco2));
                     break;
                 case "dustTile":
                     if(!pastValues.get().isEmpty()) dustDensityGraph();
+                    else hideGraph();
                     pageTitle.setText(getString(R.string.dust));
                     currentValueLbl.setText(getString(R.string.dust));
                     break;
                 case "vocTile":
                     if(!pastValues.get().isEmpty()) VOCGraph();
+                    else hideGraph();
                     pageTitle.setText(getString(R.string.voc));
                     currentValueLbl.setText(getString(R.string.voc));
                     break;
@@ -402,9 +408,6 @@ public class GraphActivity extends AppCompatActivity {
         boolean warningSet = false;
         boolean additionalSet = false;
 
-        additionalInfo.setText(getString(R.string.additionalInfo));
-        warnings.setText(getString(R.string.warning));
-
         if (currentTemperature > 24 || currentTemperature < 22) {
             additionalInfo.append(getString(R.string.Temperature_workRange));
             additionalSet = true;
@@ -436,8 +439,6 @@ public class GraphActivity extends AppCompatActivity {
         boolean warningSet = false;
         boolean additionalSet = false;
 
-        additionalInfo.setText(getString(R.string.additionalInfo));
-        warnings.setText(getString(R.string.warning));
 
         if (currentHumidity < 30 || currentHumidity > 50) {
             warnings.append(getString(R.string.Humidity_indoor));
@@ -478,8 +479,6 @@ public class GraphActivity extends AppCompatActivity {
         boolean warningSet = false;
         boolean additionalSet = false;
 
-        additionalInfo.setText(getString(R.string.additionalInfo));
-        warnings.setText(getString(R.string.warning));
 
         if (currentCo2 > 1000) {
             warnings.append(getString(R.string.CO2_ventilation));
@@ -596,6 +595,11 @@ public class GraphActivity extends AppCompatActivity {
 //        cartesian.background().fill("#3a56b0");
 
         return cartesian;
+    }
+
+    private void hideGraph(){
+        anyChartView.setVisibility(View.GONE);
+        findViewById(R.id.progress_bar).setVisibility(View.GONE);
     }
 
     class SetException extends Exception {
