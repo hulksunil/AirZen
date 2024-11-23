@@ -3,15 +3,19 @@ package com.example.airzen;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.view.Menu;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
 
 public class ProfileActivity extends AppCompatActivity {
+
+    private Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,6 +28,13 @@ public class ProfileActivity extends AppCompatActivity {
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
         });
+
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle(" ");
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
 
         TextView userName = findViewById(R.id.userName);
 
@@ -38,11 +49,20 @@ public class ProfileActivity extends AppCompatActivity {
             Intent intent = new Intent(ProfileActivity.this, UserSettings.class);
             startActivity(intent);
         });
+    }
 
-        findViewById(R.id.homeButton).setOnClickListener(v -> {
-            // Create intent to start UserSettings activity
-            Intent intent = new Intent(ProfileActivity.this, MainActivity.class);
-            startActivity(intent);
-        });
+    /**
+     * Sets up the toolbar for the data activity by enabling the back button
+     * @return
+     */
+    @Override
+    public boolean onSupportNavigateUp() {
+        // Create an intent to navigate back to MainActivity
+        Intent intent = new Intent(this, MainActivity.class);
+        // Clear the activity stack to avoid returning to the current activity
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+        startActivity(intent);
+        finish(); // Finish the current activity
+        return true;
     }
 }
