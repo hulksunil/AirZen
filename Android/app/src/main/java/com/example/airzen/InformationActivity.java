@@ -17,7 +17,7 @@ import com.example.airzen.models.AssetConfigure;
 
 public class InformationActivity extends AppCompatActivity {
     private Toolbar toolbar;
-    private LinearLayout temperatureInfo, humidityInfo, co2Info;
+    private LinearLayout temperatureInfo, humidityInfo, co2Info,dustInfo,vocInfo;
     private TextView notYetImpl;
 
     @Override
@@ -33,6 +33,9 @@ public class InformationActivity extends AppCompatActivity {
         temperatureInfo = findViewById(R.id.temperatureInfo);
         humidityInfo = findViewById(R.id.humidityInfo);
         co2Info = findViewById(R.id.co2Info);
+        //dustInfo
+        vocInfo = findViewById(R.id.vocInfo);
+
 
         notYetImpl = findViewById(R.id.todo);
 
@@ -60,6 +63,11 @@ public class InformationActivity extends AppCompatActivity {
                 break;
             case "CO₂":
                 co2Info.setVisibility(View.VISIBLE);
+                break;
+            case "VOC":
+                vocInfo.setVisibility(View.VISIBLE);
+                break;
+            case "Dust Density":
                 break;
             default:
                 notYetImpl.setVisibility(View.VISIBLE);
