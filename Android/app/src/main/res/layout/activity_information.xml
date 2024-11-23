@@ -380,7 +380,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <!--VOC green -->
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -415,10 +415,10 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="116dp"
+                    android:layout_marginTop="15dp"
                     android:background="@drawable/layout_tile_rounded_corners"
                     android:theme="@style/MainActivityBoxes"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginTop="15dp">
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <ImageView
                         android:layout_width="71dp"
@@ -445,10 +445,10 @@
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="116dp"
+                    android:layout_marginTop="15dp"
                     android:background="@drawable/layout_tile_rounded_corners"
                     android:theme="@style/MainActivityBoxes"
-                    app:layout_constraintTop_toTopOf="parent"
-                    android:layout_marginTop="15dp">
+                    app:layout_constraintTop_toTopOf="parent">
 
                     <ImageView
                         android:layout_width="71dp"
@@ -475,8 +475,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="15dp"
-                    android:textSize="16sp"
-                    android:text="@string/Info_VOC_Additional" />
+                    android:text="@string/Info_VOC_Additional"
+                    android:textSize="16sp" />
 
             </LinearLayout>
         </LinearLayout>
