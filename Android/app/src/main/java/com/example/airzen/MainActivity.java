@@ -76,7 +76,11 @@ public class MainActivity extends AppCompatActivity {
 
         readFirebaseSensorData();
         NotificationHelper.createNotificationChannel(this);
-        NotificationHelper.requestPermissions(this);
+        if(!NotificationHelper.isPostNotificationsPermissionGranted(this)){
+            NotificationHelper.requestPermissions(this);
+        }
+
+
     }
 
 
@@ -148,6 +152,8 @@ public class MainActivity extends AppCompatActivity {
 
     //https://cdn-shop.adafruit.com/product-files/3660/BME680.pdf
     private void slimChartInit(int iaqi) {
+        NotificationHelper.notifyAqiIfBeyondThreshold(this, iaqi);
+
         final float[] stats = new float[2]; // The rings
         int[] colors = new int[2];//the colors in the rings
 
