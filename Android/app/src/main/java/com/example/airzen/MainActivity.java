@@ -5,13 +5,11 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
@@ -21,7 +19,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.airzen.models.NotificationHelper;
 import com.example.airzen.models.AssetConfigure;
 import com.example.airzen.models.SensorData;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -29,9 +26,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mancj.slimchart.SlimChart;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicReference;
 import java.text.DecimalFormat;
 
 public class MainActivity extends AppCompatActivity {
@@ -76,7 +70,7 @@ public class MainActivity extends AppCompatActivity {
 
         readFirebaseSensorData();
         NotificationHelper.createNotificationChannel(this);
-        if(!NotificationHelper.isPostNotificationsPermissionGranted(this)){
+        if(!NotificationHelper.isPostNotificationsPermissionGranted(this) && getSharedPreferences("notificationPreferences", MODE_PRIVATE).getInt("timesRequested", 0) < NotificationHelper.MAX_TIMES_ALLOWED_TO_REQUEST_PERMISSIONS){
             NotificationHelper.requestPermissions(this);
         }
 
