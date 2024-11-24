@@ -40,6 +40,7 @@ import java.text.DecimalFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 
 public class GraphActivity extends AppCompatActivity {
@@ -58,7 +59,17 @@ public class GraphActivity extends AppCompatActivity {
     private ConstraintLayout warningsBox;
     private TextView additionalInfo;
     private ConstraintLayout additionalInfoBox;
+    private Cartesian cartesianGraph = null;
+    private Line series1 = null;
+    private Set set = null;
+    private ArrayList<DataEntry> tempData = new ArrayList<>();
+    private ArrayList<DataEntry> humidityData = new ArrayList<>();
+    private ArrayList<DataEntry> co2Data = new ArrayList<>();
+    private ArrayList<DataEntry> dustData = new ArrayList<>();
+    private ArrayList<DataEntry> vocData = new ArrayList<>();
 
+
+    private List<SensorData>  dataQueue = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -174,12 +185,38 @@ public class GraphActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 seriesData.clear();
-                pastValues.get().clear(); // Clear previous data
-                for (DataSnapshot childSnapshot : snapshot.getChildren()) {
-                    SensorData value = childSnapshot.getValue(SensorData.class);
-                    pastValues.get().add(value);
+                //pastValues.get().clear(); // Clear previous data
+                SensorData last = null;
+
+                if (dataQueue.isEmpty()){
+                    Log.i("dataQue","Data Que is empty");
+                    for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                        dataQueue.add(childSnapshot.getValue(SensorData.class));
+                    }
+
+                        try {
+                            genericGraph("Temperature",true);
+                        } catch (SetException e) {
+                            throw new RuntimeException(e);
+                        }
+
+
                 }
-                displayGraph(graphToDisplay);
+                else{
+                    for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                        last = childSnapshot.getValue(SensorData.class);
+                    }
+                    dataQueue.add(last);
+
+                        try {
+                            genericGraph("Temperature",true);
+                        } catch (SetException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                }
+
+//                runOnUiThread(() -> displayGraph(graphToDisplay));
             }
 
             @Override
@@ -242,7 +279,8 @@ public class GraphActivity extends AppCompatActivity {
         try{
             switch (message) {
                 case "tempTile":
-                    if(!pastValues.get().isEmpty()) tempGraph();
+//                    if(!dataQueue.isEmpty()) tempGraph();
+//                    genericGraph("Temperature",);
                     pageTitle.setText(getString(R.string.temp));
                     currentValueLbl.setText(getString(R.string.temp));
                     break;
@@ -286,6 +324,55 @@ public class GraphActivity extends AppCompatActivity {
         }
     }
 
+    private void genericGraph(String setKey, boolean initialize ) throws SetException{
+        anyChartView.setProgressBar(findViewById(R.id.progress_bar));
+
+        if(initialize) {
+            initializeGenericGraph(setKey);
+        }
+        else {
+           // initializeGenericGraph(setKey);
+            updateCartesianGraph();
+        }
+    }
+
+    private void initializeGenericGraph(String setKey) throws SetException {
+        ArrayList<DataEntry> genericData = null;
+        if (setKey == "Temperature") {
+            genericData = tempData;
+
+        }
+        for(SensorData sensorData : dataQueue){
+            String time = parseSensorDataTimestamp(sensorData);
+
+            genericData.add(new SensorPlotValue(time, sensorData.getTemperature()));
+        }
+
+        initSet(setKey);
+        set.data(genericData);
+        Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
+        cartesianGraph= initCartesianGraph(series1Mapping, setKey, "#FF0000");
+        anyChartView.setChart(cartesianGraph);
+
+    }
+    private void updateCartesianGraph() throws SetException{
+
+        ArrayList<DataEntry> dataEntry = new ArrayList<>();
+        SensorData data = dataQueue.get(dataQueue.size()-1);
+
+        dataEntry.add(new SensorPlotValue(parseSensorDataTimestamp(data), data.getTemperature()));
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                set.data(dataEntry);
+                anyChartView.invalidate();
+                anyChartView.refreshDrawableState();
+            }
+        });
+
+        Log.i("NewSensorData",data.toString());
+    }
+
     //temperature graph function
     private void tempGraph() throws SetException {
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
@@ -297,7 +384,7 @@ public class GraphActivity extends AppCompatActivity {
             seriesData.add(new SensorPlotValue(time, sensorData.getTemperature()));
         }
 
-        Set set = getSet("Temperature");
+//        Set set = getSet("Temperature");
         set.data(seriesData);
         Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
 
@@ -317,7 +404,7 @@ public class GraphActivity extends AppCompatActivity {
 
             Log.i("SensorLength", "" + seriesData.size());
 
-        Set set = getSet("Humidity");
+//        Set set = getSet("Humidity");
         set.data(seriesData);
         Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
 
@@ -337,7 +424,7 @@ public class GraphActivity extends AppCompatActivity {
 
         Log.i("SensorLength", "" + seriesData.size());
 
-        Set set = getSet("eCO2");
+//        Set set = getSet("eCO2");
         set.data(seriesData);
         Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
 
@@ -366,7 +453,6 @@ public class GraphActivity extends AppCompatActivity {
         anyChartView.setChart(cartesian);
     }
 
-
     private void VOCGraph() throws SetException{
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
@@ -378,7 +464,7 @@ public class GraphActivity extends AppCompatActivity {
         }
 
         Log.i("SensorLength", "" + seriesData.size());
-        Set set = getSet("VOC");
+//        Set set = getSet("VOC");
         set.data(seriesData);
         Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
 
@@ -387,15 +473,13 @@ public class GraphActivity extends AppCompatActivity {
         anyChartView.setChart(cartesian);
     }
 
-    private @NonNull Set getSet(String from) throws SetException {
-        Set set = null;
+    private @NonNull void initSet(String from) throws SetException {
         try{
             set = Set.instantiate();
         }
         catch (NullPointerException npe){
             throw new SetException("Set Exception "+from);
         }
-        return set;
     }
 
     private void temperatureWarning(Double currentTemperature) {
@@ -568,7 +652,8 @@ public class GraphActivity extends AppCompatActivity {
      * @return
      */
     @NonNull
-    private static Cartesian initCartesianGraph(Mapping series1Mapping, String sensorReadingType, String lineColor) {
+    private Cartesian initCartesianGraph(Mapping series1Mapping, String sensorReadingType, String lineColor) {
+
         Cartesian cartesian = AnyChart.line();
 
         cartesian.animation(true);
@@ -579,13 +664,14 @@ public class GraphActivity extends AppCompatActivity {
 
         cartesian.title("Your AirZen "+sensorReadingType+" Historical Data");
 
-        Line series1 = cartesian.line(series1Mapping);
+        series1 = cartesian.line(series1Mapping);
         series1.color(lineColor);
         series1.name(sensorReadingType);
 
         cartesian.legend().enabled(true);
         cartesian.legend().fontSize(13d);
         cartesian.legend().padding(0d, 0d, 10d, 0d);
+
 
         //TODO some stying
 
@@ -595,7 +681,8 @@ public class GraphActivity extends AppCompatActivity {
 //        cartesian.background().enabled(true);
 //        cartesian.background().fill("#3a56b0");
 
-        return cartesian;
+        cartesianGraph = cartesian;
+        return cartesianGraph;
     }
 
     class SetException extends Exception {
