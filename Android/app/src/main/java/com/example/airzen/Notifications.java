@@ -15,7 +15,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.airzen.models.NotificationHelper;
 
 public class Notifications extends AppCompatActivity {
-    private Toolbar toolbar;
 
     private SwitchCompat generalNotificationsSwitch, iaqiSwitch, temperatureSwitch, humiditySwitch, co2Switch, vocSwitch, dustSwitch;
 
@@ -53,6 +52,25 @@ public class Notifications extends AppCompatActivity {
         if(!arePostNotificationsPermissionGranted) {
             generalNotificationsSwitch.setChecked(false);
         } else {
+            boolean isFirstTimeNotificationsEnabled = getSharedPreferences("notificationPreferences", MODE_PRIVATE).getBoolean("isFirstTimeEnabled", true);
+            if(isFirstTimeNotificationsEnabled) {
+                notification.edit().putBoolean("isFirstTimeEnabled", false).apply();
+
+                iaqiSwitch.setChecked(true);
+                temperatureSwitch.setChecked(true);
+                humiditySwitch.setChecked(true);
+                co2Switch.setChecked(true);
+                vocSwitch.setChecked(true);
+                dustSwitch.setChecked(true);
+
+                iaqiSwitch.setEnabled(true);
+                temperatureSwitch.setEnabled(true);
+                humiditySwitch.setEnabled(true);
+                co2Switch.setEnabled(true);
+                vocSwitch.setEnabled(true);
+                dustSwitch.setEnabled(true);
+            }
+
             boolean hasGeneralNotification = notification.getBoolean("areNotificationsEnabled", true);
             generalNotificationsSwitch.setChecked(hasGeneralNotification);
         }
