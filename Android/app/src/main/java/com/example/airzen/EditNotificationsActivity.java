@@ -14,7 +14,7 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.airzen.models.NotificationHelper;
 
-public class Notifications extends AppCompatActivity {
+public class EditNotificationsActivity extends AppCompatActivity {
 
     private SwitchCompat generalNotificationsSwitch, iaqiSwitch, temperatureSwitch, humiditySwitch, co2Switch, vocSwitch, dustSwitch;
 
@@ -22,7 +22,7 @@ public class Notifications extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
-        setContentView(R.layout.activity_notifications);
+        setContentView(R.layout.activity_edit_notifications);
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
