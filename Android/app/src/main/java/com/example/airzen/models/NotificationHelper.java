@@ -1,10 +1,19 @@
 package com.example.airzen.models;
 
+import static android.content.Context.MODE_PRIVATE;
+
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Build;
+import android.provider.Settings;
+import android.util.Log;
+import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
@@ -14,7 +23,12 @@ import com.example.airzen.R;
 
 
 public  class NotificationHelper {
-    // Flag to track if notification has been sent
+
+    // Android only allows requesting permissions twice and then stops asking so we use this to redirect the user to settings page after 2 requests
+    private static final int MAX_TIMES_ALLOWED_TO_REQUEST_PERMISSIONS = 2;
+
+
+    // Flags to track if notification has been sent
     // This is to prevent multiple notifications from being sent for the same event (e.g. temperature exceeding threshold)
     // the flag is reset when the value goes below the threshold
     private static boolean tempNotificationSent = false;
@@ -23,21 +37,33 @@ public  class NotificationHelper {
     private static boolean vocNotificationSent = false;
     private static boolean dustNotificationSent = false;
     private static boolean aqiNotificationSent = false;
-    private static boolean pressureNotificationSent = false;
-    private static boolean altitudeNotificationSent = false;
-
-
-    public static void requestPermissions(Activity context){
-        ActivityCompat.requestPermissions(context, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 1);
-    }
 
     private final static double TEMPERATURE_UPPER_THRESHOLD = 35.00;
     private final static double HUMIDITY_UPPER_THRESHOLD = 70;
     private final static double HUMIDITY_LOWER_THRESHOLD = 25;
     private final static double CO2_UPPER_THRESHOLD = 2500;
-    private final static double VOC_UPPER_THRESHOLD = 100;
+    private final static double VOC_UPPER_THRESHOLD = 2.2;
     private final static double DUST_UPPER_THRESHOLD = 100;
     private final static double AQI_UPPER_THRESHOLD = 100;
+
+    public static void requestPermissions(Activity context){
+        int timesRequested = context.getSharedPreferences("notificationPreferences", MODE_PRIVATE).getInt("timesRequested", 0);
+        timesRequested++;
+
+        if(timesRequested > MAX_TIMES_ALLOWED_TO_REQUEST_PERMISSIONS){
+            Toast.makeText(context, "Please enable notifications from settings", Toast.LENGTH_SHORT).show();
+            // redirect the user to actual settings notifications page since android doesn't allow requesting permissions more than 2 times
+            Intent intent = new Intent();
+            intent.setAction(Settings.ACTION_APP_NOTIFICATION_SETTINGS);
+            intent.putExtra(Settings.EXTRA_APP_PACKAGE, context.getPackageName());
+            context.startActivity(intent);
+            return;
+        }
+        context.getSharedPreferences("notificationPreferences", MODE_PRIVATE).edit().putInt("timesRequested", timesRequested).apply();
+
+        ActivityCompat.requestPermissions(context, new String[]{android.Manifest.permission.POST_NOTIFICATIONS}, 1);
+    }
+
 
 
     public static void createNotificationChannel(Activity context) {
@@ -53,29 +79,53 @@ public  class NotificationHelper {
         }
     }
 
+    public static boolean isPostNotificationsPermissionGranted(Activity context) {
+        SharedPreferences notification = context.getSharedPreferences("notificationPreferences", MODE_PRIVATE);
+        boolean isFirstTimeNotificationsEnabled = context.getSharedPreferences("notificationPreferences", MODE_PRIVATE).getBoolean("isFirstTimeEnabled", true);
+        if(isFirstTimeNotificationsEnabled) {
+            notification.edit().putBoolean("isFirstTimeEnabled", false).apply();
+
+            notification.edit().putBoolean("hasTempNotificationEnabled", true).putBoolean("hasHumidityNotificationEnabled", true).putBoolean("hasCO2NotificationEnabled", true).putBoolean("hasVOCNotificationEnabled", true).putBoolean("hasDustNotificationEnabled", true).putBoolean("hasIAQINotificationEnabled", true).apply();
+
+        }
+        return ActivityCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
+    }
+
+    private static boolean areNotificationsEnabled(Activity context) {
+        return context.getSharedPreferences("notificationPreferences", MODE_PRIVATE).getBoolean("areNotificationsEnabled", false);
+    }
+
 
     private static void notifyUserOfHighThreshold(Activity context, String measurement) {
         // Create the notification
+        Bitmap icon = BitmapFactory.decodeResource(context.getResources(),R.drawable.app_logo_notification_icon);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "your_channel_id")
-                .setSmallIcon(R.drawable.ic_launcher_foreground)  // Replace with your app's icon
+                .setSmallIcon(R.drawable.app_logo_notification_icon)  // Replace with your app's icon
+                .setLargeIcon(icon)
                 .setContentTitle("Environmental Alert")
-                .setContentText(measurement+ " value exceeded high threshold")
+                .setContentText(measurement+ " value has exceeded threshold limits")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         // Show the notification
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 
-        // if the app does not have the permission to post notifications, request it
-        if (ActivityCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+//        // if the app does not have the permission to post notifications, request it
+        if (!isPostNotificationsPermissionGranted(context)) {
             requestPermissions(context);
             return;
         }
         notificationManager.notify(1, builder.build());
     }
 
-    // TOOO: fix the threshold values
-
     public static void notifyTemperatureIfBeyondThreshold(Activity context, double temperature)  {
+        if(!areNotificationsEnabled(context)){
+            return;
+        }
+
+        if(!context.getSharedPreferences("notificationPreferences", MODE_PRIVATE).getBoolean("hasTempNotificationEnabled", false)){
+            return;
+        }
+
         if (temperature >= TEMPERATURE_UPPER_THRESHOLD) {
             if(tempNotificationSent){
                 return;
@@ -88,6 +138,15 @@ public  class NotificationHelper {
     }
 
     public static void notifyHumidityIfBeyondThreshold(Activity context, double humidity)  {
+        if(!areNotificationsEnabled(context)){
+            return;
+        }
+
+        if(!context.getSharedPreferences("notificationPreferences", MODE_PRIVATE).getBoolean("hasHumidityNotificationEnabled", false)){
+            return;
+        }
+
+
         if (humidity >= HUMIDITY_UPPER_THRESHOLD || humidity < HUMIDITY_LOWER_THRESHOLD) {
             if(humNotificationSent){
                 return;
@@ -99,7 +158,15 @@ public  class NotificationHelper {
         }
     }
 
-    public static void notifyCo2IfBeyondThreshold(Activity context, int co2)  {
+    public static void notifyCo2IfBeyondThreshold(Activity context, double co2)  {
+        if(!areNotificationsEnabled(context)){
+            return;
+        }
+
+        if(!context.getSharedPreferences("notificationPreferences", MODE_PRIVATE).getBoolean("hasCO2NotificationEnabled", false)){
+            return;
+        }
+
         if (co2 >= CO2_UPPER_THRESHOLD) {
             if(co2NotificationSent){
                 return;
@@ -111,7 +178,15 @@ public  class NotificationHelper {
         }
     }
 
-    public static void notifyVocIfBeyondThreshold(Activity context, int voc)  {
+    public static void notifyVocIfBeyondThreshold(Activity context, double voc)  {
+        if(!areNotificationsEnabled(context)){
+            return;
+        }
+
+        if(!context.getSharedPreferences("notificationPreferences", MODE_PRIVATE).getBoolean("hasVOCNotificationEnabled", false)){
+            return;
+        }
+
         if (voc >= VOC_UPPER_THRESHOLD) {
             if(vocNotificationSent){
                 return;
@@ -123,7 +198,15 @@ public  class NotificationHelper {
         }
     }
 
-    public static void notifyDustIfBeyondThreshold(Activity context, int dust)  {
+    public static void notifyDustIfBeyondThreshold(Activity context, double dust)  {
+        if(!areNotificationsEnabled(context)){
+            return;
+        }
+
+        if(!context.getSharedPreferences("notificationPreferences", MODE_PRIVATE).getBoolean("hasDustNotificationEnabled", false)){
+            return;
+        }
+
         if (dust > DUST_UPPER_THRESHOLD) {
             if(dustNotificationSent){
                 return;
@@ -137,7 +220,15 @@ public  class NotificationHelper {
 
 
 
-    public static void notifyAqiIfBeyondThreshold(Activity context, int aqi)  {
+    public static void notifyAqiIfBeyondThreshold(Activity context, double aqi)  {
+        if(!areNotificationsEnabled(context)){
+            return;
+        }
+
+        if(!context.getSharedPreferences("notificationPreferences", MODE_PRIVATE).getBoolean("hasIAQINotificationEnabled", false)){
+            return;
+        }
+
         if (aqi > AQI_UPPER_THRESHOLD) {
             if(aqiNotificationSent){
                 return;

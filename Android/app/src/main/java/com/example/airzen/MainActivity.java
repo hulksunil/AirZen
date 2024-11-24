@@ -76,9 +76,23 @@ public class MainActivity extends AppCompatActivity {
 
         readFirebaseSensorData();
         NotificationHelper.createNotificationChannel(this);
-        NotificationHelper.requestPermissions(this);
+        if(!NotificationHelper.isPostNotificationsPermissionGranted(this)){
+            NotificationHelper.requestPermissions(this);
+        }
+
+
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        boolean postNotificationsPermissionGranted = NotificationHelper.isPostNotificationsPermissionGranted(this);
+        Log.i("MainActivityNotificationStuff", "requestPermissions: postNotificationsPermissionGranted: " + postNotificationsPermissionGranted);
+        if(postNotificationsPermissionGranted){
+            getSharedPreferences("notificationPreferences", MODE_PRIVATE).edit().putBoolean("areNotificationsEnabled", true).apply();
+        }
+    }
 
     /**
      * Connects to the Firebase database and reads the sensor data
@@ -148,6 +162,8 @@ public class MainActivity extends AppCompatActivity {
 
     //https://cdn-shop.adafruit.com/product-files/3660/BME680.pdf
     private void slimChartInit(int iaqi) {
+        NotificationHelper.notifyAqiIfBeyondThreshold(this, iaqi);
+
         final float[] stats = new float[2]; // The rings
         int[] colors = new int[2];//the colors in the rings
 
