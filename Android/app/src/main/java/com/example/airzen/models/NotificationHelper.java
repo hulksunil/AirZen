@@ -6,11 +6,13 @@ import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.provider.Settings;
+import android.util.Log;
 import android.widget.Toast;
 
 import androidx.core.app.ActivityCompat;
@@ -78,6 +80,14 @@ public  class NotificationHelper {
     }
 
     public static boolean isPostNotificationsPermissionGranted(Activity context) {
+        SharedPreferences notification = context.getSharedPreferences("notificationPreferences", MODE_PRIVATE);
+        boolean isFirstTimeNotificationsEnabled = context.getSharedPreferences("notificationPreferences", MODE_PRIVATE).getBoolean("isFirstTimeEnabled", true);
+        if(isFirstTimeNotificationsEnabled) {
+            notification.edit().putBoolean("isFirstTimeEnabled", false).apply();
+
+            notification.edit().putBoolean("hasTempNotificationEnabled", true).putBoolean("hasHumidityNotificationEnabled", true).putBoolean("hasCO2NotificationEnabled", true).putBoolean("hasVOCNotificationEnabled", true).putBoolean("hasDustNotificationEnabled", true).putBoolean("hasIAQINotificationEnabled", true).apply();
+
+        }
         return ActivityCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
     }
 

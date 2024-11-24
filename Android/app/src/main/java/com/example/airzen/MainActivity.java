@@ -83,6 +83,16 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        boolean postNotificationsPermissionGranted = NotificationHelper.isPostNotificationsPermissionGranted(this);
+        Log.i("MainActivityNotificationStuff", "requestPermissions: postNotificationsPermissionGranted: " + postNotificationsPermissionGranted);
+        if(postNotificationsPermissionGranted){
+            getSharedPreferences("notificationPreferences", MODE_PRIVATE).edit().putBoolean("areNotificationsEnabled", true).apply();
+        }
+    }
 
     /**
      * Connects to the Firebase database and reads the sensor data
