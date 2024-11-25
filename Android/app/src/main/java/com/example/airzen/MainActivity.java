@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
@@ -39,6 +42,8 @@ public class MainActivity extends AppCompatActivity {
 
     private SlimChart slimChart;
 
+    private Toolbar toolbar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +53,7 @@ public class MainActivity extends AppCompatActivity {
             Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
             v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
             return insets;
+
         });
 
         tempTile = findViewById(R.id.tempTile);
@@ -70,10 +76,13 @@ public class MainActivity extends AppCompatActivity {
 
         readFirebaseSensorData();
         NotificationHelper.createNotificationChannel(this);
-        if(!NotificationHelper.isPostNotificationsPermissionGranted(this) && getSharedPreferences("notificationPreferences", MODE_PRIVATE).getInt("timesRequested", 0) < NotificationHelper.MAX_TIMES_ALLOWED_TO_REQUEST_PERMISSIONS){
+       if(!NotificationHelper.isPostNotificationsPermissionGranted(this) && getSharedPreferences("notificationPreferences", MODE_PRIVATE).getInt("timesRequested", 0) < NotificationHelper.MAX_TIMES_ALLOWED_TO_REQUEST_PERMISSIONS){
             NotificationHelper.requestPermissions(this);
         }
 
+        toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
 
     }
 
@@ -221,6 +230,29 @@ public class MainActivity extends AppCompatActivity {
         }
         intent.putExtra("TILE_ID", tileID);
         startActivity(intent);
+    }
+
+    @Override
+    public boolean onSupportNavigateUp() {
+        getOnBackPressedDispatcher().onBackPressed();
+        return super.onSupportNavigateUp();
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.create_profile_menu, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.createProfileMenu) {
+            Intent profileCreation = new Intent(MainActivity.this, ProfileActivity.class);
+            //profileCreation.putExtra(getString(R.string.clickedMetric), pageTitle.getText());
+            startActivity(profileCreation);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
 

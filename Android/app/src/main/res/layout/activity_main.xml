@@ -12,6 +12,11 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="15dp">
+        <include
+            layout="@layout/toolbar"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
 
         <!-- Linear Layout for AQI-->
         <LinearLayout
