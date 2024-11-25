@@ -12,6 +12,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -240,16 +241,20 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.create_profile_menu, menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
         return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
-        if (item.getItemId() == R.id.createProfileMenu) {
-            Intent profileCreation = new Intent(MainActivity.this, ProfileActivity.class);
-            //profileCreation.putExtra(getString(R.string.clickedMetric), pageTitle.getText());
-            startActivity(profileCreation);
+        if (item.getItemId() == R.id.editProfileMenu) {
+            Intent userSettingsIntent = new Intent(MainActivity.this, UserSettings.class);
+            startActivity(userSettingsIntent);
+            return true;
+        }
+        else if (item.getItemId() == R.id.editNotificationsMenu) {
+            Intent intent = new Intent(MainActivity.this, EditNotificationsActivity.class);
+            startActivity(intent);
             return true;
         }
         return super.onOptionsItemSelected(item);
