@@ -98,7 +98,7 @@ public class UserSettings extends AppCompatActivity {
             String idealDustDensity = idealDustDensityEditText.getText().toString().trim();
             String idealVOC = idealVOCEditText.getText().toString().trim();
 
-            if (!isValidDecimal(idealTemp)) {
+            if (!idealTemp.isEmpty() && !isValidDecimal(idealTemp)) {
                 Toast.makeText(this, "Please enter a valid temperature (decimal number)", Toast.LENGTH_SHORT).show();
                 allInputsValid = false;
             }
@@ -106,7 +106,7 @@ public class UserSettings extends AppCompatActivity {
                 saveIdealTempToSharedPreferences(idealTemp);
             }
 
-            if (!isValidDecimal(idealHumidity)) {
+            if (!idealHumidity.isEmpty() && !isValidDecimal(idealHumidity)) {
                 Toast.makeText(this, "Please enter a valid humidity (decimal number)", Toast.LENGTH_SHORT).show();
                 allInputsValid = false;
             }
@@ -114,7 +114,7 @@ public class UserSettings extends AppCompatActivity {
                 saveIdealHumidityToSharedPreferences(idealHumidity);
             }
 
-            if (!isValidDecimal(idealCO2)) {
+            if (!idealCO2.isEmpty() && !isValidDecimal(idealCO2)) {
                 Toast.makeText(this, "Please enter a valid CO2 level (decimal number)", Toast.LENGTH_SHORT).show();
                 allInputsValid = false;
             }
@@ -122,7 +122,7 @@ public class UserSettings extends AppCompatActivity {
                 saveIdealCO2ToSharedPreferences(idealCO2);
             }
 
-            if (!isValidDecimal(idealDustDensity)) {
+            if (!idealDustDensity.isEmpty() && !isValidDecimal(idealDustDensity)) {
                 Toast.makeText(this, "Please enter a valid dust density (decimal number)", Toast.LENGTH_SHORT).show();
                 allInputsValid = false;
             }
@@ -130,7 +130,7 @@ public class UserSettings extends AppCompatActivity {
                 saveIdealDustDensityToSharedPreferences(idealDustDensity);
             }
 
-            if (!isValidDecimal(idealVOC)) {
+            if (!idealVOC.isEmpty() && !isValidDecimal(idealVOC)) {
                 Toast.makeText(this, "Please enter a valid VOC level (decimal number)", Toast.LENGTH_SHORT).show();
                 allInputsValid = false;
             }
@@ -143,9 +143,7 @@ public class UserSettings extends AppCompatActivity {
                 //savePreferences();
                 Toast.makeText(this, "All inputs saved successfully!", Toast.LENGTH_SHORT).show();
 
-                // Start ProfileActivity
-                Intent intent = new Intent(UserSettings.this, ProfileActivity.class);
-                startActivity(intent);
+                finish(); // Close the activity
             }
         });
     }
