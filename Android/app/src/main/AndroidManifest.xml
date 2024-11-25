@@ -21,7 +21,7 @@
             android:name=".ProfileActivity"
             android:exported="false" />
         <activity
-            android:name=".Notifications"
+            android:name=".EditNotificationsActivity"
             android:exported="false" />
         <activity
             android:name=".InformationActivity"

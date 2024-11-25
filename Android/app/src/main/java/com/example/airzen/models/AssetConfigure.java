@@ -58,6 +58,7 @@ public class AssetConfigure {
     }
 
     public static Drawable setVOCSVG(double currentVOC, Context context){
+        NotificationHelper.notifyVocIfBeyondThreshold((Activity) context, currentVOC);
         if(currentVOC > 2.2){
             return AppCompatResources.getDrawable(context,R.drawable.voc_red);
         } else if (currentVOC > 0.66 && currentVOC < 2.2) {

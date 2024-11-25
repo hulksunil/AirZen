@@ -7,13 +7,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.constraintlayout.widget.ConstraintLayout;
@@ -24,7 +22,6 @@ import androidx.core.view.WindowInsetsCompat;
 import com.example.airzen.models.NotificationHelper;
 import com.example.airzen.models.AssetConfigure;
 import com.example.airzen.models.SensorData;
-import com.google.firebase.database.ChildEventListener;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,9 +29,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.mancj.slimchart.SlimChart;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.concurrent.atomic.AtomicReference;
 import java.text.DecimalFormat;
 
 public class MainActivity extends AppCompatActivity {
@@ -82,13 +76,26 @@ public class MainActivity extends AppCompatActivity {
 
         readFirebaseSensorData();
         NotificationHelper.createNotificationChannel(this);
-        NotificationHelper.requestPermissions(this);
+       if(!NotificationHelper.isPostNotificationsPermissionGranted(this) && getSharedPreferences("notificationPreferences", MODE_PRIVATE).getInt("timesRequested", 0) < NotificationHelper.MAX_TIMES_ALLOWED_TO_REQUEST_PERMISSIONS){
+            NotificationHelper.requestPermissions(this);
+        }
 
         toolbar = findViewById(R.id.toolbar);
         toolbar.setTitle("");
         setSupportActionBar(toolbar);
+
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        boolean postNotificationsPermissionGranted = NotificationHelper.isPostNotificationsPermissionGranted(this);
+        Log.i("MainActivityNotificationStuff", "requestPermissions: postNotificationsPermissionGranted: " + postNotificationsPermissionGranted);
+        if(postNotificationsPermissionGranted){
+            getSharedPreferences("notificationPreferences", MODE_PRIVATE).edit().putBoolean("areNotificationsEnabled", true).apply();
+        }
+    }
 
     /**
      * Connects to the Firebase database and reads the sensor data
@@ -158,6 +165,8 @@ public class MainActivity extends AppCompatActivity {
 
     //https://cdn-shop.adafruit.com/product-files/3660/BME680.pdf
     private void slimChartInit(int iaqi) {
+        NotificationHelper.notifyAqiIfBeyondThreshold(this, iaqi);
+
         final float[] stats = new float[2]; // The rings
         int[] colors = new int[2];//the colors in the rings
 
@@ -195,7 +204,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, GraphActivity.class);
         String longID = view.getResources().getResourceName(view.getId());
         String ID = longID.replace("com.example.airzen:id/", "");
-        Log.i("openSecondActivity", ID);
+        //Log.i("openSecondActivity", ID);
         String tileID = "Not Implemented";
         switch (ID) {
             case "tempTile": {

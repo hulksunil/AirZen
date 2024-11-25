@@ -1,6 +1,7 @@
 package com.example.airzen;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -58,6 +59,12 @@ public class GraphActivity extends AppCompatActivity {
     private ConstraintLayout warningsBox;
     private TextView additionalInfo;
     private ConstraintLayout additionalInfoBox;
+    private SharedPreferences sharedPreferences;
+    private Double idealTemp = 0.0;
+    private Double idealHumidity = 0.0;
+    private Double idealCO2 = 0.0;
+    private Double idealDust = 0.0;
+    private Double idealVOC = 0.0;
 
 
     @Override
@@ -88,6 +95,15 @@ public class GraphActivity extends AppCompatActivity {
         additionalInfo = findViewById(R.id.additionalInfoTextView);
         additionalInfoBox = findViewById(R.id.additionalInfoBox);
 
+        sharedPreferences = getSharedPreferences("UserPreferences", MODE_PRIVATE);
+
+        if (sharedPreferences.contains("profileName")) {
+            idealTemp = Double.valueOf((sharedPreferences.getString("ideal_Temp", "")));
+            idealHumidity = Double.valueOf((sharedPreferences.getString("ideal_Humidity", "")));
+            idealCO2 = Double.valueOf((sharedPreferences.getString("ideal_CO2", "").trim()));
+            idealDust = Double.valueOf((sharedPreferences.getString("ideal_Dust_Density", "")));
+            idealVOC = Double.valueOf((sharedPreferences.getString("ideal_VOC", "")));
+        }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowHomeEnabled(true);
@@ -106,6 +122,7 @@ public class GraphActivity extends AppCompatActivity {
 
     /**
      * Sets up the toolbar for the data activity by enabling the back button
+     *
      * @return
      */
     @Override
@@ -117,8 +134,8 @@ public class GraphActivity extends AppCompatActivity {
 
     /**
      * Inflates the menu
-     * @param menu The options menu in which you place your items.
      *
+     * @param menu The options menu in which you place your items.
      * @return
      */
     @Override
@@ -129,8 +146,8 @@ public class GraphActivity extends AppCompatActivity {
 
     /**
      * Adds the functionality to the learn more menu item.
-     * @param item The menu item that was selected.
      *
+     * @param item The menu item that was selected.
      * @return
      */
     @Override
@@ -174,12 +191,13 @@ public class GraphActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 seriesData.clear();
-                pastValues.get().clear(); // Clear previous data
-                for (DataSnapshot childSnapshot : snapshot.getChildren()) {
-                    SensorData value = childSnapshot.getValue(SensorData.class);
-                    pastValues.get().add(value);
+                if (pastValues.get().isEmpty()) { // prevents the map from updating everytime there is new data
+                    for (DataSnapshot childSnapshot : snapshot.getChildren()) {
+                        SensorData value = childSnapshot.getValue(SensorData.class);
+                        pastValues.get().add(value);
+                    }
+                    displayGraph(graphToDisplay);
                 }
-                displayGraph(graphToDisplay);
             }
 
             @Override
@@ -230,6 +248,7 @@ public class GraphActivity extends AppCompatActivity {
                         notYetImplemented();
                         break;
                 }
+                trimTextBoxes();
             }
 
             @Override
@@ -239,30 +258,35 @@ public class GraphActivity extends AppCompatActivity {
     }
 
     public void displayGraph(String message) {
-        try{
+        try {
             switch (message) {
                 case "tempTile":
-                    if(!pastValues.get().isEmpty()) tempGraph();
+                    if (!pastValues.get().isEmpty()) tempGraph();
+                    else hideGraph();
                     pageTitle.setText(getString(R.string.temp));
                     currentValueLbl.setText(getString(R.string.temp));
                     break;
                 case "humidityTile":
-                    if(!pastValues.get().isEmpty()) humidityGraph();
+                    if (!pastValues.get().isEmpty()) humidityGraph();
+                    else hideGraph();
                     pageTitle.setText(getString(R.string.humidity));
                     currentValueLbl.setText(getString(R.string.humidity));
                     break;
                 case "eCO2Tile":
-                    if(!pastValues.get().isEmpty()) eCO2Graph();
+                    if (!pastValues.get().isEmpty()) eCO2Graph();
+                    else hideGraph();
                     pageTitle.setText(getString(R.string.eco2));
                     currentValueLbl.setText(getString(R.string.eco2));
                     break;
                 case "dustTile":
-                    if(!pastValues.get().isEmpty()) dustDensityGraph();
+                    if (!pastValues.get().isEmpty()) dustDensityGraph();
+                    else hideGraph();
                     pageTitle.setText(getString(R.string.dust));
                     currentValueLbl.setText(getString(R.string.dust));
                     break;
                 case "vocTile":
-                    if(!pastValues.get().isEmpty()) VOCGraph();
+                    if (!pastValues.get().isEmpty()) VOCGraph();
+                    else hideGraph();
                     pageTitle.setText(getString(R.string.voc));
                     currentValueLbl.setText(getString(R.string.voc));
                     break;
@@ -270,9 +294,8 @@ public class GraphActivity extends AppCompatActivity {
                     notYetImplemented();
                     break;
             }
-        }
-        catch (SetException setException){
-            Log.e("SetException",setException.getMessage());
+        } catch (SetException setException) {
+            Log.e("SetException", setException.getMessage());
             finish();
         }
     }
@@ -291,7 +314,7 @@ public class GraphActivity extends AppCompatActivity {
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
         ArrayList<SensorData> sensorDataValues = pastValues.get();
-        for(SensorData sensorData : sensorDataValues){
+        for (SensorData sensorData : sensorDataValues) {
             String time = parseSensorDataTimestamp(sensorData);
 
             seriesData.add(new SensorPlotValue(time, sensorData.getTemperature()));
@@ -301,7 +324,7 @@ public class GraphActivity extends AppCompatActivity {
         set.data(seriesData);
         Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
 
-        Cartesian cartesian = initCartesianGraph(series1Mapping,"Temperature","#FF0000");
+        Cartesian cartesian = initCartesianGraph(series1Mapping, "Temperature", "#FF0000");
 
         anyChartView.setChart(cartesian);
     }
@@ -310,18 +333,18 @@ public class GraphActivity extends AppCompatActivity {
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
         ArrayList<SensorData> sensorDataValues = pastValues.get();
-        for(SensorData sensorData : sensorDataValues){
+        for (SensorData sensorData : sensorDataValues) {
             String time = parseSensorDataTimestamp(sensorData);
             seriesData.add(new SensorPlotValue(time, sensorData.getHumidity()));
         }
 
-            Log.i("SensorLength", "" + seriesData.size());
+        Log.i("SensorLength", "" + seriesData.size());
 
         Set set = getSet("Humidity");
         set.data(seriesData);
         Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
 
-        Cartesian cartesian = initCartesianGraph(series1Mapping,"Humidity","#326da8");
+        Cartesian cartesian = initCartesianGraph(series1Mapping, "Humidity", "#326da8");
 
         anyChartView.setChart(cartesian);
     }
@@ -330,7 +353,7 @@ public class GraphActivity extends AppCompatActivity {
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
         ArrayList<SensorData> sensorDataValues = pastValues.get();
-        for(SensorData sensorData : sensorDataValues){
+        for (SensorData sensorData : sensorDataValues) {
             String time = parseSensorDataTimestamp(sensorData);
             seriesData.add(new SensorPlotValue(time, sensorData.getCo2()));
         }
@@ -341,7 +364,7 @@ public class GraphActivity extends AppCompatActivity {
         set.data(seriesData);
         Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
 
-        Cartesian cartesian = initCartesianGraph(series1Mapping,"CO2","#32a83a");
+        Cartesian cartesian = initCartesianGraph(series1Mapping, "CO2", "#32a83a");
 
         anyChartView.setChart(cartesian);
     }
@@ -351,7 +374,7 @@ public class GraphActivity extends AppCompatActivity {
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
         ArrayList<SensorData> sensorDataValues = pastValues.get();
-        for(SensorData sensorData : sensorDataValues){
+        for (SensorData sensorData : sensorDataValues) {
             String time = parseSensorDataTimestamp(sensorData);
             seriesData.add(new SensorPlotValue(time, sensorData.getDustDensity()));
         }
@@ -361,19 +384,19 @@ public class GraphActivity extends AppCompatActivity {
         set.data(seriesData);
         Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
 
-        Cartesian cartesian = initCartesianGraph(series1Mapping,"DustDensity","#fcba03");
+        Cartesian cartesian = initCartesianGraph(series1Mapping, "DustDensity", "#fcba03");
 
         anyChartView.setChart(cartesian);
     }
 
 
-    private void VOCGraph() throws SetException{
+    private void VOCGraph() throws SetException {
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
 //        Log.i("AlexRules", "" + pastValues.get());
 
         ArrayList<SensorData> sensorDataValues = pastValues.get();
-        for(SensorData sensorData : sensorDataValues){
+        for (SensorData sensorData : sensorDataValues) {
             seriesData.add(new SensorPlotValue(sensorData.getTimestamp(), sensorData.getVOC()));
         }
 
@@ -382,149 +405,103 @@ public class GraphActivity extends AppCompatActivity {
         set.data(seriesData);
         Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
 
-        Cartesian cartesian = initCartesianGraph(series1Mapping,"VOC","#32a83a");
+        Cartesian cartesian = initCartesianGraph(series1Mapping, "VOC", "#32a83a");
 
         anyChartView.setChart(cartesian);
     }
 
     private @NonNull Set getSet(String from) throws SetException {
         Set set = null;
-        try{
+        try {
             set = Set.instantiate();
-        }
-        catch (NullPointerException npe){
-            throw new SetException("Set Exception "+from);
+        } catch (NullPointerException npe) {
+            throw new SetException("Set Exception " + from);
         }
         return set;
     }
 
     private void temperatureWarning(Double currentTemperature) {
-        boolean warningSet = false;
-        boolean additionalSet = false;
-
-        additionalInfo.setText(getString(R.string.additionalInfo));
-        warnings.setText(getString(R.string.warning));
+        idealPref(currentTemperature, idealTemp, getString(R.string.temp));
 
         if (currentTemperature > 24 || currentTemperature < 22) {
             additionalInfo.append(getString(R.string.Temperature_workRange));
-            additionalSet = true;
         }
 
         if (currentTemperature < 20 || currentTemperature > 22) {
             warnings.append(getString(R.string.Temperature_asthma));
-            warningSet = true;
         }
 
         if (currentTemperature < 15) {
             additionalInfo.append(getString(R.string.Temperature_sleepTempLow));
-            additionalSet = true;
         } else if (currentTemperature > 21) {
             additionalInfo.append(getString(R.string.Temperature_sleepTempHigh));
-            additionalSet = true;
         }
 
-        if (!warningSet) {
-            warningsBox.setVisibility(View.GONE);
-        }
-
-        if (!additionalSet) {
-            additionalInfoBox.setVisibility(View.GONE);
-        }
+        infoBoxesVisibility();
     }
 
     private void humidityWarning(Double currentHumidity) {
-        boolean warningSet = false;
-        boolean additionalSet = false;
-
-        additionalInfo.setText(getString(R.string.additionalInfo));
-        warnings.setText(getString(R.string.warning));
+        idealPref(currentHumidity, idealHumidity, getString(R.string.humidity));
 
         if (currentHumidity < 30 || currentHumidity > 50) {
-            warnings.append(getString(R.string.Humidity_indoor));
             warnings.append(getString(R.string.Humidity_asthma));
-            warningSet = true;
         }
 
         if (currentHumidity < 30) {
             warnings.append(getString(R.string.Humidity_low));
-            warningSet = true;
         }
 
         if (currentHumidity > 55) {
             warnings.append(getString(R.string.Humidity_high));
-            warningSet = true;
         }
 
         if (currentHumidity < 30 || currentHumidity > 35) {
             additionalInfo.append(getString(R.string.Humidity_winter));
-            additionalSet = true;
         }
 
         if (currentHumidity > 50) {
             additionalInfo.append(getString(R.string.Humidity_summer));
-            additionalSet = true;
         }
 
-        if (!warningSet) {
-            warningsBox.setVisibility(View.GONE);
+        if (currentHumidity >= 60){
+            warnings.append(getString(R.string.Humidity_indoor));
         }
 
-        if (!additionalSet) {
-            additionalInfoBox.setVisibility(View.GONE);
-        }
+        infoBoxesVisibility();
     }
 
     private void co2Warning(int currentCo2) {
-        boolean warningSet = false;
-        boolean additionalSet = false;
-
-        additionalInfo.setText(getString(R.string.additionalInfo));
-        warnings.setText(getString(R.string.warning));
+        idealPref(currentCo2, idealCO2, getString(R.string.eco2));
 
         if (currentCo2 > 1000) {
-            warnings.append(getString(R.string.CO2_ventilation));
             warnings.append(getString(R.string.CO2_longExposure));
-            warningSet = true;
         }
 
         if (currentCo2 > 1000 && currentCo2 < 2500) {
             warnings.append(getString(R.string.CO2_drowsiness));
-            warningSet = true;
         }
 
         if (currentCo2 > 2500) {
             warnings.append(getString(R.string.CO2_healthRisk));
-            warningSet = true;
         }
 
         if (currentCo2 > 2000 && currentCo2 < 5000) {
             warnings.append(getString(R.string.CO2_concentration));
-            warningSet = true;
         }
 
         if (currentCo2 <= 1000) {
             additionalInfo.append(getString(R.string.CO2_ventilation));
-            additionalSet = true;
         }
-
-        if (!warningSet) {
-            warningsBox.setVisibility(View.GONE);
-        }
-
-        if (!additionalSet) {
-            additionalInfoBox.setVisibility(View.GONE);
-        }
+        infoBoxesVisibility();
     }
 
     private void dustWarning(double currentDust) {
-        warningsBox.setVisibility(View.GONE);
-        additionalInfoBox.setVisibility(View.GONE);
+        infoBoxesVisibility();
         //TODO
     }
 
     private void vocWarning(double currentVOC) {
-        warningsBox.setVisibility(View.GONE);
-        additionalInfoBox.setVisibility(View.GONE);
+        infoBoxesVisibility();
         //TODO
     }
 
@@ -544,7 +521,7 @@ public class GraphActivity extends AppCompatActivity {
      */
     private static String parseSensorDataTimestamp(SensorData sensorData) {
         String time;
-        try{
+        try {
             // Parse the string into a LocalDateTime object
             LocalDateTime dateTime = LocalDateTime.parse(sensorData.getTimestamp());
 
@@ -562,9 +539,10 @@ public class GraphActivity extends AppCompatActivity {
 
     /**
      * Initializes the cartesian graph with the given parameters
-     * @param series1Mapping The mapping of the data to the graph
+     *
+     * @param series1Mapping    The mapping of the data to the graph
      * @param sensorReadingType The type of sensor reading (Temperature, VOC, CO2, Dust, Humidity, etc.)
-     * @param lineColor The color of the line on the graph (HEX value)
+     * @param lineColor         The color of the line on the graph (HEX value)
      * @return
      */
     @NonNull
@@ -577,7 +555,7 @@ public class GraphActivity extends AppCompatActivity {
 
         cartesian.tooltip().positionMode(TooltipPositionMode.POINT);
 
-        cartesian.title("Your AirZen "+sensorReadingType+" Historical Data");
+        cartesian.title("Your AirZen " + sensorReadingType + " Historical Data");
 
         Line series1 = cartesian.line(series1Mapping);
         series1.color(lineColor);
@@ -597,6 +575,70 @@ public class GraphActivity extends AppCompatActivity {
 
         return cartesian;
     }
+
+    private void hideGraph() {
+        anyChartView.setVisibility(View.GONE);
+        findViewById(R.id.progress_bar).setVisibility(View.GONE);
+    }
+
+
+    /**
+     * This method will compare the current metric and the ideal metric
+     * and display a suggestion to do something about it
+     * This also empties out the text fields to prevent duplication or stacking of information
+     * due to new data coming in
+     * @param current metric that the user is looking at
+     * @param ideal the ideal metric that the user defined in their profile
+     * @param metric the metric the user clicked on
+     * @return
+     */
+    private void idealPref(double current, double ideal, String metric) {
+        boolean isIdeal = ideal >= current;
+
+        warnings.setText("");
+        additionalInfo.setText("");
+
+        if (isIdeal) {
+            switch (metric) {
+                case "Temperature":
+                    warnings.append(getString(R.string.idealTempSurpass));
+                    break;
+                case "Humidity":
+                    warnings.append(getString(R.string.idealHumiditySurpass));
+                    break;
+                case "CO₂":
+                case "VOC":
+                    warnings.append(getString(R.string.idealGasSurpass,metric.toLowerCase()));
+                    break;
+                case "Dust Density":
+                    warnings.append(getString(R.string.idealDustSurpass));
+                    break;
+            }
+        }
+    }
+
+    /**
+     * As redundant as this looks, it is useful. This will trim the ends of the text boxes so that
+     * there is not a new line under the last Warning or Additional information provided to the user
+     */
+    private void trimTextBoxes(){
+        warnings.setText(warnings.getText().toString().trim());
+        additionalInfo.setText(additionalInfo.getText().toString().trim());
+    }
+
+    /**
+     * All pages need to configure when the box is being visible or not, therefore there is a centralized
+     * way of doing it in a lot cleaner way
+     */
+    private void infoBoxesVisibility() {
+        if(warnings.getText().length() > 0) warningsBox.setVisibility(View.VISIBLE);
+        else warningsBox.setVisibility(View.GONE);
+
+
+        if(additionalInfo.getText().length() > 0) additionalInfoBox.setVisibility(View.VISIBLE);
+        else additionalInfoBox.setVisibility(View.GONE);
+    }
+
 
     class SetException extends Exception {
         public SetException(String s) {
