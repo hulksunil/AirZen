@@ -112,4 +112,13 @@
         vestibulum. Fusce dictum libero quis erat maximus, vitae volutpat diam dignissim.
     </string>
 
+
+    <string name="enable_notifications">Enable Notifications</string>
+    <string name="enable_iaqi_notifications">Enable IAQI Notifications</string>
+    <string name="enable_temperature_notifications">Enable Temperature Notifications</string>
+    <string name="enable_humidity_notifications">Enable Humidity Notifications</string>
+    <string name="enable_co2_notifications">Enable CO2 Notifications</string>
+    <string name="enable_voc_notifications">Enable VOC Notifications</string>
+    <string name="enable_dust_notifications">Enable Dust Notifications</string>
+
 </resources>
