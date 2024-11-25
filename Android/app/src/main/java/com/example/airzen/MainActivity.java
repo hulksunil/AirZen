@@ -195,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(MainActivity.this, GraphActivity.class);
         String longID = view.getResources().getResourceName(view.getId());
         String ID = longID.replace("com.example.airzen:id/", "");
-        Log.i("openSecondActivity", ID);
+        //Log.i("openSecondActivity", ID);
         String tileID = "Not Implemented";
         switch (ID) {
             case "tempTile": {
