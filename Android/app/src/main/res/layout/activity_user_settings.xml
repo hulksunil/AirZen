@@ -57,7 +57,7 @@
         app:layout_constraintTop_toBottomOf="@id/profileName">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:tooltipText="Enter temperature between 15°C and 35°C"
+            android:tooltipText="Enter temperature between 0°C and 35°C"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number|numberDecimal" />

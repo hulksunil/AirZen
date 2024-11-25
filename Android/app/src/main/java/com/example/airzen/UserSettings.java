@@ -101,8 +101,8 @@ public class UserSettings extends AppCompatActivity {
                 Toast.makeText(this, "Please enter a valid temperature (decimal number)", Toast.LENGTH_SHORT).show();
                 allInputsValid = false;
             }
-            else if(!isValidRange(idealTemp,15,35)){
-                Toast.makeText(this, "Temperature must be between 15°C and 35°C", Toast.LENGTH_SHORT).show();
+            else if(!isValidRange(idealTemp,0,35)){
+                Toast.makeText(this, "Temperature must be between 0°C and 35°C", Toast.LENGTH_SHORT).show();
                 allInputsValid = false;
             }
             else{
