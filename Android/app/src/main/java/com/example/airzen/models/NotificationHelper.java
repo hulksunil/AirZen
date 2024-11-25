@@ -2,10 +2,12 @@ package com.example.airzen.models;
 
 import static android.content.Context.MODE_PRIVATE;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationChannelGroup;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -19,6 +21,7 @@ import androidx.core.app.ActivityCompat;
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
 
+import com.example.airzen.MainActivity;
 import com.example.airzen.R;
 
 
@@ -198,15 +201,25 @@ public class NotificationHelper {
     /**
      * Notify the user of a high threshold
      * We have separate channels for each measurement so that the user can receive multiple notifications for different measurements at the same time
+     *
      * @param context
      * @param message
      * @param channel_id
      */
+    @SuppressLint("MissingPermission")
     private static void sendEnvironmentalNotificationToUser(Activity context, String message, String channel_id) {
+        PendingIntent activityToGoToWhenClicked = createIntentForNotification(context);
+
+
         // Create the notification
         Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.app_logo_notification_icon);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channel_id).setSmallIcon(R.drawable.app_logo_notification_icon)  // Replace with your app's icon
-                .setLargeIcon(icon).setContentTitle("Environmental Alert").setContentText(message + " ").setGroup(ENVIRONMENTAL_ALERTS_GROUP).setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channel_id)
+                .setSmallIcon(R.drawable.app_logo_notification_icon)  // Replace with your app's icon
+                .setLargeIcon(icon).setContentTitle("Environmental Alert")
+                .setContentText(message + " ").setGroup(ENVIRONMENTAL_ALERTS_GROUP)
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(activityToGoToWhenClicked) // Set the pending intent
+                .setAutoCancel(true); // Dismiss notification when tapped;
 
         // Show the notification
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
@@ -217,6 +230,14 @@ public class NotificationHelper {
 
     }
 
+    /**
+     * Create or update the summary notification
+     * This notification will be shown when multiple threshold alerts are detected
+     *
+     * @param context
+     * @param notificationManager
+     */
+    @SuppressLint("MissingPermission")
     private static void createOrUpdateSummaryNotification(Activity context, NotificationManagerCompat notificationManager) {
         NotificationCompat.Builder summaryBuilder = new NotificationCompat.Builder(context, "general_alerts")
                 .setSmallIcon(R.drawable.app_logo_notification_icon)
@@ -228,6 +249,21 @@ public class NotificationHelper {
 
         // Use a constant ID for the summary notification
         notificationManager.notify(9999, summaryBuilder.build());
+    }
+
+    private static PendingIntent createIntentForNotification(Activity context) {
+        // Create the intent to open the app
+        Intent intent = new Intent(context, MainActivity.class); // Replace with your main activity class
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+
+        // Wrap the intent in a PendingIntent
+        PendingIntent pendingIntent = PendingIntent.getActivity(
+                context,
+                0, // Request code
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_IMMUTABLE // Use FLAG_IMMUTABLE for API 31+
+        );
+        return pendingIntent;
     }
 
     public static void notifyTemperatureIfBeyondThreshold(Activity context, double temperature) {
@@ -243,7 +279,7 @@ public class NotificationHelper {
             if (tempNotificationSent) {
                 return;
             }
-            sendEnvironmentalNotificationToUser(context, "Temperature value has exceeded threshold limits of "+TEMPERATURE_UPPER_THRESHOLD+"°C", "temperature_alerts");
+            sendEnvironmentalNotificationToUser(context, "Temperature value has exceeded threshold limits of " + TEMPERATURE_UPPER_THRESHOLD + "°C", "temperature_alerts");
             tempNotificationSent = true;
         } else {
             tempNotificationSent = false;
@@ -264,7 +300,7 @@ public class NotificationHelper {
             if (humNotificationSent) {
                 return;
             }
-            sendEnvironmentalNotificationToUser(context, "Humidity value has exceeded threshold limits of "+HUMIDITY_LOWER_THRESHOLD + "% to "+HUMIDITY_UPPER_THRESHOLD+"%","humidity_alerts");
+            sendEnvironmentalNotificationToUser(context, "Humidity value has exceeded threshold limits of " + HUMIDITY_LOWER_THRESHOLD + "% to " + HUMIDITY_UPPER_THRESHOLD + "%", "humidity_alerts");
             humNotificationSent = true;
         } else {
             humNotificationSent = false;
@@ -284,7 +320,7 @@ public class NotificationHelper {
             if (co2NotificationSent) {
                 return;
             }
-            sendEnvironmentalNotificationToUser(context, "CO2 levels have exceeded threshold limits of "+CO2_UPPER_THRESHOLD+"ppm", "co2_alerts");
+            sendEnvironmentalNotificationToUser(context, "CO2 levels have exceeded threshold limits of " + CO2_UPPER_THRESHOLD + "ppm", "co2_alerts");
             co2NotificationSent = true;
         } else {
             co2NotificationSent = false;
@@ -304,7 +340,7 @@ public class NotificationHelper {
             if (vocNotificationSent) {
                 return;
             }
-            sendEnvironmentalNotificationToUser(context, "VOC value has exceeded threshold limits of "+VOC_UPPER_THRESHOLD+"ppm", "voc_alerts");
+            sendEnvironmentalNotificationToUser(context, "VOC value has exceeded threshold limits of " + VOC_UPPER_THRESHOLD + "ppm", "voc_alerts");
             vocNotificationSent = true;
         } else {
             vocNotificationSent = false;
@@ -324,7 +360,7 @@ public class NotificationHelper {
             if (dustNotificationSent) {
                 return;
             }
-            sendEnvironmentalNotificationToUser(context, "Dust density levels have exceeded threshold limits of "+DUST_UPPER_THRESHOLD+"ug/m³", "dust_alerts");
+            sendEnvironmentalNotificationToUser(context, "Dust density levels have exceeded threshold limits of " + DUST_UPPER_THRESHOLD + "ug/m³", "dust_alerts");
             dustNotificationSent = true;
         } else {
             dustNotificationSent = false;
@@ -345,7 +381,7 @@ public class NotificationHelper {
             if (aqiNotificationSent) {
                 return;
             }
-            sendEnvironmentalNotificationToUser(context, "IAQI level has gone beyond threshold limit of "+AQI_UPPER_THRESHOLD, "iaqi_alerts");
+            sendEnvironmentalNotificationToUser(context, "IAQI level has gone beyond threshold limit of " + AQI_UPPER_THRESHOLD, "iaqi_alerts");
             aqiNotificationSent = true;
         } else {
             aqiNotificationSent = false;
