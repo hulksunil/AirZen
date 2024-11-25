@@ -4,6 +4,7 @@ import static android.content.Context.MODE_PRIVATE;
 
 import android.app.Activity;
 import android.app.NotificationChannel;
+import android.app.NotificationChannelGroup;
 import android.app.NotificationManager;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -25,6 +26,7 @@ public class NotificationHelper {
 
     // Android only allows requesting permissions twice and then stops asking so we use this to redirect the user to settings page after 2 requests
     public static final int MAX_TIMES_ALLOWED_TO_REQUEST_PERMISSIONS = 2;
+    private static final String ENVIRONMENTAL_ALERTS_GROUP = "environmental_alerts_group";
 
 
     // Flags to track if notification has been sent
@@ -66,14 +68,95 @@ public class NotificationHelper {
 
     public static void createNotificationChannel(Activity context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            String channelId = "your_channel_id";
-            CharSequence name = "Channel Name";
-            String description = "Channel Description";
-            int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(channelId, name, importance);
-            channel.setDescription(description);
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
+
+            // Create the group
+            NotificationChannelGroup environmentalGroup = new NotificationChannelGroup(
+                    ENVIRONMENTAL_ALERTS_GROUP,
+                    "Environmental Threshold Alerts"
+            );
+
+            // Register the group
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannelGroup(environmentalGroup);
+            }
+
+
+            // Create the channels
+            // Temperature channel
+            NotificationChannel temperatureChannel = new NotificationChannel(
+                    "temperature_alerts",
+                    "Temperature Alerts",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            temperatureChannel.setDescription("Alerts when temperature exceeds the threshold.");
+            temperatureChannel.setGroup(ENVIRONMENTAL_ALERTS_GROUP);
+
+            // Humidity channel
+            NotificationChannel humidityChannel = new NotificationChannel(
+                    "humidity_alerts",
+                    "Humidity Alerts",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            humidityChannel.setDescription("Alerts for humidity exceeding or falling below the thresholds.");
+            humidityChannel.setGroup(ENVIRONMENTAL_ALERTS_GROUP);
+
+            // CO2 channel
+            NotificationChannel co2Channel = new NotificationChannel(
+                    "co2_alerts",
+                    "CO2 Alerts",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+
+            co2Channel.setDescription("Alerts for CO2 exceeding the threshold.");
+            co2Channel.setGroup(ENVIRONMENTAL_ALERTS_GROUP);
+
+            // VOC channel
+            NotificationChannel vocChannel = new NotificationChannel(
+                    "voc_alerts",
+                    "VOC Alerts",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            vocChannel.setDescription("Alerts for VOC exceeding the threshold.");
+            vocChannel.setGroup(ENVIRONMENTAL_ALERTS_GROUP);
+
+            // Dust channel
+            NotificationChannel dustChannel = new NotificationChannel(
+                    "dust_alerts",
+                    "Dust Alerts",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            dustChannel.setDescription("Alerts for Dust exceeding the threshold.");
+            dustChannel.setGroup(ENVIRONMENTAL_ALERTS_GROUP);
+
+            // IAQI channel
+            NotificationChannel iaqiChannel = new NotificationChannel(
+                    "iaqi_alerts",
+                    "IAQI Alerts",
+                    NotificationManager.IMPORTANCE_HIGH
+            );
+            iaqiChannel.setDescription("Alerts for IAQI exceeding the threshold.");
+            iaqiChannel.setGroup(ENVIRONMENTAL_ALERTS_GROUP);
+
+            NotificationChannel generalAlertsChannel = new NotificationChannel(
+                    "general_alerts",
+                    "General Alerts",
+                    NotificationManager.IMPORTANCE_LOW // Adjust importance as needed
+            );
+            generalAlertsChannel.setDescription("General notifications related to environmental alerts.");
+            generalAlertsChannel.setGroup(ENVIRONMENTAL_ALERTS_GROUP);
+
+
+            // Register the channels
+            if (notificationManager != null) {
+                notificationManager.createNotificationChannel(temperatureChannel);
+                notificationManager.createNotificationChannel(humidityChannel);
+                notificationManager.createNotificationChannel(co2Channel);
+                notificationManager.createNotificationChannel(vocChannel);
+                notificationManager.createNotificationChannel(dustChannel);
+                notificationManager.createNotificationChannel(iaqiChannel);
+                notificationManager.createNotificationChannel(generalAlertsChannel);
+            }
         }
     }
 
@@ -93,22 +176,58 @@ public class NotificationHelper {
         return context.getSharedPreferences("notificationPreferences", MODE_PRIVATE).getBoolean("areNotificationsEnabled", false);
     }
 
+    private static int getNotificationId(String channel_id) {
+        switch (channel_id) {
+            case "temperature_alerts":
+                return 1;
+            case "humidity_alerts":
+                return 2;
+            case "co2_alerts":
+                return 3;
+            case "voc_alerts":
+                return 4;
+            case "dust_alerts":
+                return 5;
+            case "iaqi_alerts":
+                return 6;
+            default:
+                return 0;
+        }
+    }
 
-    private static void notifyUserOfHighThreshold(Activity context, String measurement) {
+    /**
+     * Notify the user of a high threshold
+     * We have separate channels for each measurement so that the user can receive multiple notifications for different measurements at the same time
+     * @param context
+     * @param message
+     * @param channel_id
+     */
+    private static void sendEnvironmentalNotificationToUser(Activity context, String message, String channel_id) {
         // Create the notification
         Bitmap icon = BitmapFactory.decodeResource(context.getResources(), R.drawable.app_logo_notification_icon);
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, "your_channel_id").setSmallIcon(R.drawable.app_logo_notification_icon)  // Replace with your app's icon
-                .setLargeIcon(icon).setContentTitle("Environmental Alert").setContentText(measurement + " value has exceeded threshold limits").setPriority(NotificationCompat.PRIORITY_DEFAULT);
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channel_id).setSmallIcon(R.drawable.app_logo_notification_icon)  // Replace with your app's icon
+                .setLargeIcon(icon).setContentTitle("Environmental Alert").setContentText(message + " ").setGroup(ENVIRONMENTAL_ALERTS_GROUP).setPriority(NotificationCompat.PRIORITY_DEFAULT);
 
         // Show the notification
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(context);
 
-//        // if the app does not have the permission to post notifications, request it
-        if (!isPostNotificationsPermissionGranted(context)) {
-            requestPermissions(context);
-            return;
-        }
-        notificationManager.notify(1, builder.build());
+        notificationManager.notify(getNotificationId(channel_id), builder.build());
+
+        createOrUpdateSummaryNotification(context, notificationManager);
+
+    }
+
+    private static void createOrUpdateSummaryNotification(Activity context, NotificationManagerCompat notificationManager) {
+        NotificationCompat.Builder summaryBuilder = new NotificationCompat.Builder(context, "general_alerts")
+                .setSmallIcon(R.drawable.app_logo_notification_icon)
+                .setContentTitle("Environmental Alerts Summary")
+                .setContentText("Multiple threshold alerts detected.")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setGroup(ENVIRONMENTAL_ALERTS_GROUP)
+                .setGroupSummary(true);
+
+        // Use a constant ID for the summary notification
+        notificationManager.notify(9999, summaryBuilder.build());
     }
 
     public static void notifyTemperatureIfBeyondThreshold(Activity context, double temperature) {
@@ -124,7 +243,7 @@ public class NotificationHelper {
             if (tempNotificationSent) {
                 return;
             }
-            notifyUserOfHighThreshold(context, "Temperature");
+            sendEnvironmentalNotificationToUser(context, "Temperature value has exceeded threshold limits of "+TEMPERATURE_UPPER_THRESHOLD+"°C", "temperature_alerts");
             tempNotificationSent = true;
         } else {
             tempNotificationSent = false;
@@ -145,7 +264,7 @@ public class NotificationHelper {
             if (humNotificationSent) {
                 return;
             }
-            notifyUserOfHighThreshold(context, "Humidity");
+            sendEnvironmentalNotificationToUser(context, "Humidity value has exceeded threshold limits of "+HUMIDITY_LOWER_THRESHOLD + "% to "+HUMIDITY_UPPER_THRESHOLD+"%","humidity_alerts");
             humNotificationSent = true;
         } else {
             humNotificationSent = false;
@@ -165,7 +284,7 @@ public class NotificationHelper {
             if (co2NotificationSent) {
                 return;
             }
-            notifyUserOfHighThreshold(context, "CO2");
+            sendEnvironmentalNotificationToUser(context, "CO2 levels have exceeded threshold limits of "+CO2_UPPER_THRESHOLD+"ppm", "co2_alerts");
             co2NotificationSent = true;
         } else {
             co2NotificationSent = false;
@@ -185,7 +304,7 @@ public class NotificationHelper {
             if (vocNotificationSent) {
                 return;
             }
-            notifyUserOfHighThreshold(context, "VOC");
+            sendEnvironmentalNotificationToUser(context, "VOC value has exceeded threshold limits of "+VOC_UPPER_THRESHOLD+"ppm", "voc_alerts");
             vocNotificationSent = true;
         } else {
             vocNotificationSent = false;
@@ -205,7 +324,7 @@ public class NotificationHelper {
             if (dustNotificationSent) {
                 return;
             }
-            notifyUserOfHighThreshold(context, "Dust");
+            sendEnvironmentalNotificationToUser(context, "Dust density levels have exceeded threshold limits of "+DUST_UPPER_THRESHOLD+"ug/m³", "dust_alerts");
             dustNotificationSent = true;
         } else {
             dustNotificationSent = false;
@@ -226,7 +345,7 @@ public class NotificationHelper {
             if (aqiNotificationSent) {
                 return;
             }
-            notifyUserOfHighThreshold(context, "AQI");
+            sendEnvironmentalNotificationToUser(context, "IAQI level has gone beyond threshold limit of "+AQI_UPPER_THRESHOLD, "iaqi_alerts");
             aqiNotificationSent = true;
         } else {
             aqiNotificationSent = false;
