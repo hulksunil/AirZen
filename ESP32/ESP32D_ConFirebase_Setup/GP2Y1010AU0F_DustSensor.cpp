@@ -23,7 +23,7 @@ float readDensity() {
   //However, this is a typical graph only, and does not guarantee an accurate calculation. 
   //The min and max voltages were found with the current sensor, and a new linear fitting was made, altering the formula slightly to match the read values.
 
-  float density = (0.103 * v0 - 0.0414) * 1000 ; // Now we can calculate the dust density ug/m^3)
+  float density = (0.098456 * v0 - 0.02067) * 1000 ; // Now we can calculate the dust density ug/m^3) Formula before change (20241126): (0.103 * v0 - 0.0414) * 1000
   delayMicroseconds(40); //The extra delay is to account for the remaining amount of time in the pulse width (Total time = 320us. 280 + 40 = 320)
   digitalWrite(ledPin, HIGH);
   delay(1500); //To avoid overlap issues, a delay is included.
@@ -32,6 +32,8 @@ float readDensity() {
   if (density < 0) {
     density = 0;
   }
+  Serial.print("Voltage");
+  Serial.println(v0);
   Serial.print("Dust Density = ");
   Serial.println(density);
   return density;

@@ -103,6 +103,15 @@ float BMEAQI() {
   return aqi;
 }
 
+float BMEIQA_ACCURACY() {
+  float acc = iaqSensor.iaqAccuracy;
+  Serial.print("IAQ Accuracy: ");
+  Serial.println(acc, 2);
+  // Serial.println(" ");
+  return acc;
+}
+
+
 // // Calculate altitude from pressure using the barometric formula.
 // float calculateAltitude(float pressure) {
 //   return 44330 * (1 - (pow(pressure / SEALEVELPRESSURE_HPA, (1 / 5.255))));

@@ -8,11 +8,11 @@ public:
     float humidity;
     float co2;
     float voc; //gas
-    float dustDensity;
     float aqi;
+    float dustDensity;
 
-    SensorData(float temp = 0, float hum = 0, float co2 = 0, float v = 0, float dust = 0, float iaqi =0)
-        : temperature(temp), humidity(hum), co2(co2), voc(v), dustDensity(dust),aqi(iaqi) {}
+    SensorData(float temp = 0, float hum = 0, float co2 = 0, float v = 0, float iaqi =0, float dustdensity =0)
+        : temperature(temp), humidity(hum), co2(co2), voc(v), aqi(iaqi), dustDensity(dustdensity) {}
 };
 
 #endif // SENSOR_DATA_H
