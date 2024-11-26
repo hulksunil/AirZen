@@ -57,6 +57,7 @@
         app:layout_constraintTop_toBottomOf="@id/profileName">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:tooltipText="Enter temperature between 0°C and 35°C"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number|numberDecimal" />
@@ -78,6 +79,7 @@
         app:layout_constraintTop_toBottomOf="@id/userIdealTemp">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:tooltipText="Enter Humidity between 30% and 55%"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number|numberDecimal" />
@@ -99,6 +101,7 @@
         app:layout_constraintTop_toBottomOf="@id/userIdealHumidity">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:tooltipText="Enter CO2 Level between 400 and 1000 ppm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number|numberDecimal" />
@@ -120,6 +123,7 @@
         app:layout_constraintTop_toBottomOf="@id/userIdealCO2">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:tooltipText="Enter Dust Density Level between 0 and 150 μg/m³"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number|numberDecimal" />
@@ -141,6 +145,7 @@
         app:layout_constraintTop_toBottomOf="@id/userIdealDustDensity">
 
         <com.google.android.material.textfield.TextInputEditText
+            android:tooltipText="Enter VOC Level between 0 and 0.5 ppm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number|numberDecimal" />

@@ -1,6 +1,5 @@
 package com.example.airzen;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
@@ -102,6 +101,10 @@ public class UserSettings extends AppCompatActivity {
                 Toast.makeText(this, "Please enter a valid temperature (decimal number)", Toast.LENGTH_SHORT).show();
                 allInputsValid = false;
             }
+            else if(!isValidRange(idealTemp,0,35)){
+                Toast.makeText(this, "Temperature must be between 0°C and 35°C", Toast.LENGTH_SHORT).show();
+                allInputsValid = false;
+            }
             else{
                 if (idealTemp.isEmpty()) {
                     idealTemp = "-1";
@@ -113,6 +116,10 @@ public class UserSettings extends AppCompatActivity {
 
             if (!idealHumidity.isEmpty() && !isValidDecimal(idealHumidity)) {
                 Toast.makeText(this, "Please enter a valid humidity (decimal number)", Toast.LENGTH_SHORT).show();
+                allInputsValid = false;
+            }
+            else if(!isValidRange(idealHumidity, 30, 55)){
+                Toast.makeText(this, "Humidity must be between 30% and 55%", Toast.LENGTH_SHORT).show();
                 allInputsValid = false;
             }
             else{
@@ -127,6 +134,10 @@ public class UserSettings extends AppCompatActivity {
                 Toast.makeText(this, "Please enter a valid CO2 level (decimal number)", Toast.LENGTH_SHORT).show();
                 allInputsValid = false;
             }
+            else if (!isValidRange(idealCO2, 400, 1000)){
+                Toast.makeText(this, "CO2 level must be between 400 and 1000 ppm", Toast.LENGTH_SHORT).show();
+                allInputsValid = false;
+            }
             else{
                 if (idealCO2.isEmpty()) {
                     idealCO2 = "-1";
@@ -138,6 +149,10 @@ public class UserSettings extends AppCompatActivity {
                 Toast.makeText(this, "Please enter a valid dust density (decimal number)", Toast.LENGTH_SHORT).show();
                 allInputsValid = false;
             }
+            else if(!isValidRange(idealDustDensity, 0, 150)){
+                Toast.makeText(this, "Dust Density level must be between 0 and 150 μg/m³", Toast.LENGTH_SHORT).show();
+                allInputsValid = false;
+            }
             else {
                 if (idealDustDensity.isEmpty()) {
                     idealDustDensity = "-1";
@@ -147,6 +162,10 @@ public class UserSettings extends AppCompatActivity {
 
             if (!idealVOC.isEmpty() && !isValidDecimal(idealVOC)) {
                 Toast.makeText(this, "Please enter a valid VOC level (decimal number)", Toast.LENGTH_SHORT).show();
+                allInputsValid = false;
+            }
+            else if(!isValidRange(idealVOC, 0, 0.5)){
+                Toast.makeText(this, "VOC level must be between 0 and 0.5 ppm", Toast.LENGTH_SHORT).show();
                 allInputsValid = false;
             }
             else {
@@ -173,6 +192,15 @@ public class UserSettings extends AppCompatActivity {
             return true; // If parsing succeeds, it's a valid decimal
         } catch (NumberFormatException e) {
             return false; // If parsing fails, it's not valid
+        }
+    }
+
+    private boolean isValidRange(String value, double min, double max) {
+        try {
+            double doubleValue = Double.parseDouble(value);
+            return doubleValue >= min && doubleValue <= max;
+        } catch (NumberFormatException e) {
+            return false; // Invalid input (not a number)
         }
     }
 
