@@ -145,7 +145,7 @@
         app:layout_constraintTop_toBottomOf="@id/userIdealDustDensity">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:tooltipText="Enter VOC Level between 0 and 0.5 ppm"
+            android:tooltipText="Enter VOC Level between 0 and 2.2ppm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:inputType="number|numberDecimal" />

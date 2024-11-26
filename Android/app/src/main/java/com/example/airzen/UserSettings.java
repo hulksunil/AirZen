@@ -164,8 +164,8 @@ public class UserSettings extends AppCompatActivity {
                 Toast.makeText(this, "Please enter a valid VOC level (decimal number)", Toast.LENGTH_SHORT).show();
                 allInputsValid = false;
             }
-            else if(!idealVOC.isEmpty() && !isValidRange(idealVOC, 0, 0.5)){
-                Toast.makeText(this, "VOC level must be between 0 and 0.5 ppm", Toast.LENGTH_SHORT).show();
+            else if(!idealVOC.isEmpty() && !isValidRange(idealVOC, 0, 2.2)){
+                Toast.makeText(this, "VOC level must be between 0 and 2.2 ppm", Toast.LENGTH_SHORT).show();
                 allInputsValid = false;
             }
             else {
