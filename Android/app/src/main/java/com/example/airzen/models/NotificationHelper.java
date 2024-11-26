@@ -42,12 +42,12 @@ public class NotificationHelper {
     private static boolean dustNotificationSent = false;
     private static boolean aqiNotificationSent = false;
 
-    private final static double TEMPERATURE_UPPER_THRESHOLD = 35.00;
+    private final static double TEMPERATURE_UPPER_THRESHOLD = 27.00;
     private final static double HUMIDITY_UPPER_THRESHOLD = 70;
     private final static double HUMIDITY_LOWER_THRESHOLD = 25;
     private final static double CO2_UPPER_THRESHOLD = 2500;
     private final static double VOC_UPPER_THRESHOLD = 2.2;
-    private final static double DUST_UPPER_THRESHOLD = 100;
+    private final static double DUST_UPPER_THRESHOLD = 150;
     private final static double AQI_UPPER_THRESHOLD = 100;
 
     public static void requestPermissions(Activity context) {
@@ -275,11 +275,17 @@ public class NotificationHelper {
             return;
         }
 
-        if (temperature >= TEMPERATURE_UPPER_THRESHOLD) {
+        double idealTemp =  Double.valueOf((context.getSharedPreferences("UserPreferences",MODE_PRIVATE).getString("ideal_Temp", "-1")));
+        double tempToCheck = idealTemp;
+        if(idealTemp==-1) {
+            tempToCheck = TEMPERATURE_UPPER_THRESHOLD;
+        }
+
+        if (temperature >=  tempToCheck) {
             if (tempNotificationSent) {
                 return;
             }
-            sendEnvironmentalNotificationToUser(context, "Temperature value has exceeded threshold limits of " + TEMPERATURE_UPPER_THRESHOLD + "°C", "temperature_alerts");
+            sendEnvironmentalNotificationToUser(context, "Temperature value has exceeded threshold limits of " + tempToCheck + "°C", "temperature_alerts");
             tempNotificationSent = true;
         } else {
             tempNotificationSent = false;
@@ -295,12 +301,21 @@ public class NotificationHelper {
             return;
         }
 
+        double humidtyDifference = HUMIDITY_UPPER_THRESHOLD - HUMIDITY_LOWER_THRESHOLD;
+        double idealHumidty =  Double.valueOf((context.getSharedPreferences("UserPreferences",MODE_PRIVATE).getString("ideal_Humidity", "-1")));
+        double humidtyToCheckUpper = idealHumidty+humidtyDifference/2;
+        double humidtyToCheckLower = idealHumidty-humidtyDifference/2;
 
-        if (humidity >= HUMIDITY_UPPER_THRESHOLD || humidity < HUMIDITY_LOWER_THRESHOLD) {
+        if(idealHumidty==-1) {
+            humidtyToCheckUpper = HUMIDITY_UPPER_THRESHOLD;
+            humidtyToCheckLower = HUMIDITY_LOWER_THRESHOLD;
+        }
+
+        if (humidity >= humidtyToCheckUpper || humidity < humidtyToCheckLower) {
             if (humNotificationSent) {
                 return;
             }
-            sendEnvironmentalNotificationToUser(context, "Humidity value has exceeded threshold limits of " + HUMIDITY_LOWER_THRESHOLD + "% to " + HUMIDITY_UPPER_THRESHOLD + "%", "humidity_alerts");
+            sendEnvironmentalNotificationToUser(context, "Humidity value has exceeded threshold limits of " + humidtyToCheckLower + "% to " + humidtyToCheckUpper + "%", "humidity_alerts");
             humNotificationSent = true;
         } else {
             humNotificationSent = false;
@@ -316,11 +331,17 @@ public class NotificationHelper {
             return;
         }
 
-        if (co2 >= CO2_UPPER_THRESHOLD) {
+        double idealCO2 =  Double.valueOf((context.getSharedPreferences("UserPreferences",MODE_PRIVATE).getString("ideal_CO2", "-1")));
+        double co2ToCheck = idealCO2;
+        if(idealCO2==-1) {
+            co2ToCheck = CO2_UPPER_THRESHOLD;
+        }
+
+        if (co2 >= co2ToCheck) {
             if (co2NotificationSent) {
                 return;
             }
-            sendEnvironmentalNotificationToUser(context, "CO2 levels have exceeded threshold limits of " + CO2_UPPER_THRESHOLD + "ppm", "co2_alerts");
+            sendEnvironmentalNotificationToUser(context, "CO2 levels have exceeded threshold limits of " + co2ToCheck + "ppm", "co2_alerts");
             co2NotificationSent = true;
         } else {
             co2NotificationSent = false;
@@ -336,11 +357,17 @@ public class NotificationHelper {
             return;
         }
 
-        if (voc >= VOC_UPPER_THRESHOLD) {
+        double idealVOC =  Double.valueOf((context.getSharedPreferences("UserPreferences",MODE_PRIVATE).getString("ideal_VOC", "-1")));
+        double vocToCheck = idealVOC;
+        if(idealVOC==-1) {
+            vocToCheck = VOC_UPPER_THRESHOLD;
+        }
+
+        if (voc >= vocToCheck) {
             if (vocNotificationSent) {
                 return;
             }
-            sendEnvironmentalNotificationToUser(context, "VOC value has exceeded threshold limits of " + VOC_UPPER_THRESHOLD + "ppm", "voc_alerts");
+            sendEnvironmentalNotificationToUser(context, "VOC value has exceeded threshold limits of " + vocToCheck + "ppm", "voc_alerts");
             vocNotificationSent = true;
         } else {
             vocNotificationSent = false;
@@ -356,11 +383,17 @@ public class NotificationHelper {
             return;
         }
 
-        if (dust > DUST_UPPER_THRESHOLD) {
+        double idealDust =  Double.valueOf((context.getSharedPreferences("UserPreferences",MODE_PRIVATE).getString("ideal_Dust_Density", "-1")));
+        double dustToCheck = idealDust;
+        if(idealDust==-1) {
+            dustToCheck = DUST_UPPER_THRESHOLD;
+        }
+
+        if (dust > dustToCheck) {
             if (dustNotificationSent) {
                 return;
             }
-            sendEnvironmentalNotificationToUser(context, "Dust density levels have exceeded threshold limits of " + DUST_UPPER_THRESHOLD + "ug/m³", "dust_alerts");
+            sendEnvironmentalNotificationToUser(context, "Dust density levels have exceeded threshold limits of " + dustToCheck + "ug/m³", "dust_alerts");
             dustNotificationSent = true;
         } else {
             dustNotificationSent = false;

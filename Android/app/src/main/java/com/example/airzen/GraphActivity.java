@@ -60,11 +60,11 @@ public class GraphActivity extends AppCompatActivity {
     private TextView additionalInfo;
     private ConstraintLayout additionalInfoBox;
     private SharedPreferences sharedPreferences;
-    private Double idealTemp = 0.0;
-    private Double idealHumidity = 0.0;
-    private Double idealCO2 = 0.0;
-    private Double idealDust = 0.0;
-    private Double idealVOC = 0.0;
+    private Double idealTemp = -1.0;
+    private Double idealHumidity = -1.0;
+    private Double idealCO2 = -1.0;
+    private Double idealDust = -1.0;
+    private Double idealVOC = -1.0;
 
 
     @Override
@@ -98,11 +98,11 @@ public class GraphActivity extends AppCompatActivity {
         sharedPreferences = getSharedPreferences("UserPreferences", MODE_PRIVATE);
 
         if (sharedPreferences.contains("profileName")) {
-            idealTemp = Double.valueOf((sharedPreferences.getString("ideal_Temp", "")));
-            idealHumidity = Double.valueOf((sharedPreferences.getString("ideal_Humidity", "")));
-            idealCO2 = Double.valueOf((sharedPreferences.getString("ideal_CO2", "").trim()));
-            idealDust = Double.valueOf((sharedPreferences.getString("ideal_Dust_Density", "")));
-            idealVOC = Double.valueOf((sharedPreferences.getString("ideal_VOC", "")));
+            idealTemp = Double.valueOf((sharedPreferences.getString("ideal_Temp", "-1")));
+            idealHumidity = Double.valueOf((sharedPreferences.getString("ideal_Humidity", "-1")));
+            idealCO2 = Double.valueOf((sharedPreferences.getString("ideal_CO2", "-1").trim()));
+            idealDust = Double.valueOf((sharedPreferences.getString("ideal_Dust_Density", "-1")));
+            idealVOC = Double.valueOf((sharedPreferences.getString("ideal_VOC", "-1")));
         }
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -593,10 +593,11 @@ public class GraphActivity extends AppCompatActivity {
      * @return
      */
     private void idealPref(double current, double ideal, String metric) {
-        boolean isIdeal = ideal >= current;
+        boolean isIdeal = (ideal <= current) && (ideal > -1.0);
 
         warnings.setText("");
         additionalInfo.setText("");
+        Log.i("ideal method", current + " " + ideal + " "+ isIdeal);
 
         if (isIdeal) {
             switch (metric) {

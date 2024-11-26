@@ -1,6 +1,5 @@
 package com.example.airzen;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.widget.Button;
@@ -102,15 +101,32 @@ public class UserSettings extends AppCompatActivity {
                 Toast.makeText(this, "Please enter a valid temperature (decimal number)", Toast.LENGTH_SHORT).show();
                 allInputsValid = false;
             }
+            else if(!idealTemp.isEmpty() && !isValidRange(idealTemp,0,35)){
+                Toast.makeText(this, "Temperature must be between 0°C and 35°C", Toast.LENGTH_SHORT).show();
+                allInputsValid = false;
+            }
             else{
+                if (idealTemp.isEmpty()) {
+                    idealTemp = "-1";
+                }
                 saveIdealTempToSharedPreferences(idealTemp);
             }
+
+
 
             if (!idealHumidity.isEmpty() && !isValidDecimal(idealHumidity)) {
                 Toast.makeText(this, "Please enter a valid humidity (decimal number)", Toast.LENGTH_SHORT).show();
                 allInputsValid = false;
             }
+            else if(!idealHumidity.isEmpty() &&!isValidRange(idealHumidity, 30, 55)){
+                Toast.makeText(this, "Humidity must be between 30% and 55%", Toast.LENGTH_SHORT).show();
+                allInputsValid = false;
+            }
             else{
+                if (idealHumidity.isEmpty()) {
+                    idealHumidity = "-1";
+                }
+
                 saveIdealHumidityToSharedPreferences(idealHumidity);
             }
 
@@ -118,7 +134,14 @@ public class UserSettings extends AppCompatActivity {
                 Toast.makeText(this, "Please enter a valid CO2 level (decimal number)", Toast.LENGTH_SHORT).show();
                 allInputsValid = false;
             }
+            else if (!idealCO2.isEmpty() && !isValidRange(idealCO2, 400, 1000)){
+                Toast.makeText(this, "CO2 level must be between 400 and 1000 ppm", Toast.LENGTH_SHORT).show();
+                allInputsValid = false;
+            }
             else{
+                if (idealCO2.isEmpty()) {
+                    idealCO2 = "-1";
+                }
                 saveIdealCO2ToSharedPreferences(idealCO2);
             }
 
@@ -126,7 +149,14 @@ public class UserSettings extends AppCompatActivity {
                 Toast.makeText(this, "Please enter a valid dust density (decimal number)", Toast.LENGTH_SHORT).show();
                 allInputsValid = false;
             }
+            else if(!idealDustDensity.isEmpty() && !isValidRange(idealDustDensity, 0, 150)){
+                Toast.makeText(this, "Dust Density level must be between 0 and 150 μg/m³", Toast.LENGTH_SHORT).show();
+                allInputsValid = false;
+            }
             else {
+                if (idealDustDensity.isEmpty()) {
+                    idealDustDensity = "-1";
+                }
                 saveIdealDustDensityToSharedPreferences(idealDustDensity);
             }
 
@@ -134,7 +164,14 @@ public class UserSettings extends AppCompatActivity {
                 Toast.makeText(this, "Please enter a valid VOC level (decimal number)", Toast.LENGTH_SHORT).show();
                 allInputsValid = false;
             }
+            else if(!idealVOC.isEmpty() && !isValidRange(idealVOC, 0, 0.5)){
+                Toast.makeText(this, "VOC level must be between 0 and 0.5 ppm", Toast.LENGTH_SHORT).show();
+                allInputsValid = false;
+            }
             else {
+                if (idealVOC.isEmpty()) {
+                    idealVOC = "-1";
+                }
                 saveIdealVOCToSharedPreferences(idealVOC);
             }
 
@@ -155,6 +192,15 @@ public class UserSettings extends AppCompatActivity {
             return true; // If parsing succeeds, it's a valid decimal
         } catch (NumberFormatException e) {
             return false; // If parsing fails, it's not valid
+        }
+    }
+
+    private boolean isValidRange(String value, double min, double max) {
+        try {
+            double doubleValue = Double.parseDouble(value);
+            return doubleValue >= min && doubleValue <= max;
+        } catch (NumberFormatException e) {
+            return false; // Invalid input (not a number)
         }
     }
 
@@ -238,19 +284,29 @@ public class UserSettings extends AppCompatActivity {
             profileNameEditText.setText(sharedPreferences.getString("profileName", ""));
         }
         if (idealTempEditText != null) {
-            idealTempEditText.setText(sharedPreferences.getString("ideal_Temp", ""));
+            String idealTemp = sharedPreferences.getString("ideal_Temp", "");
+            idealTemp = idealTemp.equals("-1") ? "" : idealTemp;
+            idealTempEditText.setText(idealTemp);
         }
         if (idealHumidityEditText != null) {
-            idealHumidityEditText.setText(sharedPreferences.getString("ideal_Humidity", ""));
+            String idealHumidity = sharedPreferences.getString("ideal_Humidity", "");
+            idealHumidity = idealHumidity.equals("-1") ? "" : idealHumidity;
+            idealHumidityEditText.setText(idealHumidity);
         }
         if (idealCO2EditText != null) {
-            idealCO2EditText.setText(sharedPreferences.getString("ideal_CO2", ""));
+            String idealCo2 = sharedPreferences.getString("ideal_CO2", "");
+            idealCo2 = idealCo2.equals("-1") ? "" : idealCo2;
+            idealCO2EditText.setText(idealCo2);
         }
         if (idealDustDensityEditText != null) {
-            idealDustDensityEditText.setText(sharedPreferences.getString("ideal_Dust_Density", ""));
+            String idealDustDensity = sharedPreferences.getString("ideal_Dust_Density", "");
+            idealDustDensity = idealDustDensity.equals("-1") ? "" : idealDustDensity;
+            idealDustDensityEditText.setText(idealDustDensity);
         }
         if (idealVOCEditText != null) {
-            idealVOCEditText.setText(sharedPreferences.getString("ideal_VOC", ""));
+            String idealVoc = sharedPreferences.getString("ideal_VOC", "");
+            idealVoc = idealVoc.equals("-1") ? "" : idealVoc;
+            idealVOCEditText.setText(idealVoc);
         }
     }
 

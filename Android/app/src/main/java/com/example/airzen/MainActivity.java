@@ -147,6 +147,7 @@ public class MainActivity extends AppCompatActivity {
                     humiditySVG.setImageDrawable(AssetConfigure.setHumiditySVG(value.getHumidity(), MainActivity.this));
 
                     currentDust.setText(df.format(value.getDustDensity()) + "" + getString(R.string.ug));
+                    NotificationHelper.notifyDustIfBeyondThreshold(MainActivity.this, value.getDustDensity());
                 } else {
                     currentTemp.setText(getString(R.string.error));
                     currentHumidity.setText(getString(R.string.error));
