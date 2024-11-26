@@ -42,7 +42,7 @@ public class NotificationHelper {
     private static boolean dustNotificationSent = false;
     private static boolean aqiNotificationSent = false;
 
-    private final static double TEMPERATURE_UPPER_THRESHOLD = 35.00;
+    private final static double TEMPERATURE_UPPER_THRESHOLD = 27.00;
     private final static double HUMIDITY_UPPER_THRESHOLD = 70;
     private final static double HUMIDITY_LOWER_THRESHOLD = 25;
     private final static double CO2_UPPER_THRESHOLD = 2500;
@@ -275,11 +275,17 @@ public class NotificationHelper {
             return;
         }
 
-        if (temperature >= TEMPERATURE_UPPER_THRESHOLD) {
+        double idealTemp =  Double.valueOf((context.getSharedPreferences("UserPreferences",MODE_PRIVATE).getString("ideal_Temp", "-1")));
+        double tempToCheck = idealTemp;
+        if(idealTemp==-1) {
+            tempToCheck = TEMPERATURE_UPPER_THRESHOLD;
+        }
+
+        if (temperature >=  tempToCheck) {
             if (tempNotificationSent) {
                 return;
             }
-            sendEnvironmentalNotificationToUser(context, "Temperature value has exceeded threshold limits of " + TEMPERATURE_UPPER_THRESHOLD + "°C", "temperature_alerts");
+            sendEnvironmentalNotificationToUser(context, "Temperature value has exceeded threshold limits of " + tempToCheck + "°C", "temperature_alerts");
             tempNotificationSent = true;
         } else {
             tempNotificationSent = false;

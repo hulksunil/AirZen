@@ -103,14 +103,23 @@ public class UserSettings extends AppCompatActivity {
                 allInputsValid = false;
             }
             else{
+                if (idealTemp.isEmpty()) {
+                    idealTemp = "-1";
+                }
                 saveIdealTempToSharedPreferences(idealTemp);
             }
+
+
 
             if (!idealHumidity.isEmpty() && !isValidDecimal(idealHumidity)) {
                 Toast.makeText(this, "Please enter a valid humidity (decimal number)", Toast.LENGTH_SHORT).show();
                 allInputsValid = false;
             }
             else{
+                if (idealHumidity.isEmpty()) {
+                    idealHumidity = "-1";
+                }
+
                 saveIdealHumidityToSharedPreferences(idealHumidity);
             }
 
@@ -119,6 +128,9 @@ public class UserSettings extends AppCompatActivity {
                 allInputsValid = false;
             }
             else{
+                if (idealCO2.isEmpty()) {
+                    idealCO2 = "-1";
+                }
                 saveIdealCO2ToSharedPreferences(idealCO2);
             }
 
@@ -127,6 +139,9 @@ public class UserSettings extends AppCompatActivity {
                 allInputsValid = false;
             }
             else {
+                if (idealDustDensity.isEmpty()) {
+                    idealDustDensity = "-1";
+                }
                 saveIdealDustDensityToSharedPreferences(idealDustDensity);
             }
 
@@ -135,6 +150,9 @@ public class UserSettings extends AppCompatActivity {
                 allInputsValid = false;
             }
             else {
+                if (idealVOC.isEmpty()) {
+                    idealVOC = "-1";
+                }
                 saveIdealVOCToSharedPreferences(idealVOC);
             }
 
