@@ -15,7 +15,7 @@
     <string name="degreesC">°C</string>
     <string name="ppm">%dppm</string>
     <string name="percent">%</string>
-    <string name="ug">ug/m³</string>
+    <string name="ug">μg/m³</string>
 
     <string name="clickedMetric">Clicked Reading</string>
 
