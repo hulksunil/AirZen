@@ -40,6 +40,16 @@
     <string name="CO2_longExposure">Long-term exposure above 1,000 ppm can lead to complaints of fatigue and poor air quality, which may affect focus and concentration. Improve air flow for safety.\n</string>
     <string name="CO2_concentration">Levels between 2,000 and 5,000 ppm can cause headaches, drowsiness, poor concentration, and may also increase heart rate and cause slight nausea.\n</string>
 
+    <string name="Dust_moderate">Dust Density is currently in a moderate range. Keeping your exposure to dust concentrations below 54.0 µg/m³ is the best way to prevent any short or long-term health effects from developing.\n</string>
+    <string name="Dust_asthma_and_sensitive">The dust density becomes harmful for sensitive people over 154 µg/m³. People with respiratory issues and those with asthma are included in this category. Wearing a pollution mask and continuing to monitor the air quality are advised in this case. Make sure to keep the house clean and use an air purifier.\n</string>
+    <string name="Dust_unhealthyAll">Dust levels are currently (levels >= 255 µg/m³) unhealthy for everyone. Reduce activities that may worsen dust levels, such as burning candles or using fireplaces. Use air purifiers and ensure your HVAC system is clean and functioning properly.\n</string>
+    <string name="Dust_hazardous">Dangerous dust density levels! Immediate action is required to protect your health. Seal windows and doors, eliminate dust sources, and run high-efficiency air purifiers. Stay in a clean, well-sealed room or leave the area if conditions do not improve.\n</string>
+    
+    <string name="VOC_acceptable">VOC levels are acceptable but approaching the upper safe limit. Monitor the air quality and ensure proper ventilation to maintain healthy conditions.\n</string>
+    <string name="VOC_moderateConcern">VOC levels are elevated and may cause mild symptoms such as headaches, nausea, or irritation in sensitive individuals. Increase ventilation and investigate potential sources of VOCs, such as cleaning products, paints, or furniture.\n</string>
+    <string name="VOC_veryUnhelathy">VOC levels are high and can pose serious health risks, including long-term damage to the liver, kidneys, and respiratory system. Immediate action is required: improve ventilation, remove potential VOC sources, and consider using an air purifier.\n</string>
+    <string name="VOC_extreme">VOC levels are dangerously high and can cause severe health issues, including cardiovascular diseases and cancer with prolonged exposure. Evacuate the area if possible, eliminate the source of VOCs, and use professional-grade air filtration systems to reduce levels.\n</string>
+
     <string name="learnMore">Learn More</string>
 
     <string name="temporary">Temporary value</string>
