@@ -496,13 +496,45 @@ public class GraphActivity extends AppCompatActivity {
     }
 
     private void dustWarning(double currentDust) {
+        idealPref(currentDust, idealDust, getString(R.string.dust));
+
+        if (currentDust >= 55 && currentDust <= 154){
+            warnings.append(getString(R.string.Dust_moderate));
+        }
+
+        if (currentDust >= 155 && currentDust <= 254) {
+            warnings.append(getString(R.string.Dust_asthma_and_sensitive));
+        }
+
+        if (currentDust >= 255 && currentDust <= 354) {
+            warnings.append(getString(R.string.Dust_unhealthyAll));
+        }
+
+        if (currentDust >= 355) {
+            warnings.append(getString(R.string.Dust_hazardous));
+        }
         infoBoxesVisibility();
-        //TODO
     }
 
     private void vocWarning(double currentVOC) {
+        idealPref(currentVOC, idealVOC, getString(R.string.voc));
+
+        if (currentVOC > 0.4 && currentVOC <= 0.6) {
+            warnings.append(getString(R.string.VOC_acceptable));
+        }
+
+        if (currentVOC > 0.6 && currentVOC <= 2.2) {
+            warnings.append(getString(R.string.VOC_moderateConcern));
+        }
+
+        if (currentVOC > 2.2 && currentVOC <= 30 ) {
+            warnings.append(getString(R.string.VOC_veryUnhelathy));
+        }
+
+        if (currentVOC > 30) {
+            warnings.append(getString(R.string.VOC_extreme));
+        }
         infoBoxesVisibility();
-        //TODO
     }
 
     private void notYetImplemented() {
