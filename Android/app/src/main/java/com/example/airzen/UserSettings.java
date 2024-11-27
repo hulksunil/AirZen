@@ -7,6 +7,7 @@ import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
@@ -183,6 +184,14 @@ public class UserSettings extends AppCompatActivity {
                 finish(); // Close the activity
             }
         });
+
+        Toolbar toolbar = findViewById(R.id.toolbar);
+        toolbar.setTitle("");
+        setSupportActionBar(toolbar);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowHomeEnabled(true);
+
     }
 
     private boolean isValidDecimal(String value) {
@@ -308,6 +317,12 @@ public class UserSettings extends AppCompatActivity {
             idealVoc = idealVoc.equals("-1") ? "" : idealVoc;
             idealVOCEditText.setText(idealVoc);
         }
+    }
+
+    public boolean onSupportNavigateUp() {
+        getOnBackPressedDispatcher().onBackPressed();
+        finish();
+        return super.onSupportNavigateUp();
     }
 
 }
