@@ -249,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.editProfileMenu) {
-            Intent userSettingsIntent = new Intent(MainActivity.this, UserSettings.class);
+            Intent userSettingsIntent = new Intent(MainActivity.this, UserSettingsActivity.class);
             startActivity(userSettingsIntent);
             return true;
         }
