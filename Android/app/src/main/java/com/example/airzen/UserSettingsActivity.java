@@ -16,7 +16,7 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 
-public class UserSettings extends AppCompatActivity {
+public class UserSettingsActivity extends AppCompatActivity {
 
     private TextInputLayout profileNameInput;
     private TextInputEditText profileNameEditText;

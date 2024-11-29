@@ -3,7 +3,6 @@ package com.example.airzen;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Menu;
 import android.widget.TextView;
 
 import androidx.activity.EdgeToEdge;
@@ -46,7 +45,7 @@ public class ProfileActivity extends AppCompatActivity {
 
         findViewById(R.id.accountSettings).setOnClickListener(v -> {
             // Create intent to start UserSettings activity
-            Intent intent = new Intent(ProfileActivity.this, UserSettings.class);
+            Intent intent = new Intent(ProfileActivity.this, UserSettingsActivity.class);
             startActivity(intent);
         });
     }
