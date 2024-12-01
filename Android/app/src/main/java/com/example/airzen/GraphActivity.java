@@ -123,7 +123,7 @@ public class GraphActivity extends AppCompatActivity {
     /**
      * Sets up the toolbar for the data activity by enabling the back button
      *
-     * @return
+     * @return a boolean
      */
     @Override
     public boolean onSupportNavigateUp() {
@@ -136,7 +136,7 @@ public class GraphActivity extends AppCompatActivity {
      * Inflates the menu
      *
      * @param menu The options menu in which you place your items.
-     * @return
+     * @return a boolean
      */
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -148,7 +148,7 @@ public class GraphActivity extends AppCompatActivity {
      * Adds the functionality to the learn more menu item.
      *
      * @param item The menu item that was selected.
-     * @return
+     * @return a boolean
      */
     @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
@@ -207,6 +207,12 @@ public class GraphActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method reads the current data node and it is extracted from
+     * MainActivity.java
+     *
+     * @param myRef database reference
+     */
     private void readCurrentData(DatabaseReference myRef) {
         DatabaseReference currentDataRef = myRef.child("current");
 
@@ -257,6 +263,12 @@ public class GraphActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method will display the graph and title for the specific metric that was
+     * selected by the user
+     *
+     * @param message this variable details the graph and title to display
+     */
     public void displayGraph(String message) {
         try {
             switch (message) {
@@ -309,7 +321,13 @@ public class GraphActivity extends AppCompatActivity {
         }
     }
 
-    //temperature graph function
+    /**
+     * This will display the graph for the temperature  metric. It will parse the object that contains
+     * all sensor values and convert it to an object that the graph library is expecting
+     *
+     * @throws SetException an exception that is thrown when the set object fails to be created under
+     *                      rare circumstances
+     */
     private void tempGraph() throws SetException {
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
@@ -329,6 +347,13 @@ public class GraphActivity extends AppCompatActivity {
         anyChartView.setChart(cartesian);
     }
 
+    /**
+     * This will display the graph for the humidity  metric. It will parse the object that contains
+     * all sensor values and convert it to an object that the graph library is expecting
+     *
+     * @throws SetException an exception that is thrown when the set object fails to be created under
+     *                      rare circumstances
+     */
     private void humidityGraph() throws SetException {
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
@@ -349,6 +374,13 @@ public class GraphActivity extends AppCompatActivity {
         anyChartView.setChart(cartesian);
     }
 
+    /**
+     * This will display the graph for the co2  metric. It will parse the object that contains
+     * all sensor values and convert it to an object that the graph library is expecting
+     *
+     * @throws SetException an exception that is thrown when the set object fails to be created under
+     *                      rare circumstances
+     */
     private void eCO2Graph() throws SetException {
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
@@ -369,7 +401,14 @@ public class GraphActivity extends AppCompatActivity {
         anyChartView.setChart(cartesian);
     }
 
-    private void dustDensityGraph() {
+    /**
+     * This will display the graph for the dust density  metric. It will parse the object that contains
+     * all sensor values and convert it to an object that the graph library is expecting
+     *
+     * @throws SetException an exception that is thrown when the set object fails to be created under
+     *                      rare circumstance
+     */
+    private void dustDensityGraph() throws SetException {
 
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
@@ -380,7 +419,7 @@ public class GraphActivity extends AppCompatActivity {
         }
 
         Log.i("SensorLength", "" + seriesData.size());
-        Set set = Set.instantiate();
+        Set set = getSet("Dust Density");
         set.data(seriesData);
         Mapping series1Mapping = set.mapAs("{ x: 'x', value: 'primarySensorData' }");
 
@@ -389,7 +428,13 @@ public class GraphActivity extends AppCompatActivity {
         anyChartView.setChart(cartesian);
     }
 
-
+    /**
+     * This will display the graph for the temperature  metric. It will parse the object that contains
+     * all sensor values and convert it to an object that the graph library is expecting
+     *
+     * @throws SetException an exception that is thrown when the set object fails to be created under
+     *                      rare circumstances
+     */
     private void VOCGraph() throws SetException {
         anyChartView.setProgressBar(findViewById(R.id.progress_bar));
 
@@ -410,6 +455,16 @@ public class GraphActivity extends AppCompatActivity {
         anyChartView.setChart(cartesian);
     }
 
+    /**
+     * This method is for catching a rare null pointer exception that is rare
+     * and allows us to handle it
+     *
+     * @param from this details which metric could have caused the error
+     * @return Set object
+     * @throws SetException an exception that is thrown when the set object fails to be created under
+     *                      rare circumstances
+     */
+
     private @NonNull Set getSet(String from) throws SetException {
         Set set = null;
         try {
@@ -420,6 +475,11 @@ public class GraphActivity extends AppCompatActivity {
         return set;
     }
 
+    /**
+     * This method configures the warning and additional information blocks for the temperature metric
+     *
+     * @param currentTemperature depending on the current reading, a specific message will be shown
+     */
     private void temperatureWarning(Double currentTemperature) {
         idealPref(currentTemperature, idealTemp, getString(R.string.temp));
 
@@ -440,6 +500,11 @@ public class GraphActivity extends AppCompatActivity {
         infoBoxesVisibility();
     }
 
+    /**
+     * This method configures the warning and additional information blocks for the temperature metric
+     *
+     * @param currentHumidity depending on the current reading, a specific message will be shown
+     */
     private void humidityWarning(Double currentHumidity) {
         idealPref(currentHumidity, idealHumidity, getString(R.string.humidity));
 
@@ -463,13 +528,18 @@ public class GraphActivity extends AppCompatActivity {
             additionalInfo.append(getString(R.string.Humidity_summer));
         }
 
-        if (currentHumidity >= 60){
+        if (currentHumidity >= 60) {
             warnings.append(getString(R.string.Humidity_indoor));
         }
 
         infoBoxesVisibility();
     }
 
+    /**
+     * This method configures the warning and additional information blocks for the temperature metric
+     *
+     * @param currentCo2 depending on the current reading, a specific message will be shown
+     */
     private void co2Warning(int currentCo2) {
         idealPref(currentCo2, idealCO2, getString(R.string.eco2));
 
@@ -495,10 +565,15 @@ public class GraphActivity extends AppCompatActivity {
         infoBoxesVisibility();
     }
 
+    /**
+     * This method configures the warning and additional information blocks for the temperature metric
+     *
+     * @param currentDust depending on the current reading, a specific message will be shown
+     */
     private void dustWarning(double currentDust) {
         idealPref(currentDust, idealDust, getString(R.string.dust));
 
-        if (currentDust >= 55 && currentDust <= 154){
+        if (currentDust >= 55 && currentDust <= 154) {
             warnings.append(getString(R.string.Dust_moderate));
         }
 
@@ -516,6 +591,11 @@ public class GraphActivity extends AppCompatActivity {
         infoBoxesVisibility();
     }
 
+    /**
+     * This method configures the warning and additional information blocks for the temperature metric
+     *
+     * @param currentVOC depending on the current reading, a specific message will be shown
+     */
     private void vocWarning(double currentVOC) {
         idealPref(currentVOC, idealVOC, getString(R.string.voc));
 
@@ -527,7 +607,7 @@ public class GraphActivity extends AppCompatActivity {
             warnings.append(getString(R.string.VOC_moderateConcern));
         }
 
-        if (currentVOC > 2.2 && currentVOC <= 30 ) {
+        if (currentVOC > 2.2 && currentVOC <= 30) {
             warnings.append(getString(R.string.VOC_veryUnhelathy));
         }
 
@@ -537,6 +617,9 @@ public class GraphActivity extends AppCompatActivity {
         infoBoxesVisibility();
     }
 
+    /**
+     * If an error occurs when falling through the switch statement, this is the default
+     */
     private void notYetImplemented() {
         anyChartView.setVisibility(View.GONE);
         findViewById(R.id.progress_bar).setVisibility(View.GONE);
@@ -548,8 +631,9 @@ public class GraphActivity extends AppCompatActivity {
 
     /**
      * Parses the timestamp from the sensor data into a more readable format (dd-MMM HH:mm:ss) (cuts out the year) (24-hour clock)
-     * @param sensorData
-     * @return
+     *
+     * @param sensorData this is an object of all the sensor data
+     * @return a string representing the time
      */
     private static String parseSensorDataTimestamp(SensorData sensorData) {
         String time;
@@ -608,6 +692,9 @@ public class GraphActivity extends AppCompatActivity {
         return cartesian;
     }
 
+    /**
+     * This will hide the graph under the condition that there is no sensor data
+     */
     private void hideGraph() {
         anyChartView.setVisibility(View.GONE);
         findViewById(R.id.progress_bar).setVisibility(View.GONE);
@@ -619,9 +706,10 @@ public class GraphActivity extends AppCompatActivity {
      * and display a suggestion to do something about it
      * This also empties out the text fields to prevent duplication or stacking of information
      * due to new data coming in
+     *
      * @param current metric that the user is looking at
-     * @param ideal the ideal metric that the user defined in their profile
-     * @param metric the metric the user clicked on
+     * @param ideal   the ideal metric that the user defined in their profile
+     * @param metric  the metric the user clicked on
      * @return
      */
     private void idealPref(double current, double ideal, String metric) {
@@ -629,7 +717,7 @@ public class GraphActivity extends AppCompatActivity {
 
         warnings.setText("");
         additionalInfo.setText("");
-        Log.i("ideal method", current + " " + ideal + " "+ isIdeal);
+        Log.i("ideal method", current + " " + ideal + " " + isIdeal);
 
         if (isIdeal) {
             switch (metric) {
@@ -641,7 +729,7 @@ public class GraphActivity extends AppCompatActivity {
                     break;
                 case "CO₂":
                 case "VOC":
-                    warnings.append(getString(R.string.idealGasSurpass,metric.toLowerCase()));
+                    warnings.append(getString(R.string.idealGasSurpass, metric.toLowerCase()));
                     break;
                 case "Dust Density":
                     warnings.append(getString(R.string.idealDustSurpass));
@@ -654,7 +742,7 @@ public class GraphActivity extends AppCompatActivity {
      * As redundant as this looks, it is useful. This will trim the ends of the text boxes so that
      * there is not a new line under the last Warning or Additional information provided to the user
      */
-    private void trimTextBoxes(){
+    private void trimTextBoxes() {
         warnings.setText(warnings.getText().toString().trim());
         additionalInfo.setText(additionalInfo.getText().toString().trim());
     }
@@ -664,15 +752,18 @@ public class GraphActivity extends AppCompatActivity {
      * way of doing it in a lot cleaner way
      */
     private void infoBoxesVisibility() {
-        if(warnings.getText().length() > 0) warningsBox.setVisibility(View.VISIBLE);
+        if (warnings.getText().length() > 0) warningsBox.setVisibility(View.VISIBLE);
         else warningsBox.setVisibility(View.GONE);
 
 
-        if(additionalInfo.getText().length() > 0) additionalInfoBox.setVisibility(View.VISIBLE);
+        if (additionalInfo.getText().length() > 0) additionalInfoBox.setVisibility(View.VISIBLE);
         else additionalInfoBox.setVisibility(View.GONE);
     }
 
 
+    /**
+     * This is a custom made exception to handle when a rare error occurs
+     */
     class SetException extends Exception {
         public SetException(String s) {
             super(s);// Call constructor of parent Exception

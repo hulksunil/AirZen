@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
 
         readFirebaseSensorData();
         NotificationHelper.createNotificationChannel(this);
-       if(!NotificationHelper.isPostNotificationsPermissionGranted(this) && getSharedPreferences("notificationPreferences", MODE_PRIVATE).getInt("timesRequested", 0) < NotificationHelper.MAX_TIMES_ALLOWED_TO_REQUEST_PERMISSIONS){
+        if (!NotificationHelper.isPostNotificationsPermissionGranted(this) && getSharedPreferences("notificationPreferences", MODE_PRIVATE).getInt("timesRequested", 0) < NotificationHelper.MAX_TIMES_ALLOWED_TO_REQUEST_PERMISSIONS) {
             NotificationHelper.requestPermissions(this);
         }
 
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
         boolean postNotificationsPermissionGranted = NotificationHelper.isPostNotificationsPermissionGranted(this);
         Log.i("MainActivityNotificationStuff", "requestPermissions: postNotificationsPermissionGranted: " + postNotificationsPermissionGranted);
-        if(postNotificationsPermissionGranted){
+        if (postNotificationsPermissionGranted) {
             getSharedPreferences("notificationPreferences", MODE_PRIVATE).edit().putBoolean("areNotificationsEnabled", true).apply();
         }
     }
@@ -112,7 +112,6 @@ public class MainActivity extends AppCompatActivity {
         readCurrentData(myRef);
 //        readPastData(myRef);
     }
-
 
 
     /**
@@ -165,6 +164,12 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This method will initilize the IAQI display by using the current IAQI value retrived from
+     * firebase
+     *
+     * @param iaqi current IAQI value
+     */
     //https://cdn-shop.adafruit.com/product-files/3660/BME680.pdf
     private void slimChartInit(int iaqi) {
         NotificationHelper.notifyAqiIfBeyondThreshold(this, iaqi);
@@ -202,6 +207,12 @@ public class MainActivity extends AppCompatActivity {
         slimChart.setStrokeWidth(9);
     }
 
+    /**
+     * This method opens the graph activity and adds an extra to the intent that details the
+     * specific metric to display on the graph activity
+     *
+     * @param view the specific tile clicked
+     */
     public void openGraphActivity(View view) {
         Intent intent = new Intent(MainActivity.this, GraphActivity.class);
         String longID = view.getResources().getResourceName(view.getId());
@@ -252,8 +263,7 @@ public class MainActivity extends AppCompatActivity {
             Intent userSettingsIntent = new Intent(MainActivity.this, UserSettingsActivity.class);
             startActivity(userSettingsIntent);
             return true;
-        }
-        else if (item.getItemId() == R.id.editNotificationsMenu) {
+        } else if (item.getItemId() == R.id.editNotificationsMenu) {
             Intent intent = new Intent(MainActivity.this, EditNotificationsActivity.class);
             startActivity(intent);
             return true;
