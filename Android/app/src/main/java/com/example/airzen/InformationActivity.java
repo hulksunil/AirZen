@@ -17,7 +17,7 @@ import com.example.airzen.models.AssetConfigure;
 
 public class InformationActivity extends AppCompatActivity {
     private Toolbar toolbar;
-    private LinearLayout temperatureInfo, humidityInfo, co2Info,dustInfo,vocInfo;
+    private LinearLayout temperatureInfo, humidityInfo, co2Info, dustInfo, vocInfo;
     private TextView notYetImpl;
 
     @Override
@@ -36,7 +36,6 @@ public class InformationActivity extends AppCompatActivity {
         //dustInfo
         vocInfo = findViewById(R.id.vocInfo);
 
-
         notYetImpl = findViewById(R.id.todo);
 
         informationToDisplay(getIntent().getStringExtra(getString(R.string.clickedMetric)));
@@ -53,6 +52,12 @@ public class InformationActivity extends AppCompatActivity {
     }
 
 
+    /**
+     * This switch statement handles showing the specific information
+     * depending on which page the user was on previously
+     *
+     * @param clickedMetric the page that the user came from
+     */
     private void informationToDisplay(String clickedMetric) {
         switch (clickedMetric) {
             case "Temperature":
