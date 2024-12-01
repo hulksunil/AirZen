@@ -54,7 +54,7 @@ void BME_Start() {
   };
 
   // Update the sensor subscription with the required sensors.
-  iaqSensor.updateSubscription(sensorList, 6, BSEC_SAMPLE_RATE_LP);
+  iaqSensor.updateSubscription(sensorList, 6, BSEC_SAMPLE_RATE_LP); //This sample rate outputs new values every 3 seconds.
   checkIaqSensorStatus();
 }
 
@@ -110,20 +110,3 @@ float BMEIQA_ACCURACY() {
   // Serial.println(" ");
   return acc;
 }
-
-
-// // Calculate altitude from pressure using the barometric formula.
-// float calculateAltitude(float pressure) {
-//   return 44330 * (1 - (pow(pressure / SEALEVELPRESSURE_HPA, (1 / 5.255))));
-// }
-
-// Function to read and return altitude from the sensor.
-// float BMEAltitude() {
-//   float altitude = calculateAltitude(iaqSensor.pressure);
-//   Serial.print("Pressure: ");
-//   Serial.print(iaqSensor.pressure, 2);
-//   Serial.print("Altitude: ");
-//   Serial.print(altitude, 2);
-//   Serial.println(" meters");
-//   return altitude;
-// }

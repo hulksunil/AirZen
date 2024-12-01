@@ -13,7 +13,7 @@
 
 void WIFIstart() {
 
-    WiFi.mode(WIFI_STA); // explicitly set mode, esp defaults to STA+AP
+    WiFi.mode(WIFI_STA); //Explicitly set mode, esp defaults to STA+AP
    
     Serial.begin(115200);
     Serial.println("Starting the WiFI connection process");
@@ -22,11 +22,11 @@ void WIFIstart() {
     //Object to represent the WifiManager.
     WiFiManager wm;
    
-    // The resetSettings() erases the stored credentials (IP address and network) on the WiFiManager object. This is for testing only; the final product will NOT have this.
+    //The resetSettings() erases the stored credentials (IP address and network) on the WiFiManager object. This is for testing only; the final product will NOT have this.
     wm.resetSettings();
 
-    // Automatically connect using saved credentials,
-    // if connection fails, it starts an access point with the specified name ("AutoConnectAP"),
+    //Automatically connect using saved credentials,
+    //If the connection fails, it starts an access point with the specified name ("AutoConnectAP"),
 
     bool res; //This object will be true if the access point parameter conditions are met.
     res = wm.autoConnect("AutoConnectAP","password123"); // Our password protected access point. The user will recieve the password when they buy the product.
@@ -44,7 +44,7 @@ void WIFIstart() {
     //Once connected to the AutoConnectAP, the user need to open their browser and enter: http://192.168.4.1
     //This will bring them to the portal.
    
-    // The user has chosen their network SSID and entered their password. Waiting for a connection
+    //The user has chosen their network SSID and entered their password. Waiting for a connection
   while (WiFi.status() != WL_CONNECTED) {
     delay(1000);
     Serial.println("Connecting to WiFi...");

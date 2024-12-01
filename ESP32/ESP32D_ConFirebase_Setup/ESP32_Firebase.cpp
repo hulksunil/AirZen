@@ -6,6 +6,8 @@
 #include <time.h>
 #include "GP2Y1010AU0F_DustSensor.h"
 
+//The Firebase code structure had two main resources used to help understand how Firebase works. The first was the tutorial resources for databases. 
+//The second was a Youtube link giving a breakdown on how FIrebase works: https://www.youtube.com/watch?v=aO92B-K4TnQ&t=916s&ab_channel=EducationisLife%28joedgoh%29
 
 //The two pieces (not One Piece sorry Moussa) that we need to find/connect to our database.
 #define API_KEY "AIzaSyBCrpkYZPiBYCCGg_C9HSNXUEbpUf1j5AU"
@@ -31,7 +33,7 @@ void connectFB() {
   config.database_url = DATABASE_URL;
 
   //Now we can call the firebase signUp method.
-  //This singUp is using our current authentication method, which is "anonymous user". 
+  //This signUp is using our current authentication method, which is "anonymous user" (AU). 
 
   if(Firebase.signUp(&config, &auth, "", "")) { //The last two arguments are empty strings, denoting AU signup.
     Serial.println("The signup was successful, new anonymous user created.");
@@ -46,7 +48,7 @@ void connectFB() {
   Firebase.reconnectWiFi(true);
 }
 
-// Function to generate a timestamp as a unique ID
+//Function to generate a timestamp as a unique ID. This will be for the pastValues directory.
 String generateTimestamp() {
     time_t now = time(nullptr);  // Get the current time
     struct tm *timeinfo = localtime(&now);  // Convert to local time
@@ -56,26 +58,25 @@ String generateTimestamp() {
 }
 
 //Now we need a function that can send values to the database:
-void sendFB(const SensorData &data) {
-    String currentDataPath = "/sensorData/current";  // Path for current readings
-    String pastValuesPath = "/sensorData/pastValues";  // Path for historical data
-
-// void sendFB(float temperature, float humidity, float pressure, float gas, float altitude, float dustDensity) { //We want to send these five variables to the firebase.
-
+void sendFB(const SensorData &data) { //Using the SensorData object to send all the float parameters to Firebase.
+    String currentDataPath = "/sensorData/current";  //Path for current readings. If the path doesn't exist, it will be created for us.
+    String pastValuesPath = "/sensorData/pastValues";  //Path for historical data. If the path doesn't exist, it will be created for us.
 
     // Generate a timestamp-based unique ID
     String timestamp = generateTimestamp();
 
+    //The data can be sent using the Firebase.RTDB.setFloat() function (we can pick from a list of variables, but we're using Float).
+    //First, we check to make sure the timer is past the 10 second mark. 
     if (Firebase.ready() && (millis() - sendDataPrevMillis > timeDelay || sendDataPrevMillis == 0)) {
-        sendDataPrevMillis = millis();
+        sendDataPrevMillis = millis(); //Marks the current time before the transfer of data occurs
 
         // Update the current data
-        if (Firebase.RTDB.setFloat(&FB, currentDataPath + "/temperature", data.temperature)) {
+        if (Firebase.RTDB.setFloat(&FB, currentDataPath + "/temperature", data.temperature)) {  //Firebase Object, Database node path (if the path doesn't exist, it will be created automatically), value we want to pass. 
             Serial.println("Temperature saved to current node.");
-        } else {
+        } else { //If it failed to aquire the data:
             Serial.println("Failed to save temperature: " + FB.errorReason());
         }
-
+        //We then repeat for all of the parameters we want to send to the database.
         if (Firebase.RTDB.setFloat(&FB, currentDataPath + "/humidity", data.humidity)) {
             Serial.println("Humidity saved to current node.");
         } else {
@@ -100,19 +101,12 @@ void sendFB(const SensorData &data) {
             Serial.println("Failed to save AQI: " + FB.errorReason());
         }
 
-        // if (Firebase.RTDB.setFloat(&FB, currentDataPath + "/altitude", data.altitude)) {
-        //     Serial.println("Altitude saved to current node.");
-        // } else {
-        //     Serial.println("Failed to save altitude: " + FB.errorReason());
-        // }
-
-        //******ADD BACK LATER
         if (Firebase.RTDB.setFloat(&FB, currentDataPath + "/dustDensity", data.dustDensity)) {
             Serial.println("Dust Density saved to current node.");
         } else {
             Serial.println("Failed to save Dust Density: " + FB.errorReason());
         }
-        //******
+       
 
         // Save the same data to the pastValues node with timestamp
         if (Firebase.RTDB.setFloat(&FB, pastValuesPath + "/" + timestamp + "/temperature", data.temperature)) {
@@ -131,14 +125,11 @@ void sendFB(const SensorData &data) {
         if (!Firebase.RTDB.setFloat(&FB, pastValuesPath + "/" + timestamp + "/voc", data.voc)) {
             Serial.println("Failed to save VOC to pastValues: " + FB.errorReason());
         }
-        // if (!Firebase.RTDB.setFloat(&FB, pastValuesPath + "/" + timestamp + "/altitude", data.altitude)) {
-        //     Serial.println("Failed to save altitude to pastValues: " + FB.errorReason());
-        //}
-        //****** ADD BACK LATER
+     
         if (!Firebase.RTDB.setFloat(&FB, pastValuesPath + "/" + timestamp + "/dustDensity", data.dustDensity)) {
             Serial.println("Failed to save dust Density to pastValues: " + FB.errorReason());
         }
-        //******
+     
         if (!Firebase.RTDB.setFloat(&FB, pastValuesPath + "/" + timestamp + "/aqi", data.aqi)) {
             Serial.println("Failed to save AQI to pastValues: " + FB.errorReason());
         }

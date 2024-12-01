@@ -16,14 +16,18 @@ float readDensity() {
   digitalWrite(ledPin, LOW); //Switch on the IR LED (LOW symbolizes that the IR LED is ON).
   delayMicroseconds(280); //As per the manufacturers datasheet, we should wait at leat 0.28ms before reading the Vo output of the sensor.
   int adc = analogRead(sensorPin); //We read the voltage with our ADC PIN 34. However, this gives an ADC value, NOT a voltage. We have to convert to Vo.
-  float v0 = (Vcc * adc / adcMax) / 0.6; //Converting the analog reading to a voltage. Adjust from voltage divider (3/5 = 0.6)
+  float v0 = (Vcc * adc / adcMax) / 0.6; //Converting the analog reading to a voltage. Adjust/scale from voltage divider (3/5 = 0.6)
 
  
   //The manufacturer shows a graph that indicates the linear range of the dust density readings: 0 to 0.5 mg/m^3 and 0 - 3.7V.
   //However, this is a typical graph only, and does not guarantee an accurate calculation. 
   //The min and max voltages were found with the current sensor, and a new linear fitting was made, altering the formula slightly to match the read values.
+  //The min voltage: 0.21V. Maps to 0 dust. The max voltage: 4.73V. Maps to 0.4459321ug/m^3 of dust.
+  //Slope = 10.1573
+  //Linear equation rearranged for dust density: DustDensity = V0 - 0.21 / (10.1573)
+  //DustDensity = 0.098456(V0) - 0.0206747
 
-  float density = (0.098456 * v0 - 0.02067) * 1000 ; // Now we can calculate the dust density ug/m^3) Formula before change (20241126): (0.103 * v0 - 0.0414) * 1000
+  float density = (0.098456 * v0 - 0.02067) * 1000 ; // Now we can calculate the dust density ug/m^3) 
   delayMicroseconds(40); //The extra delay is to account for the remaining amount of time in the pulse width (Total time = 320us. 280 + 40 = 320)
   digitalWrite(ledPin, HIGH);
   delay(1500); //To avoid overlap issues, a delay is included.
