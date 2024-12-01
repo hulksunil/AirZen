@@ -110,7 +110,6 @@ public class MainActivity extends AppCompatActivity {
         FirebaseDatabase database = FirebaseDatabase.getInstance(); // gets the default instance (us-central)
         DatabaseReference myRef = database.getReference("sensorData"); // gets the reference to the database that we want to read/write to
         readCurrentData(myRef);
-//        readPastData(myRef);
     }
 
 

@@ -24,7 +24,14 @@ import androidx.core.app.NotificationManagerCompat;
 import com.example.airzen.MainActivity;
 import com.example.airzen.R;
 
-
+/**
+ * Helper class to manage notifications
+ * This class is responsible for sending notifications to the user when the environmental values exceed the threshold
+ * The class also manages the permissions required to send notifications
+ * The class also manages the channels and groups for the notifications
+ * The class also manages the flags to prevent multiple notifications for the same event
+ * The class also manages the summary notification for multiple threshold alerts
+ */
 public class NotificationHelper {
 
     // Android only allows requesting permissions twice and then stops asking so we use this to redirect the user to settings page after 2 requests
@@ -50,6 +57,13 @@ public class NotificationHelper {
     private final static double DUST_UPPER_THRESHOLD = 150;
     private final static double AQI_UPPER_THRESHOLD = 100;
 
+    /**
+     * Request the permissions to send notifications
+     * This method will request the user to enable notifications
+     * If the user has already been asked twice, the user will be redirected to the settings page
+     *
+     * @param context
+     */
     public static void requestPermissions(Activity context) {
         int timesRequested = context.getSharedPreferences("notificationPreferences", MODE_PRIVATE).getInt("timesRequested", 0);
         timesRequested++;
@@ -69,6 +83,13 @@ public class NotificationHelper {
     }
 
 
+    /**
+     * Enable notifications
+     * This method will enable notifications for the app
+     * This method will also create the notification channels and groups for all the environmental measurements
+     *
+     * @param context
+     */
     public static void createNotificationChannel(Activity context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             NotificationManager notificationManager = context.getSystemService(NotificationManager.class);
@@ -163,6 +184,13 @@ public class NotificationHelper {
         }
     }
 
+    /**
+     * Check if the app has the permissions to send notifications
+     * If its the first time, the app will enable all the notifications by default in the shared preferences
+     *
+     * @param context
+     * @return
+     */
     public static boolean isPostNotificationsPermissionGranted(Activity context) {
         SharedPreferences notification = context.getSharedPreferences("notificationPreferences", MODE_PRIVATE);
         boolean isFirstTimeNotificationsEnabled = context.getSharedPreferences("notificationPreferences", MODE_PRIVATE).getBoolean("isFirstTimeEnabled", true);
@@ -175,10 +203,22 @@ public class NotificationHelper {
         return ActivityCompat.checkSelfPermission(context, android.Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED;
     }
 
+    /**
+     * Check if the notifications are enabled based on the shared preferences
+     *
+     * @param context
+     * @return
+     */
     private static boolean areNotificationsEnabled(Activity context) {
         return context.getSharedPreferences("notificationPreferences", MODE_PRIVATE).getBoolean("areNotificationsEnabled", false);
     }
 
+    /**
+     * Get the notification ID based on the channel ID
+     *
+     * @param channel_id
+     * @return
+     */
     private static int getNotificationId(String channel_id) {
         switch (channel_id) {
             case "temperature_alerts":
@@ -251,6 +291,12 @@ public class NotificationHelper {
         notificationManager.notify(9999, summaryBuilder.build());
     }
 
+    /**
+     * Create the intent to open the app when the notification is clicked
+     *
+     * @param context
+     * @return
+     */
     private static PendingIntent createIntentForNotification(Activity context) {
         // Create the intent to open the app
         Intent intent = new Intent(context, MainActivity.class); // Replace with your main activity class
@@ -266,6 +312,14 @@ public class NotificationHelper {
         return pendingIntent;
     }
 
+    /**
+     * Notify the user if the temperature exceeds the threshold
+     * If the user has disabled the notifications for temperature, the notification will not be sent
+     * If the user has set an ideal temperature, the notification will be sent if the temperature exceeds the ideal temperature
+     *
+     * @param context
+     * @param temperature
+     */
     public static void notifyTemperatureIfBeyondThreshold(Activity context, double temperature) {
         if (!areNotificationsEnabled(context)) {
             return;
@@ -292,6 +346,14 @@ public class NotificationHelper {
         }
     }
 
+    /**
+     * Notify the user if the humidity exceeds the threshold
+     * If the user has disabled the notifications for humidity, the notification will not be sent
+     * If the user has set an ideal humidity, the notification will be sent if the humidity exceeds the ideal humidity
+     *
+     * @param context
+     * @param humidity
+     */
     public static void notifyHumidityIfBeyondThreshold(Activity context, double humidity) {
         if (!areNotificationsEnabled(context)) {
             return;
@@ -322,6 +384,15 @@ public class NotificationHelper {
         }
     }
 
+
+    /**
+     * Notify the user if the CO2 exceeds the threshold
+     * If the user has disabled the notifications for CO2, the notification will not be sent
+     * If the user has set an ideal CO2, the notification will be sent if the CO2 exceeds the ideal CO2
+     *
+     * @param context
+     * @param co2
+     */
     public static void notifyCo2IfBeyondThreshold(Activity context, double co2) {
         if (!areNotificationsEnabled(context)) {
             return;
@@ -348,6 +419,14 @@ public class NotificationHelper {
         }
     }
 
+    /**
+     * Notify the user if the VOC exceeds the threshold
+     * If the user has disabled the notifications for VOC, the notification will not be sent
+     * If the user has set an ideal VOC, the notification will be sent if the VOC exceeds the ideal VOC
+     *
+     * @param context
+     * @param voc
+     */
     public static void notifyVocIfBeyondThreshold(Activity context, double voc) {
         if (!areNotificationsEnabled(context)) {
             return;
@@ -374,6 +453,14 @@ public class NotificationHelper {
         }
     }
 
+    /**
+     * Notify the user if the dust exceeds the threshold
+     * If the user has disabled the notifications for dust, the notification will not be sent
+     * If the user has set an ideal dust, the notification will be sent if the dust exceeds the ideal dust
+     *
+     * @param context
+     * @param dust
+     */
     public static void notifyDustIfBeyondThreshold(Activity context, double dust) {
         if (!areNotificationsEnabled(context)) {
             return;
@@ -401,6 +488,13 @@ public class NotificationHelper {
     }
 
 
+    /**
+     * Notify the user if the AQI exceeds the threshold
+     * If the user has disabled the notifications for AQI, the notification will not be sent
+     *
+     * @param context
+     * @param aqi
+     */
     public static void notifyAqiIfBeyondThreshold(Activity context, double aqi) {
         if (!areNotificationsEnabled(context)) {
             return;
