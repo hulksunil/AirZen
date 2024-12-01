@@ -681,14 +681,6 @@ public class GraphActivity extends AppCompatActivity {
         cartesian.legend().fontSize(13d);
         cartesian.legend().padding(0d, 0d, 10d, 0d);
 
-        //TODO some stying
-
-//        cartesian.dataArea().background().enabled(true);
-//        cartesian.dataArea().background().fill("#ffd54f 0.2");
-//
-//        cartesian.background().enabled(true);
-//        cartesian.background().fill("#3a56b0");
-
         return cartesian;
     }
 

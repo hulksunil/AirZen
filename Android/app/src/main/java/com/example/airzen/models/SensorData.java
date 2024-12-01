@@ -1,5 +1,8 @@
 package com.example.airzen.models;
 
+/**
+ * This class is used to store the sensor data that is being read from the device
+ */
 public class SensorData {
     private int co2;
     private int aqi;

@@ -14,6 +14,9 @@ import androidx.core.view.WindowInsetsCompat;
 
 import com.example.airzen.models.NotificationHelper;
 
+/**
+ * This activity is used to edit the notifications that the user wants to receive
+ */
 public class EditNotificationsActivity extends AppCompatActivity {
 
     private SwitchCompat generalNotificationsSwitch, iaqiSwitch, temperatureSwitch, humiditySwitch, co2Switch, vocSwitch, dustSwitch;
@@ -41,6 +44,12 @@ public class EditNotificationsActivity extends AppCompatActivity {
         return super.onSupportNavigateUp();
     }
 
+
+    /**
+     * On resume, check if the user has granted the post notifications permission and update the switches accordingly
+     * If not granted, disable the general notifications switch
+     * If granted, check the shared preferences to see if the user has enabled the notifications and update the switches accordingly
+     */
     @Override
     protected void onResume() {
         super.onResume();
@@ -72,6 +81,11 @@ public class EditNotificationsActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("");
     }
 
+    /**
+     * Initializes the switches and sets their initial state based on the shared preferences
+     * If the user has not granted the post notifications permission, the general notifications switch is disabled
+     * If the user has granted the post notifications permission, the general notifications switch is enabled and the other switches are updated based on the shared preferences
+     */
     private void initSwitches() {
         generalNotificationsSwitch = findViewById(R.id.switch_notifications);
         iaqiSwitch = findViewById(R.id.switch_iaqi);
@@ -108,8 +122,14 @@ public class EditNotificationsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * Handles the switch on click changes and updates the shared preferences accordingly
+     *
+     */
     private void handleSwitches() {
         SharedPreferences notificationPreferences = getSharedPreferences("notificationPreferences", MODE_PRIVATE);
+
+        // General notifications switch enables all the other switches and sets them checked based on the shared preferences
         generalNotificationsSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
             if (isChecked) {
 
@@ -129,6 +149,7 @@ public class EditNotificationsActivity extends AppCompatActivity {
                 vocSwitch.setChecked(notificationPreferences.getBoolean("hasVOCNotificationEnabled", false));
                 dustSwitch.setChecked(notificationPreferences.getBoolean("hasDustNotificationEnabled", false));
 
+                // enable the switches to be changed
                 iaqiSwitch.setEnabled(true);
                 temperatureSwitch.setEnabled(true);
                 humiditySwitch.setEnabled(true);
@@ -138,7 +159,7 @@ public class EditNotificationsActivity extends AppCompatActivity {
 
 
             } else {
-                // The switch is disabled
+                // The switch is disabled and all the other switches should be
                 notificationPreferences.edit().putBoolean("areNotificationsEnabled", false).apply();
                 iaqiSwitch.setChecked(false);
                 temperatureSwitch.setChecked(false);
