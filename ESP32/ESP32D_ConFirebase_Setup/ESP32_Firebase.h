@@ -5,10 +5,10 @@
 #include "SensorData.h"
 
 
-// Function declarations
+// Functions
 void connectFB();
 
-// void sendFB(float temperature, float humidity, float co2, float voc, float aqi, float altitude);
-
 void sendFB(const SensorData &data);
-#endif // ESP32_FIREBASE_H
+
+
+#endif 

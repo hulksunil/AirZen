@@ -4,7 +4,7 @@
 #include <WiFi.h>
 #include <WiFiManager.h> // https://github.com/tzapu/WiFiManager
 
-// Function declarations
+// Functions
 void WIFIstart();
 
-#endif // WIFI_CONNECTION_H
+#endif 
