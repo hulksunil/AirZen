@@ -75,6 +75,15 @@ public class UserSettingsActivity extends AppCompatActivity {
 
         loadPreferences();
 
+        /**
+         * This method first checks if all the user inputs are valid or compatible with the type
+         * they are being stored as i.e int, string, etc. Then it checks to see if the user has
+         * entered a profile name, if they have this profile name is saved in shared preferences.
+         * The remaining if statements check to see if the input for the remaining measurements
+         * are within the acceptable range and the correct format and then when they are deemed
+         * acceptable the preferred thresholds will be saved in shared preferences and re direct
+         * the user to the Main Activity.
+         */
         saveButton.setOnClickListener(v -> {
             // Get the profile name entered by the user
             boolean allInputsValid = true;
@@ -194,6 +203,11 @@ public class UserSettingsActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * If the parsed input returns true then it is a decimal value
+     *
+     * @param value this is the user input value
+     */
     private boolean isValidDecimal(String value) {
         try {
             // Attempt to parse the string as a double
@@ -204,6 +218,13 @@ public class UserSettingsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * checks to see if the inputted user value is within the specified range of values
+     * @param value user input value
+     * @param min minimum number allowed to be entered in input
+     * @param max maximum number allowed
+     * @return
+     */
     private boolean isValidRange(String value, double min, double max) {
         try {
             double doubleValue = Double.parseDouble(value);
@@ -213,6 +234,10 @@ public class UserSettingsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * saves the user inputted profile name to shared preferences
+     * @param profileName user inputted profile name
+     */
     private void saveProfileNameToSharedPreferences(String profileName) {
         // Access SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("UserPreferences", MODE_PRIVATE);
@@ -225,6 +250,10 @@ public class UserSettingsActivity extends AppCompatActivity {
         editor.apply(); // Alternatively, use .commit() for synchronous save
     }
 
+    /**
+     * Save input for temperature to shared preferences
+     * @param idealTemp user inputted value for temperature
+     */
     private void saveIdealTempToSharedPreferences(String idealTemp) {
         // Access SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("UserPreferences", MODE_PRIVATE);
@@ -237,6 +266,10 @@ public class UserSettingsActivity extends AppCompatActivity {
         editor.apply(); // Alternatively, use .commit() for synchronous save
     }
 
+    /**
+     * Save input for humidity to shared preferences
+     * @param idealHumidity user inputted value for humidity
+     */
     private void saveIdealHumidityToSharedPreferences(String idealHumidity) {
         // Access SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("UserPreferences", MODE_PRIVATE);
@@ -249,6 +282,10 @@ public class UserSettingsActivity extends AppCompatActivity {
         editor.apply(); // Alternatively, use .commit() for synchronous save
     }
 
+    /**
+     * saves the user inputted value for C02 to shared preferences
+     * @param idealCO2 the input value for CO2
+     */
     private void saveIdealCO2ToSharedPreferences(String idealCO2) {
         // Access SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("UserPreferences", MODE_PRIVATE);
@@ -261,6 +298,10 @@ public class UserSettingsActivity extends AppCompatActivity {
         editor.apply(); // Alternatively, use .commit() for synchronous save
     }
 
+    /**
+     * saves the user inputted value for dust density
+     * @param idealDustDensity inputted value for dust density
+     */
     private void saveIdealDustDensityToSharedPreferences(String idealDustDensity) {
         // Access SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("UserPreferences", MODE_PRIVATE);
@@ -273,6 +314,10 @@ public class UserSettingsActivity extends AppCompatActivity {
         editor.apply(); // Alternatively, use .commit() for synchronous save
     }
 
+    /**
+     * saves the user inputted value for VOC
+     * @param idealVOC input for VOC
+     */
     private void saveIdealVOCToSharedPreferences(String idealVOC) {
         // Access SharedPreferences
         SharedPreferences sharedPreferences = getSharedPreferences("UserPreferences", MODE_PRIVATE);
@@ -285,6 +330,9 @@ public class UserSettingsActivity extends AppCompatActivity {
         editor.apply(); // Alternatively, use .commit() for synchronous save
     }
 
+    /**
+     * loads the values saved in shared preferences to autofill the editText with past values
+     */
     private void loadPreferences() {
         SharedPreferences sharedPreferences = getSharedPreferences("UserPreferences", MODE_PRIVATE);
 
@@ -319,6 +367,10 @@ public class UserSettingsActivity extends AppCompatActivity {
         }
     }
 
+    /**
+     * loads task bar back button
+     * @return
+     */
     public boolean onSupportNavigateUp() {
         getOnBackPressedDispatcher().onBackPressed();
         finish();
