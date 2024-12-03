@@ -14,11 +14,11 @@ extern Bsec iaqSensor;
 //For the calibration. This is used with the BSEC_SAMPLE_RATE_LP, so the values will be read every 3 seconds. 
 //We use millis here for a simple timer on when to end the function.
 unsigned long startTime;
-const unsigned long calibrationTime = 5.5 * 60 * 1000; // 5 minutes and 30 seconds
+const unsigned long calibrationTime = 5.5 * 60 * 1000; //5 minutes and 30 seconds
 
 //For the Firebase readings. We use the millis here to tell Arduino how often to send the data to Firebase. This should be "unblocked"; no interuptions to the sensor code.
-unsigned long lastRead;
-const unsigned long ReadSpace = 10 * 1000; // 10 seconds
+unsigned long timer;
+const unsigned long timeDelay = 10 * 1000; //10 seconds
 
 
 
@@ -88,9 +88,9 @@ void loop() {
      
 
     //Creating our timer for sending the BME680 data
-    if(millis() - lastRead >= ReadSpace) { //If the space between readings exceed 10 seconds, reset the timer and send the values to Firebase.
+    if(millis() - timer >= timeDelay) { //If the space between readings exceed 10 seconds, reset the timer and send the values to Firebase.
 
-      lastRead = millis(); //Resetting the timer.
+      timer = millis(); //Resetting the timer.
 
       Serial.println("__________________________");
       Serial.println("Proper data block to be sent");
