@@ -3,6 +3,7 @@
 
 Bsec iaqSensor;  // Create an instance of Bsec for handling BME680 sensor data.
 
+// Check if the sensor is working and able to be read from
 void checkIaqSensorStatus(void) {
   if (iaqSensor.bsecStatus != BSEC_OK) {
     if (iaqSensor.bsecStatus < BSEC_OK) {
