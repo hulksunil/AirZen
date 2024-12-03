@@ -1,6 +1,29 @@
 # AirZen - An Air Quality Monitor (COEN/ELEC 390 Project)  
 A device designed to benefit individuals who work or study at a desk for extended periods, those with respiratory issues like asthma, and people concerned about their surrounding air quality.
 
+## Running the code
+### <u>Hardware side </u>
+1. go to ESP32\ESP32D_ConFirebase_Setup
+2. open up ESP32D_ConFirebase_Setup
+3. install the following libraries:
+    - Adafruit BME680 Library by Adafruit
+    - Adafruit BusiO by Adafruit
+    - Adafruit GFX Library by Adafruit
+    - Adafruit SSD1306 by Adafruit
+    - Adafruit Unified Sensor by Adafruit
+    - BME68x Sensor library by Bosch Sensortec
+    - BSEC Software Library by Bosch Sensortec
+    - Firebase Arduino Client Library for ESP8266 and… by Google
+    - WiFiManager by tzapu
+
+
+### <u>Android side</u>
+1. Install the latest version of Android Studio
+2. Open the application in Android Studio
+3. Run the application
+4. Ensure that the google-services.json file is in the Android\app folder. If not, scroll down for further instructions
+
+
 ## Getting started on the project
 ### Clone the project
 `git clone https://github.com/hulksunil/AirZen.git`  
@@ -19,7 +42,7 @@ A device designed to benefit individuals who work or study at a desk for extende
 `git push origin your_name`
 
 
-## Using the Database in the android app
+## Using the Database in the Android app
 we need the google-services.json file so it can work.  
 Go to the [firebase console](https://console.firebase.google.com/u/0/project/airzen-c1ded/overview?fb_utm_source=studio) under the AirZen project.  
 Click on the gear icon at the top left corner and go to project settings.  
