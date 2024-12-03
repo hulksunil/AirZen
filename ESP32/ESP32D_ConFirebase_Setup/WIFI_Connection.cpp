@@ -6,7 +6,7 @@
 
 //Library used for setting up the web config portal (ESP32 AP):
 //WiFiManager by tzapu
-//Yoube Tutorial on ESP32 WifiManaer was used. Link: https://www.youtube.com/watch?v=VnfX9YJbaU8&ab_channel=DroneBotWorkshop
+//Youtube Tutorial on ESP32 WifiManaer was used. Link: https://www.youtube.com/watch?v=VnfX9YJbaU8&ab_channel=DroneBotWorkshop
 
 //IMPORTANT NOTE: The user chooses their ssid and enters their password for their chosen network. 
 //The next time the ESP32 is powered on, it will connect to the WIFI network automatically. If you don't want this or need to troubleshoot, uncomment wm.resetSettings().
