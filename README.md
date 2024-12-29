@@ -1,7 +1,7 @@
 # AirZen - An Air Quality Monitor (COEN/ELEC 390 Project)  
 A device designed to benefit individuals who work or study at a desk for extended periods, those with respiratory issues like asthma, and people concerned about their surrounding air quality.
 
-[Video Demo](https://youtu.be/WQQQQAC-hgM)
+[Video Demo](https://youtu.be/cbaUsUyWXuY)
 
 ## Running the code
 ### <u>Hardware side </u>
